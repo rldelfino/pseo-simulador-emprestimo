@@ -1,0 +1,24 @@
+# Confere toda semana (e a cada push na main) se a conta do simulador ainda bate com a Tabela 10 do parceiro.
+# Se mudou, a execução falha e o GitHub avisa o dono do repositório por e-mail.
+name: Verificar tabela do Pix no cartão
+
+on:
+  schedule:
+    - cron: "0 11 * * 1"   # segunda-feira, 08:00 de Brasília
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Comparar com a API do parceiro
+        run: python verificar_tabela_pix.py dados/pix-tabela-esperada.json
