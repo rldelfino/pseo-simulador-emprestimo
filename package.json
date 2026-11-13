@@ -1,0 +1,12 @@
+{
+  "name": "datalab-emprestimo-pseo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Build do CSS estático (Tailwind) do simulador de empréstimo via cartão de crédito (Pix no cartão) da Datalab Global. Não é uma aplicação Node: só usa o Tailwind CLI como ferramenta de build.",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/input.css -o ./paginas_seo/styles.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
+  }
+}

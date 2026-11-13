@@ -1,0 +1,12 @@
+# Pix no cartão de crédito (Datalab Global)
+
+> Simulador gratuito do Pix no cartão de crédito: você recebe um Pix de R$ 300 a R$ 5.000 e paga em 2x a 12x na fatura. Mostra parcela, total na fatura, IOF e CET antes de qualquer contratação. É crédito caro.
+
+- Responsável: Satori Soluções Comerciais LTDA, CNPJ 63.998.502/0001-73
+- Atualizado em 13/11/2026
+- Fonte dos números: Tabela 10 do parceiro (correspondente bancário), conferida toda semana pela API do próprio parceiro.
+- Conta: fator = 0,5479 + 0,003 x parcelas; parcela = valor x (1 + fator) / parcelas; IOF = valor x (0,0038 + 0,00246 x parcelas).
+- A aprovação depende de análise de crédito. A simulação não é proposta de crédito.
+
+## Páginas
+- https://emprestimo.datalabglobal.com/
