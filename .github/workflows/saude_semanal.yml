@@ -1,11 +1,10 @@
 name: Saúde semanal do site
 
-# Só manual por enquanto: o site ainda não está no ar em emprestimo.datalabglobal.com.
-# Depois do deploy, descomente o schedule (segunda-feira, 12:00 UTC).
+# Site no ar em emprestimo.datalabglobal.com desde 14/11/2026: roda toda segunda-feira, 12:00 UTC (depois da atualização das 08:00).
 on:
   workflow_dispatch:
-  # schedule:
-  #   - cron: '0 12 * * 1'
+  schedule:
+    - cron: '0 12 * * 1'
 
 permissions:
   contents: read

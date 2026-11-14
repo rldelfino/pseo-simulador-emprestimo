@@ -19,16 +19,16 @@ import taxas_referencia as tr
 AQUI = os.path.dirname(os.path.abspath(__file__))
 PASTA_DADOS = os.path.join(AQUI, "paginas_seo", "dados")
 PASTA_SAIDA = os.path.join(AQUI, "publicacao")
-USUARIO_KAGGLE = "SEU_USUARIO_KAGGLE"  # placeholder: o dono troca na hora de publicar (não é segredo, mas é dado dele)
+USUARIO_KAGGLE = "rodolfodelfino"  # usuário público do Kaggle (aparece na URL dos datasets); o token NÃO fica aqui
 
 KAGGLE = {
     da.PIX["nome"]: dict(
-        slug="pix-no-cartao-tabela-10-brasil", titulo="Pix no cartão de crédito: parcela, IOF, juros e CET (Brasil, Tabela 10)",
-        subtitulo="Custo do Pix no cartão de 2x a 12x para cada R$ 1.000 recebidos, conferido toda semana",
+        slug="pix-no-carto-parcela-iof-e-cet-tabela-10", titulo="Pix no cartão: parcela, IOF e CET (Tabela 10)",
+        subtitulo="Custo do Pix no cartão de 2x a 12x para cada R$ 1.000, conferido toda semana",
         keywords=["finance", "brazil", "credit card", "interest rates", "installments"], licenca="CC-BY-4.0", hf_licenca="cc-by-4.0"),
     da.BCB["nome"]: dict(
-        slug="taxas-medias-credito-pessoa-fisica-bcb", titulo="Taxas médias de juros do BCB: cheque especial, pessoal não consignado e rotativo",
-        subtitulo="Taxa média mensal das novas operações, % ao ano, séries SGS 20741, 20742 e 22022",
+        slug="taxas-mdias-de-crdito-pf-do-banco-central", titulo="Taxas médias de crédito PF do Banco Central",
+        subtitulo="Juros médios do BC: cheque especial, pessoal não consignado e rotativo",
         keywords=["finance", "brazil", "banking", "interest rates", "central bank"], licenca="ODbL-1.0", hf_licenca="odbl"),
 }
 
@@ -78,8 +78,7 @@ def gerar(pasta_dados=PASTA_DADOS, pasta_saida=PASTA_SAIDA, usuario=USUARIO_KAGG
     _escrever(os.path.join(pasta_saida, "dados-gov-br", "cadastro.md"), gov)
 
     leia = ("# Publicação dos dados abertos\n\nGerada por `publicacao.py`. Dois conjuntos, cada um com a licença da sua fonte (CC BY 4.0 e ODbL 1.0).\n\n"
-            "1. **Kaggle:** troque `" + USUARIO_KAGGLE + "` pelo seu usuário em cada `kaggle/*/dataset-metadata.json` e rode `kaggle datasets create -p publicacao/kaggle/<pasta>`. "
-            "Nas semanas seguintes: `kaggle datasets version -p publicacao/kaggle/<pasta> -m \"atualização semanal\"`. O token (`KAGGLE_KEY`) NUNCA vai para o repositório.\n"
+            "1. **Kaggle:** os dois datasets já foram criados em 14/11/2026 (veja os links em `/dados-abertos`). Para atualizar, rode `kaggle datasets version -p publicacao/kaggle/<pasta> -m \"atualização semanal\"` com o token em variável de ambiente (`KAGGLE_API_TOKEN` ou `KAGGLE_KEY`), NUNCA no repositório. O título tem no máximo 50 caracteres e o subtítulo no máximo 80 (limites do Kaggle).\n"
             "2. **Hugging Face:** crie um dataset por pasta de `huggingface/` e envie o `README.md` e o CSV. O token fica fora do repositório.\n"
             "3. **dados.gov.br:** copie os campos de `dados-gov-br/cadastro.md`.\n")
     _escrever(os.path.join(pasta_saida, "LEIA-ME.md"), leia)
