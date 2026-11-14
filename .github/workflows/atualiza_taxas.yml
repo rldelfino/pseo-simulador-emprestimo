@@ -1,0 +1,50 @@
+name: Atualização semanal das taxas do Banco Central e rebuild do site
+
+on:
+  schedule:
+    # segunda-feira, 08:00 UTC (antes da verificação da Tabela 10, às 11:00 UTC)
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+
+# permissão de gravação para o robô commitar os dados e as páginas regeneradas
+permissions:
+  contents: write
+
+jobs:
+  atualiza-dados:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - run: pip install -r requirements-dev.txt
+
+      - name: Atualizar taxas médias do Banco Central (dados/taxas_referencia.csv)
+        # falha de rede não derruba o pipeline: o script avisa e mantém o CSV
+        run: python etl_taxas_referencia.py
+
+      - name: Regerar as páginas
+        run: python gerador_emprestimo.py
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm ci
+
+      - name: Compilar o CSS estático
+        run: npm run build:css
+
+      - name: Testes (nada é publicado se o pytest sair diferente de 0)
+        run: python -m pytest -q
+
+      - name: Commit e push dos dados e das páginas
+        run: |
+          git config --global user.name "Robô Datalab"
+          git config --global user.email "bot@datalabglobal.com"
+          git add dados paginas_seo
+          git commit -m "auto: atualização semanal das taxas do Banco Central e rebuild do site" || echo "Sem mudanças"
+          git push
