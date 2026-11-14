@@ -130,7 +130,11 @@ def test_blocos_de_confianca(site):
         assert "pode receber comissão" in texto(html), nome
         assert "análise de crédito" in texto(html) or "Crédito sujeito a análise" in texto(html), nome
     assert "não há garantia" in texto(ler(site, "index.html")).lower() or "sem garantia de aprovação" in texto(ler(site, "index.html")).lower()
-    assert "Resolução nº 3.954/2011" in ler(site, "e-seguro-golpes.html")
+    # a Resolução CMN 3.954/2011 foi revogada (Res. BCB 277/2022): não pode aparecer como norma vigente em nenhuma página do site
+    for nome in arquivos_indexaveis():
+        corpo = texto(principal(ler(site, nome)))
+        if nome != "atualizacoes.html":
+            assert "3.954" not in corpo, nome
     assert "Lei nº 10.931/2004" in ler(site, "e-seguro-golpes.html")
     assert "Tabela 10" in ler(site, "metodologia.html") and "0,5479" in ler(site, "metodologia.html")
 

@@ -93,8 +93,8 @@ FAQ = [
     ("Estou negativado. Posso contratar?",
      "A aprovação depende da análise de crédito do parceiro. Não há garantia de aprovação nem de valor."),
     ("É seguro e legal?",
-     "A operação é formalizada por Cédula de Crédito Bancário (Lei nº 10.931/2004) e feita por correspondente bancário, conforme a "
-     "Resolução nº 3.954/2011 do Banco Central. Segurança, porém, também depende de você: leia o guia "
+     "A operação é formalizada por Cédula de Crédito Bancário (Lei nº 10.931/2004, arts. 26 a 45-A) e feita por correspondente bancário, "
+     "que segue as normas do Banco Central e do CMN. Segurança, porém, também depende de você: leia o guia "
      + a("/e-seguro-golpes", "É seguro? Como evitar golpes") + "."),
     ("A Datalab Global é o banco?",
      "Não. Este site é um simulador. Quem faz a operação é um parceiro (correspondente bancário), e a Datalab Global pode receber comissão "
@@ -151,7 +151,7 @@ def corpo_seguro(ctx):
             "<strong>Quem é o responsável por este site:</strong> Satori Soluções Comerciais LTDA, CNPJ " + ctx["cnpj"] + " (marca Datalab Global). Você pode consultar o CNPJ no site da Receita Federal.",
             "<strong>Este site não pede dado pessoal.</strong> Você só informa valor e prazo. CPF, documento e dados do cartão são pedidos pelo parceiro, em outra tela.",
             "<strong>Contrato formal:</strong> a operação é formalizada por Cédula de Crédito Bancário (CCB, Lei nº 10.931/2004), com as condições registradas.",
-            "<strong>Quem opera:</strong> correspondente bancário, conforme a Resolução nº 3.954/2011 do Banco Central.",
+            "<strong>Quem opera:</strong> um correspondente bancário, que atua por conta de uma instituição financeira e segue as normas do Banco Central e do CMN. Não verificamos, por você, o cadastro do parceiro: se quiser conferir, pergunte à instituição financeira responsável e peça o nome dela no contrato.",
             "<strong>Endereço da contratação:</strong> o botão do simulador leva ao ambiente do parceiro (domínio checkoutonline.digital, com a marca Gyroo na tela). Confira o endereço na barra do navegador.",
         ])
         + h2("Sinais de golpe")
@@ -259,7 +259,7 @@ def corpo_taxas(ctx):
     for sr, u in ultimas:
         principal.append([sr["nome"], tr.mes_extenso(u["mes"]), pct(u["taxa_aa"]), pct(tr.mensal_equivalente(u["taxa_aa"])),
                           pct(tr.media_ultimos(sr["codigo"], 12, linhas)),
-                          a(tr.url_json(sr["codigo"]), "série " + str(sr["codigo"]) + " (dados)") + " · " + a(tr.url_grafico(sr["codigo"]), "gráfico")])
+                          a(tr.url_json(sr["codigo"]), "série " + str(sr["codigo"]) + " (dados)") + " · " + a(tr.url_catalogo(sr["codigo"]), "catálogo do BCB")])
     base = tr.serie(tr.SERIES[0]["codigo"], linhas)[-13:]
     meses = [r["mes"] for r in base]
     hist = []
@@ -457,6 +457,7 @@ def corpo_atualizacoes(ctx):
 
 
 ATUALIZACOES = [
+    ("14/11/2026", "Correção: removemos a citação da Resolução CMN nº 3.954/2011, que foi revogada (o texto consolidado do Banco Central aponta a Resolução BCB nº 277/2022). Os textos agora falam em normas do Banco Central e do CMN sobre correspondentes."),
     ("14/11/2026", "Dados abertos (Tabela 10 do Pix no cartão em CC BY 4.0 e séries do Banco Central em ODbL 1.0), feed Atom e aviso ao Bing por IndexNow."),
     ("14/11/2026", "Taxas médias do Banco Central (crédito pessoal não consignado, cheque especial e cartão rotativo) com mês de referência e link de cada série, e comparação com o Pix no cartão."),
     ("14/11/2026", "Guias com conteúdo próprio (como funciona, golpes, CET e IOF, comparação, quando não vale a pena), metodologia, página Sobre, privacidade e termos."),

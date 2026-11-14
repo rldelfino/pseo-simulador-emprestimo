@@ -41,7 +41,7 @@ def test_codigos_das_series_confirmados_no_catalogo_do_bcb():
     for s in tr.SERIES:
         assert s["titulo_bcb"].startswith("Taxa média de juros das operações de crédito com recursos livres - Pessoas físicas - ")
         assert "bcdata.sgs.%d" % s["codigo"] in tr.url_json(s["codigo"])
-        assert "hdOidSeriesSelecionadas=%d" % s["codigo"] in tr.url_grafico(s["codigo"])
+        assert tr.url_catalogo(s["codigo"]).startswith("https://dadosabertos.bcb.gov.br/dataset/%d-" % s["codigo"])
 
 
 def test_dados_gravados_estao_completos_e_plausiveis():
@@ -150,7 +150,7 @@ def test_pagina_de_taxas_tem_numero_data_e_link_de_cada_serie(site):
         u = tr.ultima(s["codigo"])
         assert conteudo.pct(u["taxa_aa"]) in t, s["nome"]
         assert tr.mes_extenso(u["mes"]) in t
-        assert tr.url_json(s["codigo"]) in html and tr.url_grafico(s["codigo"]) in html
+        assert tr.url_json(s["codigo"]) in html and tr.url_catalogo(s["codigo"]) in html
     assert "ODbL" in t and "percentual ao ano" in t.lower()
     assert "É juros, não é CET" in t
     assert t.count("Pix no cartão") >= 3
