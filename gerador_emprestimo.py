@@ -222,6 +222,7 @@ HOME_MAIN = """  <section class="pt-4 pb-8">
     <div class="painel rounded-2xl p-6">
       <h2 class="text-lg font-bold">Quanto custa, de verdade</h2>
       <p class="mt-2 text-sm text-slate-300">O CET vai de 34,64% ao mês (2x) a 7,49% ao mês (12x). Ao ano, de 3.621% a 148,97%. Por isso o simulador mostra quanto você paga a mais antes do botão. Se você consegue outra forma de crédito mais barata, ela costuma valer mais a pena. <a class="text-violet-300 underline" href="/custo-cet-iof">Veja a tabela completa</a>.</p>
+      <p class="mt-2 text-sm text-slate-300">@@COMPARA@@</p>
     </div>
     <div class="painel rounded-2xl p-6">
       <h2 class="text-lg font-bold">Quem oferece</h2>
@@ -343,7 +344,7 @@ def _pagina_home(valores, hoje):
         {"@type": "WebSite", "@id": DOMINIO + "/#site", "url": DOMINIO + "/", "name": "Pix no cartão — Datalab Global", "inLanguage": "pt-BR",
          "publisher": {"@id": DOMINIO + "/#organizacao"}},
     ]}
-    main = _preencher(HOME_MAIN, {"CARTOES": _cartoes_html(), "FAQ": _faq_html()})
+    main = _preencher(HOME_MAIN, {"CARTOES": _cartoes_html(), "FAQ": _faq_html(), "COMPARA": conteudo.frase_home()})
     return _preencher(LAYOUT, dict(valores, TITLE=HOME_TITLE, DESC=HOME_DESC, CANONICAL=DOMINIO + "/", ROBOTS="index,follow,max-image-preview:large",
                                    OGTYPE="website", JSONLD=_ld(site) + _ld(faq), MAIN=main, SCRIPTS=HOME_SCRIPTS))
 

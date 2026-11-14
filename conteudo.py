@@ -4,6 +4,7 @@ Regras: nenhum número que não venha da Tabela 10 (calculo.py) ou de uma fonte 
 sem prometer aprovação. Os números dos textos são calculados aqui a partir de calculo.simular, para não divergirem do simulador.
 """
 import calculo
+import taxas_referencia as tr
 
 GITHUB = "https://github.com/rldelfino/pseo-simulador-emprestimo"
 
@@ -216,6 +217,102 @@ def corpo_custo(ctx):
     )
 
 
+def _ultimas_taxas():
+    linhas = tr.ler()
+    return [(sr, tr.ultima(sr["codigo"], linhas)) for sr in tr.SERIES], linhas
+
+
+def _pix_juros_ano(n=12):
+    return tr.ano_equivalente(calculo.simular("valor", 1000, 0, n)["jurosMes"])
+
+
+def _aviso_taxas_medias():
+    ultimas, _ = _ultimas_taxas()
+    partes = "; ".join(sr["nome"].lower() + ", " + pct(u["taxa_aa"]) + " ao ano" for sr, u in ultimas)
+    ref = tr.mes_extenso(max(u["mes"] for _, u in ultimas))
+    return ("<strong>Taxas médias do Banco Central (" + ref + "):</strong> " + partes + ". São médias de novas operações de crédito, não ofertas: "
+            "a sua taxa pode ser maior ou menor. Veja a " + a("/taxas-de-referencia", "tabela completa, com data e link de cada série") + ".")
+
+
+def frase_home():
+    ultimas, _ = _ultimas_taxas()
+    ref = tr.mes_extenso(max(u["mes"] for _, u in ultimas))
+    pessoal = next(u for sr, u in ultimas if sr["chave"] == "pessoal-nao-consignado")
+    cheque = next(u for sr, u in ultimas if sr["chave"] == "cheque-especial")
+    return ("Para comparar: em " + ref + ", a média do Banco Central foi de " + pct(pessoal["taxa_aa"]) + " ao ano no crédito pessoal não consignado e de "
+            + pct(cheque["taxa_aa"]) + " no cheque especial. O Pix no cartão em 12x tem juros equivalentes a " + pct(_pix_juros_ano(12)) + " ao ano. "
+            '<a class="text-violet-300 underline" href="/taxas-de-referencia">Veja as taxas de referência</a>.')
+
+
+def _relacao(pix, ref):
+    dif = (pix - ref) / ref
+    if abs(dif) < 0.03:
+        return "praticamente igual à"
+    return "acima da" if pix > ref else "abaixo da"
+
+
+def corpo_taxas(ctx):
+    ultimas, linhas = _ultimas_taxas()
+    ref = tr.mes_extenso(max(u["mes"] for _, u in ultimas))
+    principal = []
+    for sr, u in ultimas:
+        principal.append([sr["nome"], tr.mes_extenso(u["mes"]), pct(u["taxa_aa"]), pct(tr.mensal_equivalente(u["taxa_aa"])),
+                          pct(tr.media_ultimos(sr["codigo"], 12, linhas)),
+                          a(tr.url_json(sr["codigo"]), "série " + str(sr["codigo"]) + " (dados)") + " · " + a(tr.url_grafico(sr["codigo"]), "gráfico")])
+    base = tr.serie(tr.SERIES[0]["codigo"], linhas)[-13:]
+    meses = [r["mes"] for r in base]
+    hist = []
+    for m in reversed(meses):
+        linha = [tr.mes_extenso(m)]
+        for sr in tr.SERIES:
+            v = next((r["taxa_aa"] for r in tr.serie(sr["codigo"], linhas) if r["mes"] == m), None)
+            linha.append(pct(v) if v is not None else "sem dado")
+        hist.append(linha)
+    pix_linhas = []
+    for n in (2, 3, 6, 12):
+        r = _r(n)
+        pix_linhas.append([str(n) + "x", pct(r["jurosMes"]), pct(tr.ano_equivalente(r["jurosMes"])), pct(r["cetAno"])])
+    pix12 = _pix_juros_ano(12)
+    cmp12 = []
+    for sr, u in ultimas:
+        cmp12.append(_relacao(pix12, u["taxa_aa"]) + " média de " + sr["nome"].lower() + " (" + pct(u["taxa_aa"]) + ")")
+    mais_baratas = [sr["nome"].lower() for sr, u in ultimas if u["taxa_aa"] < pix12 * 0.97]
+    if mais_baratas:
+        conclusao = ("Na média do mercado, " + " e ".join(mais_baratas) + " tem juros menores que o Pix no cartão em 12x. "
+                     "Isso não garante que você consiga essa taxa, mas é um motivo para pedir o CET dessas alternativas antes de decidir.")
+    else:
+        conclusao = "Na média do mercado, nenhuma das três modalidades acima tem juros claramente menores que o Pix no cartão em 12x."
+    return (
+        p("Para saber se um crédito é caro, é preciso um ponto de comparação. Esta página reúne as taxas médias de juros divulgadas pelo Banco Central "
+          "para três créditos usados por pessoas físicas, com o mês de referência e o link de cada série. São dados de referência: não são oferta de nenhuma instituição.")
+        + h2("Taxas médias mais recentes")
+        + tabela(["Modalidade", "Mês de referência", "Juros ao ano", "Equivale a, ao mês", "Média dos últimos 12 meses", "Fonte (BCB/SGS)"], principal,
+                 "Dados do Banco Central até " + ref + ". Página atualizada em " + ctx["atualizado"] + ".")
+        + h2("O que essas taxas são")
+        + ul([
+            "<strong>Taxa média de juros das novas operações de crédito livre</strong> contratadas no mês, ponderada pelo valor das concessões (conceito do próprio Banco Central).",
+            "<strong>Unidade:</strong> percentual ao ano, série mensal. A coluna &quot;ao mês&quot; é a taxa equivalente que calculamos por juros compostos.",
+            "<strong>É juros, não é CET.</strong> O CET inclui também IOF e outras despesas, então costuma ser maior que a taxa de juros.",
+            "<strong>Tem atraso:</strong> o Banco Central publica cada mês depois de fechado. O mês mais recente aqui é " + ref + ".",
+            "<strong>Dados abertos do Banco Central</strong>, licença ODbL. Fonte: Banco Central do Brasil, Sistema Gerenciador de Séries Temporais (SGS).",
+        ])
+        + h2("Últimos 13 meses")
+        + tabela(["Mês"] + [sr["nome"] for sr in tr.SERIES], hist, "Juros ao ano, em %. Mesmas séries da tabela acima.")
+        + h2("E o Pix no cartão?")
+        + tabela(["Prazo", "Juros ao mês (Tabela 10)", "Equivale a, ao ano", "CET ao ano"], pix_linhas,
+                 "Pix no cartão, Tabela 10 do parceiro. A coluna &quot;ao ano&quot; é a taxa mensal acumulada por 12 meses (juros compostos).")
+        + p("Em 12x, o Pix no cartão tem juros equivalentes a " + pct(pix12) + " ao ano: " + "; ".join(cmp12) + ". " + conclusao)
+        + p("Em prazos curtos a conta anualizada fica enorme (" + pct(tr.ano_equivalente(_r(2)["jurosMes"])) + " ao ano em 2x) porque a taxa mensal é alta; "
+            "o que pesa de verdade é quanto você paga a mais em reais, como mostra " + a("/custo-cet-iof", "CET e IOF") + ".")
+        + aviso("<strong>Como ler essa comparação:</strong> as taxas do Banco Central são médias de mercado, e o Pix no cartão tem taxa tabelada. "
+                "Sua taxa em outro crédito depende da sua análise de crédito. Cheque especial e rotativo resolvem situações diferentes, como explica "
+                + a("/pix-no-cartao-ou-outro-credito", "a página de comparação") + ". Antes de decidir, peça o CET por escrito.")
+        + h2("Como mantemos esta página atualizada")
+        + p("Um robô consulta as três séries do SGS toda segunda-feira e grava os últimos 24 meses. Se o Banco Central estiver fora do ar ou mudar o formato da resposta, "
+            "o robô não apaga o que já temos e o mês de referência acima mostra até quando os dados vão. Veja a " + a("/metodologia", "Metodologia") + ".")
+    )
+
+
 def corpo_comparar(ctx):
     r12 = _r(12)
     return (
@@ -245,8 +342,7 @@ def corpo_comparar(ctx):
             "As parcelas entram na fatura e disputam espaço com as suas compras do mês. Se a fatura não for paga por inteiro, o saldo pode ficar sujeito aos juros do cartão.",
             "O valor é limitado a R$ 5.000 e depende de análise de crédito.",
         ])
-        + aviso("<strong>Ainda não mostramos taxas médias de outros créditos.</strong> Quando tivermos as taxas médias do Banco Central confirmadas, "
-                "elas entram aqui, com data e link da série. Até lá, peça o CET por escrito em cada opção.")
+        + aviso(_aviso_taxas_medias())
         + p("Veja também " + a("/custo-cet-iof", "CET e IOF: quanto custa de verdade") + " e " + a("/quando-nao-vale-a-pena", "quando não vale a pena") + ".")
     )
 
@@ -313,6 +409,10 @@ def corpo_metodologia(ctx):
             "Mudanças feitas pelo parceiro entre uma conferência e outra. A data de atualização está no rodapé de cada página.",
             "Condições de outros créditos: este site não compara bancos nem instituições.",
         ])
+        + h2("Taxas de referência do Banco Central")
+        + p("As taxas de outros créditos vêm das séries 20742 (crédito pessoal não consignado), 20741 (cheque especial) e 22022 (cartão de crédito rotativo) do SGS, "
+            "todas de pessoas físicas, mensais e em percentual ao ano. Os códigos foram conferidos no catálogo de dados abertos do Banco Central. "
+            "Um robô as atualiza toda segunda-feira. Detalhes e números em " + a("/taxas-de-referencia", "Taxas de referência") + ".")
         + h2("Medição de uso")
         + p("Usamos o Umami, que não usa cookies. Ele registra visitas e dois eventos: quando você mexe na simulação e quando clica em Ver minha proposta, "
             "com valor e prazo. Não registramos CPF, telefone nem dados pessoais. Detalhes em " + a("/privacidade", "Privacidade") + ".")
@@ -356,6 +456,7 @@ def corpo_atualizacoes(ctx):
 
 
 ATUALIZACOES = [
+    ("14/11/2026", "Taxas médias do Banco Central (crédito pessoal não consignado, cheque especial e cartão rotativo) com mês de referência e link de cada série, e comparação com o Pix no cartão."),
     ("14/11/2026", "Guias com conteúdo próprio (como funciona, golpes, CET e IOF, comparação, quando não vale a pena), metodologia, página Sobre, privacidade e termos."),
     ("13/11/2026", "Conta do simulador conferida com a API do parceiro: R$ 1.000 em 2x a 12x, mesma Tabela 10, limites de R$ 300 a R$ 5.000 e 12 parcelas. Nenhuma diferença."),
     ("13/11/2026", "Simulador extraído do hub da Datalab Global para este projeto independente, com medição de uso sem cookies."),
@@ -437,6 +538,10 @@ PAGINAS = [
          h1="Pix no cartão, empréstimo pessoal, cheque especial ou rotativo: como comparar",
          desc="Método para comparar quatro tipos de crédito pelo total pago e pelo CET, sem indicar banco: o que muda em prazo, pagamento e custo.",
          corpo=corpo_comparar),
+    dict(slug="taxas-de-referencia", menu="Taxas do BC", title="Taxas médias do Banco Central: cheque especial, crédito pessoal e rotativo",
+         h1="Taxas médias do Banco Central: cheque especial, crédito pessoal e rotativo",
+         desc="Taxas médias de juros de três créditos para pessoa física, com mês de referência e link de cada série, comparadas ao Pix no cartão.",
+         corpo=corpo_taxas),
     dict(slug="quando-nao-vale-a-pena", menu="Quando não vale", title="Quando o Pix no cartão não vale a pena (e quando pode valer)",
          h1="Quando o Pix no cartão não vale a pena (e quando pode valer)",
          desc="Sete situações em que este crédito caro costuma ser má ideia, as poucas em que pode fazer sentido e perguntas para decidir.",
