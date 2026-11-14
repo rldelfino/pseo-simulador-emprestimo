@@ -64,6 +64,10 @@ def verificar(dominio, min_urls, max_urls, chave, paginas, amostra=25):
 
 
 def main():
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")  # console do Windows usa cp1252 e quebra com os emojis
+    except (AttributeError, OSError):
+        pass
     ap = argparse.ArgumentParser()
     ap.add_argument("--dominio", required=True)
     ap.add_argument("--min-urls", type=int, default=1)

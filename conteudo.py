@@ -457,6 +457,7 @@ def corpo_atualizacoes(ctx):
 
 
 ATUALIZACOES = [
+    ("14/11/2026", "Simulador no ar em emprestimo.datalabglobal.com. Os dois conjuntos de dados abertos também estão no Kaggle, com a mesma licença."),
     ("14/11/2026", "Correção: removemos a citação da Resolução CMN nº 3.954/2011, que foi revogada (o texto consolidado do Banco Central aponta a Resolução BCB nº 277/2022). Os textos agora falam em normas do Banco Central e do CMN sobre correspondentes."),
     ("14/11/2026", "Dados abertos (Tabela 10 do Pix no cartão em CC BY 4.0 e séries do Banco Central em ODbL 1.0), feed Atom e aviso ao Bing por IndexNow."),
     ("14/11/2026", "Taxas médias do Banco Central (crédito pessoal não consignado, cheque especial e cartão rotativo) com mês de referência e link de cada série, e comparação com o Pix no cartão."),
@@ -482,6 +483,7 @@ def corpo_dados_abertos(ctx):
             [a("/dados/" + c["nome"] + ".csv", c["nome"] + ".csv"), "CSV, UTF-8"],
             [a("/dados/" + c["nome"] + ".json", c["nome"] + ".json"), "JSON"],
             [a("/dados/datapackage-" + c["nome"] + ".json", "datapackage-" + c["nome"] + ".json"), "Descrição do conjunto (Data Package)"],
+            [a(c["kaggle"], "Kaggle"), "Cópia no Kaggle (mesma licença)"],
         ]
         saida += (
             h2(c["titulo"])

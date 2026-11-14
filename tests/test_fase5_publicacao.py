@@ -136,6 +136,8 @@ def test_pagina_de_dados_abertos(site):
             assert (site / "dados" / arq).exists()
     assert g.DOMINIO + "/dados-abertos" in ler(site, "sitemap.xml")
     assert 'href="/dados-abertos"' in ler(site, "index.html")  # rodapé
+    for c in da.CONJUNTOS:
+        assert c["kaggle"].startswith("https://www.kaggle.com/datasets/rodolfodelfino/") and 'href="' + c["kaggle"] + '"' in html
 
 
 # ---------- feed Atom ----------
@@ -169,10 +171,15 @@ def test_pacote_de_publicacao_sem_segredos(site, tmp_path):
     assert resumo == {"pix-no-cartao-tabela-10": 11, "taxas-referencia-bcb": len(tr.ler())}
     for nome, lic in (("pix-no-cartao-tabela-10", "CC-BY-4.0"), ("taxas-referencia-bcb", "ODbL-1.0")):
         meta = json.loads((saida / "kaggle" / nome / "dataset-metadata.json").read_text(encoding="utf-8"))
-        assert meta["licenses"] == [{"name": lic}] and meta["id"].startswith("SEU_USUARIO_KAGGLE/")
+        assert meta["licenses"] == [{"name": lic}] and meta["id"].startswith("rodolfodelfino/")
         assert (saida / "kaggle" / nome / (nome + ".csv")).exists() and (saida / "huggingface" / nome / (nome + ".csv")).exists()
         card = (saida / "huggingface" / nome / "README.md").read_text(encoding="utf-8")
         assert card.startswith("---\nlicense: " + ("cc-by-4.0" if lic == "CC-BY-4.0" else "odbl"))
+    for nome in ("pix-no-cartao-tabela-10", "taxas-referencia-bcb"):
+        meta = json.loads((saida / "kaggle" / nome / "dataset-metadata.json").read_text(encoding="utf-8"))
+        # limites do Kaggle confirmados na criação real dos datasets (14/11/2026): título 6 a 50 e subtítulo até 80 caracteres
+        assert 6 <= len(meta["title"]) <= 50, meta["title"]
+        assert len(meta["subtitle"]) <= 80, meta["subtitle"]
     gov = (saida / "dados-gov-br" / "cadastro.md").read_text(encoding="utf-8")
     assert "/dados/pix-no-cartao-tabela-10.csv" in gov and "/dados/taxas-referencia-bcb.csv" in gov
     todos = "".join(open(os.path.join(r, f), encoding="utf-8", errors="ignore").read() for r, _d, fs in os.walk(saida) for f in fs if f.endswith((".json", ".md")))

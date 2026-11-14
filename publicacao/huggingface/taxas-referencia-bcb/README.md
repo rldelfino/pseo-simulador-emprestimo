@@ -2,7 +2,7 @@
 license: odbl
 language:
 - pt
-pretty_name: Taxas médias de juros do BCB: cheque especial, pessoal não consignado e rotativo
+pretty_name: Taxas médias de crédito PF do Banco Central
 size_categories:
 - n<1K
 tags:
