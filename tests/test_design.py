@@ -106,3 +106,15 @@ def test_simulador_js_sem_innerhtml_e_com_rosca_e_barras():
     assert ".innerHTML" not in js and "insertAdjacentHTML" not in js  # só textContent e atributos SVG
     assert "desenharRosca" in js and "desenharBarras" in js
     assert "w-0 min-w-0 flex-1" in js  # regressão: as barras estouravam a largura em 320 px
+
+
+def test_css_tem_versao_no_endereco_e_bate_com_o_arquivo(site):
+    """styles.css tem cache imutável de 1 ano: sem a versão no endereço, quem já visitou ficaria com o CSS velho."""
+    import hashlib
+    caminho = os.path.join(RAIZ, "paginas_seo", "styles.css")
+    esperado = hashlib.sha256(open(caminho, "rb").read()).hexdigest()[:10]
+    assert g.versao_css() == esperado
+    for nome in paginas() + ["404.html"]:
+        html = ler(site, nome)
+        assert 'href="/styles.css?v=' + esperado + '"' in html, nome
+        assert 'href="/styles.css"' not in html, nome
