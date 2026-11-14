@@ -1,0 +1,554 @@
+[
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2024-11",
+  "taxa_aa_pct": "138.16",
+  "taxa_am_equivalente_pct": "7.50",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2024-12",
+  "taxa_aa_pct": "134.83",
+  "taxa_am_equivalente_pct": "7.37",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2025-01",
+  "taxa_aa_pct": "135.54",
+  "taxa_am_equivalente_pct": "7.40",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2025-02",
+  "taxa_aa_pct": "142.18",
+  "taxa_am_equivalente_pct": "7.65",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2025-03",
+  "taxa_aa_pct": "132.21",
+  "taxa_am_equivalente_pct": "7.27",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2025-04",
+  "taxa_aa_pct": "137.36",
+  "taxa_am_equivalente_pct": "7.47",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2025-05",
+  "taxa_aa_pct": "134.90",
+  "taxa_am_equivalente_pct": "7.38",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2025-06",
+  "taxa_aa_pct": "135.74",
+  "taxa_am_equivalente_pct": "7.41",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2025-07",
+  "taxa_aa_pct": "138.19",
+  "taxa_am_equivalente_pct": "7.50",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2025-08",
+  "taxa_aa_pct": "138.19",
+  "taxa_am_equivalente_pct": "7.50",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2025-09",
+  "taxa_aa_pct": "140.73",
+  "taxa_am_equivalente_pct": "7.60",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2025-10",
+  "taxa_aa_pct": "139.11",
+  "taxa_am_equivalente_pct": "7.53",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2025-11",
+  "taxa_aa_pct": "140.58",
+  "taxa_am_equivalente_pct": "7.59",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2025-12",
+  "taxa_aa_pct": "138.89",
+  "taxa_am_equivalente_pct": "7.53",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2026-01",
+  "taxa_aa_pct": "137.44",
+  "taxa_am_equivalente_pct": "7.47",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2026-02",
+  "taxa_aa_pct": "146.30",
+  "taxa_am_equivalente_pct": "7.80",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2026-03",
+  "taxa_aa_pct": "138.90",
+  "taxa_am_equivalente_pct": "7.53",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2026-04",
+  "taxa_aa_pct": "140.93",
+  "taxa_am_equivalente_pct": "7.60",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2026-05",
+  "taxa_aa_pct": "137.25",
+  "taxa_am_equivalente_pct": "7.47",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2026-06",
+  "taxa_aa_pct": "139.95",
+  "taxa_am_equivalente_pct": "7.57",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2026-07",
+  "taxa_aa_pct": "137.62",
+  "taxa_am_equivalente_pct": "7.48",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2026-08",
+  "taxa_aa_pct": "136.34",
+  "taxa_am_equivalente_pct": "7.43",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20741,
+  "modalidade": "Cheque especial",
+  "mes_referencia": "2026-09",
+  "taxa_aa_pct": "139.02",
+  "taxa_am_equivalente_pct": "7.53",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2024-11",
+  "taxa_aa_pct": "99.33",
+  "taxa_am_equivalente_pct": "5.92",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2024-12",
+  "taxa_aa_pct": "103.35",
+  "taxa_am_equivalente_pct": "6.09",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2025-01",
+  "taxa_aa_pct": "99.89",
+  "taxa_am_equivalente_pct": "5.94",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2025-02",
+  "taxa_aa_pct": "106.35",
+  "taxa_am_equivalente_pct": "6.22",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2025-03",
+  "taxa_aa_pct": "105.25",
+  "taxa_am_equivalente_pct": "6.18",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2025-04",
+  "taxa_aa_pct": "105.87",
+  "taxa_am_equivalente_pct": "6.20",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2025-05",
+  "taxa_aa_pct": "104.30",
+  "taxa_am_equivalente_pct": "6.13",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2025-06",
+  "taxa_aa_pct": "108.39",
+  "taxa_am_equivalente_pct": "6.31",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2025-07",
+  "taxa_aa_pct": "104.55",
+  "taxa_am_equivalente_pct": "6.15",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2025-08",
+  "taxa_aa_pct": "103.97",
+  "taxa_am_equivalente_pct": "6.12",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2025-09",
+  "taxa_aa_pct": "101.10",
+  "taxa_am_equivalente_pct": "5.99",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2025-10",
+  "taxa_aa_pct": "101.12",
+  "taxa_am_equivalente_pct": "6.00",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2025-11",
+  "taxa_aa_pct": "111.43",
+  "taxa_am_equivalente_pct": "6.44",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2025-12",
+  "taxa_aa_pct": "116.59",
+  "taxa_am_equivalente_pct": "6.65",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2026-01",
+  "taxa_aa_pct": "118.02",
+  "taxa_am_equivalente_pct": "6.71",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2026-02",
+  "taxa_aa_pct": "112.15",
+  "taxa_am_equivalente_pct": "6.47",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2026-03",
+  "taxa_aa_pct": "117.05",
+  "taxa_am_equivalente_pct": "6.67",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2026-04",
+  "taxa_aa_pct": "125.03",
+  "taxa_am_equivalente_pct": "6.99",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2026-05",
+  "taxa_aa_pct": "116.04",
+  "taxa_am_equivalente_pct": "6.63",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2026-06",
+  "taxa_aa_pct": "112.17",
+  "taxa_am_equivalente_pct": "6.47",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2026-07",
+  "taxa_aa_pct": "110.97",
+  "taxa_am_equivalente_pct": "6.42",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2026-08",
+  "taxa_aa_pct": "110.37",
+  "taxa_am_equivalente_pct": "6.39",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 20742,
+  "modalidade": "Crédito pessoal não consignado",
+  "mes_referencia": "2026-09",
+  "taxa_aa_pct": "110.94",
+  "taxa_am_equivalente_pct": "6.42",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2024-11",
+  "taxa_aa_pct": "445.90",
+  "taxa_am_equivalente_pct": "15.19",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2024-12",
+  "taxa_aa_pct": "451.60",
+  "taxa_am_equivalente_pct": "15.29",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2025-01",
+  "taxa_aa_pct": "450.74",
+  "taxa_am_equivalente_pct": "15.28",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2025-02",
+  "taxa_aa_pct": "455.66",
+  "taxa_am_equivalente_pct": "15.36",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2025-03",
+  "taxa_aa_pct": "457.48",
+  "taxa_am_equivalente_pct": "15.39",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2025-04",
+  "taxa_aa_pct": "456.94",
+  "taxa_am_equivalente_pct": "15.39",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2025-05",
+  "taxa_aa_pct": "459.84",
+  "taxa_am_equivalente_pct": "15.44",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2025-06",
+  "taxa_aa_pct": "454.19",
+  "taxa_am_equivalente_pct": "15.34",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2025-07",
+  "taxa_aa_pct": "452.67",
+  "taxa_am_equivalente_pct": "15.31",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2025-08",
+  "taxa_aa_pct": "453.64",
+  "taxa_am_equivalente_pct": "15.33",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2025-09",
+  "taxa_aa_pct": "448.06",
+  "taxa_am_equivalente_pct": "15.23",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2025-10",
+  "taxa_aa_pct": "447.09",
+  "taxa_am_equivalente_pct": "15.21",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2025-11",
+  "taxa_aa_pct": "448.37",
+  "taxa_am_equivalente_pct": "15.24",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2025-12",
+  "taxa_aa_pct": "442.41",
+  "taxa_am_equivalente_pct": "15.13",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2026-01",
+  "taxa_aa_pct": "429.42",
+  "taxa_am_equivalente_pct": "14.90",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2026-02",
+  "taxa_aa_pct": "442.26",
+  "taxa_am_equivalente_pct": "15.13",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2026-03",
+  "taxa_aa_pct": "433.06",
+  "taxa_am_equivalente_pct": "14.96",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2026-04",
+  "taxa_aa_pct": "431.97",
+  "taxa_am_equivalente_pct": "14.95",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2026-05",
+  "taxa_aa_pct": "441.06",
+  "taxa_am_equivalente_pct": "15.11",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2026-06",
+  "taxa_aa_pct": "447.39",
+  "taxa_am_equivalente_pct": "15.22",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2026-07",
+  "taxa_aa_pct": "436.10",
+  "taxa_am_equivalente_pct": "15.02",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2026-08",
+  "taxa_aa_pct": "444.89",
+  "taxa_am_equivalente_pct": "15.18",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ },
+ {
+  "codigo_serie": 22022,
+  "modalidade": "Cartão de crédito rotativo",
+  "mes_referencia": "2026-09",
+  "taxa_aa_pct": "451.71",
+  "taxa_am_equivalente_pct": "15.29",
+  "fonte_url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.22022/dados?formato=json"
+ }
+]

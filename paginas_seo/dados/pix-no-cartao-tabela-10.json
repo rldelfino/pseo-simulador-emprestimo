@@ -1,0 +1,112 @@
+[
+ {
+  "parcelas": 2,
+  "juros_am_pct": "34.64",
+  "juros_aa_equivalente_pct": "3448.86",
+  "cet_aa_pct": "3621.21",
+  "fator_total": "0.5539",
+  "parcela_por_r1000": "776.95",
+  "total_por_r1000": "1553.90",
+  "iof_por_r1000": "8.72"
+ },
+ {
+  "parcelas": 3,
+  "juros_am_pct": "25.39",
+  "juros_aa_equivalente_pct": "1410.62",
+  "cet_aa_pct": "1482.58",
+  "fator_total": "0.5569",
+  "parcela_por_r1000": "518.97",
+  "total_por_r1000": "1556.90",
+  "iof_por_r1000": "11.18"
+ },
+ {
+  "parcelas": 4,
+  "juros_am_pct": "20.04",
+  "juros_aa_equivalente_pct": "795.18",
+  "cet_aa_pct": "837.48",
+  "fator_total": "0.5599",
+  "parcela_por_r1000": "389.98",
+  "total_por_r1000": "1559.90",
+  "iof_por_r1000": "13.64"
+ },
+ {
+  "parcelas": 5,
+  "juros_am_pct": "16.55",
+  "juros_aa_equivalente_pct": "528.27",
+  "cet_aa_pct": "558.16",
+  "fator_total": "0.5629",
+  "parcela_por_r1000": "312.58",
+  "total_por_r1000": "1562.90",
+  "iof_por_r1000": "16.10"
+ },
+ {
+  "parcelas": 6,
+  "juros_am_pct": "14.10",
+  "juros_aa_equivalente_pct": "386.89",
+  "cet_aa_pct": "409.99",
+  "fator_total": "0.5659",
+  "parcela_por_r1000": "260.98",
+  "total_por_r1000": "1565.90",
+  "iof_por_r1000": "18.56"
+ },
+ {
+  "parcelas": 7,
+  "juros_am_pct": "12.29",
+  "juros_aa_equivalente_pct": "301.88",
+  "cet_aa_pct": "320.64",
+  "fator_total": "0.5689",
+  "parcela_por_r1000": "224.13",
+  "total_por_r1000": "1568.90",
+  "iof_por_r1000": "21.02"
+ },
+ {
+  "parcelas": 8,
+  "juros_am_pct": "10.89",
+  "juros_aa_equivalente_pct": "245.71",
+  "cet_aa_pct": "261.83",
+  "fator_total": "0.5719",
+  "parcela_por_r1000": "196.49",
+  "total_por_r1000": "1571.90",
+  "iof_por_r1000": "23.48"
+ },
+ {
+  "parcelas": 9,
+  "juros_am_pct": "9.78",
+  "juros_aa_equivalente_pct": "206.39",
+  "cet_aa_pct": "220.59",
+  "fator_total": "0.5749",
+  "parcela_por_r1000": "174.99",
+  "total_por_r1000": "1574.90",
+  "iof_por_r1000": "25.94"
+ },
+ {
+  "parcelas": 10,
+  "juros_am_pct": "8.87",
+  "juros_aa_equivalente_pct": "177.27",
+  "cet_aa_pct": "190.26",
+  "fator_total": "0.5779",
+  "parcela_por_r1000": "157.79",
+  "total_por_r1000": "1577.90",
+  "iof_por_r1000": "28.40"
+ },
+ {
+  "parcelas": 11,
+  "juros_am_pct": "8.12",
+  "juros_aa_equivalente_pct": "155.20",
+  "cet_aa_pct": "167.14",
+  "fator_total": "0.5809",
+  "parcela_por_r1000": "143.72",
+  "total_por_r1000": "1580.90",
+  "iof_por_r1000": "30.86"
+ },
+ {
+  "parcelas": 12,
+  "juros_am_pct": "7.49",
+  "juros_aa_equivalente_pct": "137.91",
+  "cet_aa_pct": "148.97",
+  "fator_total": "0.5839",
+  "parcela_por_r1000": "131.99",
+  "total_por_r1000": "1583.90",
+  "iof_por_r1000": "33.32"
+ }
+]

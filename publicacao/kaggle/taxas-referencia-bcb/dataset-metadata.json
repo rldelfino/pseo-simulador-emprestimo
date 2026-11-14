@@ -1,0 +1,24 @@
+{
+  "title": "Taxas médias de juros do BCB: cheque especial, pessoal não consignado e rotativo",
+  "id": "SEU_USUARIO_KAGGLE/taxas-medias-credito-pessoa-fisica-bcb",
+  "subtitle": "Taxa média mensal das novas operações, % ao ano, séries SGS 20741, 20742 e 22022",
+  "description": "Taxa média de juros das novas operações de crédito com recursos livres, pessoas físicas, ponderada pelo valor das concessões, em % ao ano, série mensal, para cheque especial (SGS 20741), crédito pessoal não consignado (SGS 20742) e cartão de crédito rotativo (SGS 22022). Inclui a taxa ao mês equivalente, calculada por juros compostos.\n\nContém informações do Banco Central do Brasil, disponibilizadas por ele sob a licença ODbL 1.0 (https://opendatacommons.org/licenses/odbl/1-0/). Esta base derivada também é licenciada sob ODbL 1.0: você pode copiar, distribuir e adaptar, citando a fonte e mantendo a mesma licença.\nComo citar: Datalab Global (https://emprestimo.datalabglobal.com/dados-abertos). Atualizado toda semana.",
+  "licenses": [
+    {
+      "name": "ODbL-1.0"
+    }
+  ],
+  "keywords": [
+    "finance",
+    "brazil",
+    "banking",
+    "interest rates",
+    "central bank"
+  ],
+  "resources": [
+    {
+      "path": "taxas-referencia-bcb.csv",
+      "description": "codigo_serie; modalidade; mes_referencia; taxa_aa_pct; taxa_am_equivalente_pct; fonte_url"
+    }
+  ]
+}

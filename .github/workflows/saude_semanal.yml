@@ -23,5 +23,6 @@ jobs:
         run: >
           python verifica_saude.py
           --dominio https://emprestimo.datalabglobal.com
-          --min-urls 1 --max-urls 60
-          --paginas /
+          --min-urls 10 --max-urls 60
+          --chave-indexnow 1402751d110047b584ffbd74c6d00b6c
+          --paginas /,/como-funciona,/custo-cet-iof,/taxas-de-referencia,/dados-abertos,/metodologia

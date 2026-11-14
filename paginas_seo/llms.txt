@@ -7,6 +7,8 @@
 - Fonte dos números: Tabela 10 do parceiro (correspondente bancário), conferida toda semana pela API do próprio parceiro.
 - Conta: fator = 0,5479 + 0,003 x parcelas; parcela = valor x (1 + fator) / parcelas; IOF = valor x (0,0038 + 0,00246 x parcelas).
 - A aprovação depende de análise de crédito. A simulação não é proposta de crédito. A Datalab Global pode receber comissão do parceiro.
+- Dados abertos (CSV e JSON): https://emprestimo.datalabglobal.com/dados-abertos. Tabela 10 em CC BY 4.0; séries do Banco Central em ODbL 1.0.
+- Feed Atom: https://emprestimo.datalabglobal.com/feed.xml
 
 ## Páginas
 - https://emprestimo.datalabglobal.com/
@@ -18,6 +20,7 @@
 - https://emprestimo.datalabglobal.com/quando-nao-vale-a-pena
 - https://emprestimo.datalabglobal.com/metodologia
 - https://emprestimo.datalabglobal.com/sobre
+- https://emprestimo.datalabglobal.com/dados-abertos
 - https://emprestimo.datalabglobal.com/atualizacoes
 - https://emprestimo.datalabglobal.com/privacidade
 - https://emprestimo.datalabglobal.com/termos

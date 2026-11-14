@@ -1,0 +1,24 @@
+{
+  "title": "Pix no cartão de crédito: parcela, IOF, juros e CET (Brasil, Tabela 10)",
+  "id": "SEU_USUARIO_KAGGLE/pix-no-cartao-tabela-10-brasil",
+  "subtitle": "Custo do Pix no cartão de 2x a 12x para cada R$ 1.000 recebidos, conferido toda semana",
+  "description": "Condições do Pix no cartão de crédito segundo a Tabela 10 do parceiro (correspondente bancário), de 2 a 12 parcelas, para cada R$ 1.000 recebidos por Pix: fator total, parcela, total na fatura, IOF, juros ao mês, juros equivalentes ao ano e CET ao ano. Valor do Pix de R$ 300 a R$ 5.000. Os números são conferidos toda semana contra a API do próprio parceiro.\n\nLicença CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/deed.pt-br): você pode copiar, distribuir e adaptar, citando Datalab Global (https://emprestimo.datalabglobal.com/dados-abertos).\nComo citar: Datalab Global (https://emprestimo.datalabglobal.com/dados-abertos). Atualizado toda semana.",
+  "licenses": [
+    {
+      "name": "CC-BY-4.0"
+    }
+  ],
+  "keywords": [
+    "finance",
+    "brazil",
+    "credit card",
+    "interest rates",
+    "installments"
+  ],
+  "resources": [
+    {
+      "path": "pix-no-cartao-tabela-10.csv",
+      "description": "parcelas; juros_am_pct; juros_aa_equivalente_pct; cet_aa_pct; fator_total; parcela_por_r1000; total_por_r1000; iof_por_r1000"
+    }
+  ]
+}

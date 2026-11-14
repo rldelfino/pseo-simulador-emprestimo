@@ -41,10 +41,17 @@ jobs:
       - name: Testes (nada é publicado se o pytest sair diferente de 0)
         run: python -m pytest -q
 
+      - name: Gerar o pacote de publicação (Kaggle, Hugging Face, dados.gov.br)
+        run: python publicacao.py
+
       - name: Commit e push dos dados e das páginas
         run: |
           git config --global user.name "Robô Datalab"
           git config --global user.email "bot@datalabglobal.com"
-          git add dados paginas_seo
+          git add dados paginas_seo publicacao
           git commit -m "auto: atualização semanal das taxas do Banco Central e rebuild do site" || echo "Sem mudanças"
           git push
+
+      - name: Avisar o Bing (IndexNow) das páginas atualizadas
+        # Só envia se o site já estiver no ar; espera o deploy do push acima. Falha de rede não derruba o pipeline.
+        run: python indexnow.py --espera 240

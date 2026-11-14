@@ -4,6 +4,7 @@ Regras: nenhum número que não venha da Tabela 10 (calculo.py) ou de uma fonte 
 sem prometer aprovação. Os números dos textos são calculados aqui a partir de calculo.simular, para não divergirem do simulador.
 """
 import calculo
+import dados_abertos as da
 import taxas_referencia as tr
 
 GITHUB = "https://github.com/rldelfino/pseo-simulador-emprestimo"
@@ -24,11 +25,11 @@ def pct(v):
 # ---------- blocos de HTML ----------
 C_H2 = "mt-10 text-2xl font-bold text-white"
 C_H3 = "mt-6 text-lg font-bold text-white"
-C_P = "mt-3 leading-relaxed text-slate-300"
-C_UL = "mt-3 list-disc space-y-2 pl-6 leading-relaxed text-slate-300"
-C_OL = "mt-3 list-decimal space-y-2 pl-6 leading-relaxed text-slate-300"
+C_P = "mt-3 leading-relaxed text-slate-300 break-words"
+C_UL = "mt-3 list-disc space-y-2 pl-6 leading-relaxed text-slate-300 break-words"
+C_OL = "mt-3 list-decimal space-y-2 pl-6 leading-relaxed text-slate-300 break-words"
 C_A = "text-violet-300 underline hover:text-white"
-C_AVISO = "mt-6 rounded-xl border border-amber-400/40 bg-amber-400/10 p-4 text-sm leading-relaxed text-amber-100"
+C_AVISO = "mt-6 rounded-xl border border-amber-400/40 bg-amber-400/10 p-4 text-sm leading-relaxed text-amber-100 break-words"
 C_TAB = "w-full min-w-[34rem] border-collapse text-left text-sm"
 C_TH = "border-b border-white/15 px-3 py-2 font-bold text-white"
 C_TD = "border-b border-white/10 px-3 py-2 text-slate-300"
@@ -412,7 +413,7 @@ def corpo_metodologia(ctx):
         + h2("Taxas de referência do Banco Central")
         + p("As taxas de outros créditos vêm das séries 20742 (crédito pessoal não consignado), 20741 (cheque especial) e 22022 (cartão de crédito rotativo) do SGS, "
             "todas de pessoas físicas, mensais e em percentual ao ano. Os códigos foram conferidos no catálogo de dados abertos do Banco Central. "
-            "Um robô as atualiza toda segunda-feira. Detalhes e números em " + a("/taxas-de-referencia", "Taxas de referência") + ".")
+            "Um robô as atualiza toda segunda-feira. Detalhes e números em " + a("/taxas-de-referencia", "Taxas de referência") + ". Os dados estão em " + a("/dados-abertos", "Dados abertos") + ".")
         + h2("Medição de uso")
         + p("Usamos o Umami, que não usa cookies. Ele registra visitas e dois eventos: quando você mexe na simulação e quando clica em Ver minha proposta, "
             "com valor e prazo. Não registramos CPF, telefone nem dados pessoais. Detalhes em " + a("/privacidade", "Privacidade") + ".")
@@ -456,6 +457,7 @@ def corpo_atualizacoes(ctx):
 
 
 ATUALIZACOES = [
+    ("14/11/2026", "Dados abertos (Tabela 10 do Pix no cartão em CC BY 4.0 e séries do Banco Central em ODbL 1.0), feed Atom e aviso ao Bing por IndexNow."),
     ("14/11/2026", "Taxas médias do Banco Central (crédito pessoal não consignado, cheque especial e cartão rotativo) com mês de referência e link de cada série, e comparação com o Pix no cartão."),
     ("14/11/2026", "Guias com conteúdo próprio (como funciona, golpes, CET e IOF, comparação, quando não vale a pena), metodologia, página Sobre, privacidade e termos."),
     ("13/11/2026", "Conta do simulador conferida com a API do parceiro: R$ 1.000 em 2x a 12x, mesma Tabela 10, limites de R$ 300 a R$ 5.000 e 12 parcelas. Nenhuma diferença."),
@@ -465,6 +467,44 @@ ATUALIZACOES = [
 
 def _secoes(secoes):
     return "".join(h2(t) + "".join(p(x) for x in ps) for t, ps in secoes)
+
+
+
+def corpo_dados_abertos(ctx):
+    saida = (
+        p("Os números deste simulador estão disponíveis para baixar, em CSV e JSON, para quem quiser conferir, citar ou usar em outra análise. "
+          "São dois conjuntos, e cada um segue a licença que a sua fonte permite.")
+    )
+    for c in da.CONJUNTOS:
+        lic = c["licenca"]
+        arquivos = [
+            [a("/dados/" + c["nome"] + ".csv", c["nome"] + ".csv"), "CSV, UTF-8"],
+            [a("/dados/" + c["nome"] + ".json", c["nome"] + ".json"), "JSON"],
+            [a("/dados/datapackage-" + c["nome"] + ".json", "datapackage-" + c["nome"] + ".json"), "Descrição do conjunto (Data Package)"],
+        ]
+        saida += (
+            h2(c["titulo"])
+            + p(c["descricao"])
+            + tabela(["Arquivo", "Formato"], arquivos, "Atualizado toda semana. Página atualizada em " + ctx["atualizado"] + ".")
+            + h3("Licença: " + lic["titulo"])
+            + p(da.texto_licenca(c).replace(lic["url"], a(lic["url"], lic["url"])))
+            + h3("Colunas")
+            + ul(["<code>" + n + "</code>: " + d for n, _t, d in c["colunas"]])
+        )
+    saida += (
+        h2("Como citar")
+        + p("Cite como: " + da.CITACAO + ", com a data de acesso. Para o conjunto do Banco Central, cite também o Banco Central do Brasil como fonte original.")
+        + h2("Por que a licença do conjunto do Banco Central é diferente")
+        + p("O Banco Central publica essas séries sob a licença ODbL, que exige que bases derivadas mantenham a mesma licença. Por isso esse conjunto não é CC BY. "
+            "A tabela do Pix no cartão é nossa compilação das condições do parceiro e segue a CC BY 4.0.")
+        + h2("Limites")
+        + ul([
+            "As taxas do Banco Central são médias de mercado das operações novas, não ofertas. A taxa que você receber pode ser maior ou menor.",
+            "A Tabela 10 é do parceiro e pode mudar; a conferência com a API dele é semanal (veja " + a("/metodologia", "Metodologia") + ").",
+            "Para acompanhar as atualizações, use o " + a("/feed.xml", "feed Atom") + " ou a página " + a("/atualizacoes", "Atualizações") + ".",
+        ])
+    )
+    return saida
 
 
 def corpo_privacidade(ctx):
@@ -554,6 +594,10 @@ PAGINAS = [
          h1="Sobre a Datalab Global e este simulador",
          desc="Quem mantém o simulador, quem realiza a operação (correspondente bancário), como a Datalab Global ganha com comissão e como falar com a gente.",
          corpo=corpo_sobre),
+    dict(slug="dados-abertos", menu=None, title="Dados abertos: Pix no cartão e taxas do Banco Central (CSV e JSON)",
+         h1="Dados abertos: Pix no cartão e taxas do Banco Central",
+         desc="Baixe em CSV e JSON a Tabela 10 do Pix no cartão (CC BY 4.0) e as taxas médias do Banco Central (ODbL 1.0), com colunas, licença e como citar.",
+         corpo=corpo_dados_abertos),
     dict(slug="atualizacoes", menu=None, title="Atualizações do simulador do Pix no cartão",
          h1="Atualizações do simulador do Pix no cartão",
          desc="Registro de conferências da tabela do parceiro, correções e novas páginas do simulador.",
