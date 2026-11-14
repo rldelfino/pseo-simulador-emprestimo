@@ -21,6 +21,7 @@ import conteudo
 import dados_abertos
 import feed_atom
 import indexnow
+import layout
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 SAIDA_PADRAO = os.path.join(AQUI, "paginas_seo")
@@ -72,6 +73,12 @@ HEADERS = """/*
 
 /og-image.png
   Cache-Control: public, max-age=86400, must-revalidate
+
+/logo-full.png
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
 """
 
 CALCULO_JS = """/* GERADO por gerador_emprestimo.py a partir de dados/pix-tabela-esperada.json. Não edite à mão.
@@ -104,145 +111,6 @@ CALCULO_JS = """/* GERADO por gerador_emprestimo.py a partir de dados/pix-tabela
   root.DatalabPix = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);
-"""
-
-LAYOUT = """<!doctype html>
-<html lang="pt-BR">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>@@TITLE@@</title>
-<meta name="description" content="@@DESC@@">
-<meta name="robots" content="@@ROBOTS@@">
-<link rel="canonical" href="@@CANONICAL@@">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta property="og:type" content="@@OGTYPE@@">
-<meta property="og:locale" content="pt_BR">
-<meta property="og:site_name" content="Datalab Global">
-<meta property="og:title" content="@@TITLE@@">
-<meta property="og:description" content="@@DESC@@">
-<meta property="og:url" content="@@CANONICAL@@">
-<meta property="og:image" content="@@DOMINIO@@/og-image.png">
-<meta name="theme-color" content="#0A192F">
-<link rel="stylesheet" href="/styles.css">
-<link rel="alternate" type="application/atom+xml" title="Pix no cartão — Datalab Global" href="/feed.xml">
-@@JSONLD@@<script defer src="https://cloud.umami.is/script.js" data-website-id="@@UMAMI_ID@@"></script>
-</head>
-<body>
-<a href="#conteudo" class="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:rounded focus:bg-white focus:px-3 focus:py-2 focus:text-slate-900">Ir para o conteúdo</a>
-<header class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-5">
-  <a href="/" class="flex items-center gap-2" aria-label="Pix no cartão — Datalab Global, página inicial">
-    <img src="/logo-header.webp" alt="Datalab Global" width="168" height="40" class="h-9 w-auto">
-  </a>
-  <nav aria-label="Principal" class="flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-300">@@NAV@@</nav>
-</header>
-
-<main id="conteudo" class="mx-auto max-w-5xl px-4 pb-16">
-@@MAIN@@
-</main>
-
-<footer class="border-t border-white/10 bg-slate-950/60">
-  <div class="mx-auto max-w-5xl px-4 py-8 text-sm text-slate-400">
-    <nav aria-label="Rodapé" class="flex flex-wrap gap-x-5 gap-y-2">@@FOOTNAV@@</nav>
-    <p class="mt-4">Atualizado em @@ATUALIZADO@@. Condições da Tabela 10 do parceiro, conferidas automaticamente toda semana.</p>
-    <p class="mt-2">Datalab Global é marca de @@RAZAO@@, CNPJ @@CNPJ@@. Contato: <a class="underline" href="mailto:@@EMAIL@@">@@EMAIL@@</a>. <a class="underline" href="@@HUB@@/">Outros simuladores</a>.</p>
-    <p class="mt-2">A Datalab Global pode receber comissão do parceiro pelas contratações feitas a partir deste site. Não somos banco e não concedemos crédito.</p>
-    <p class="mt-2 text-xs">A simulação não é proposta de crédito. Crédito sujeito a análise e aprovação do parceiro, sem garantia de aprovação.</p>
-  </div>
-</footer>
-@@SCRIPTS@@</body>
-</html>
-"""
-
-HOME_MAIN = """  <section class="pt-4 pb-8">
-    <h1 class="text-3xl font-extrabold leading-tight sm:text-4xl">Pix no cartão de crédito: veja o custo real antes de contratar</h1>
-    <p class="mt-3 max-w-3xl text-slate-300">Você recebe um Pix na conta e paga em parcelas na fatura do cartão. É crédito caro: aqui o custo aparece primeiro, antes de qualquer botão.</p>
-  </section>
-
-  <section id="simulador" aria-labelledby="titulo-simulador" class="painel rounded-3xl p-5 sm:p-8">
-    <h2 id="titulo-simulador" class="text-xs font-bold uppercase tracking-widest text-slate-400">Simulação</h2>
-    <div class="mt-5 grid gap-6 lg:grid-cols-2">
-      <div class="flex flex-col gap-4">
-        <div role="tablist" class="grid grid-cols-2 gap-1 rounded-2xl border border-white/10 bg-slate-950/60 p-1.5">
-          <button id="btn-modo-valor" type="button" role="tab" aria-selected="true" class="rounded-xl px-2 py-3 text-sm font-bold text-slate-300 aria-selected:bg-violet-700 aria-selected:text-white">Quero um valor<span class="block text-xs font-normal opacity-80">quanto cai na conta</span></button>
-          <button id="btn-modo-limite" type="button" role="tab" aria-selected="false" class="rounded-xl px-2 py-3 text-sm font-bold text-slate-300 aria-selected:bg-violet-700 aria-selected:text-white">Usar meu limite<span class="block text-xs font-normal opacity-80">quanto tenho no cartão</span></button>
-        </div>
-
-        <div class="rounded-2xl border border-white/10 bg-slate-900/40 p-5">
-          <div class="flex items-center justify-between gap-3">
-            <label id="rotulo-valor" for="campo-valor" class="text-xs font-bold uppercase tracking-widest text-slate-400">Valor que você quer no Pix</label>
-            <div class="flex items-baseline gap-1"><span class="font-bold text-white">R$</span>
-              <input id="campo-valor" type="number" inputmode="numeric" min="300" max="5000" step="50" value="1000" class="num w-28 bg-transparent text-right text-2xl font-bold text-white">
-            </div>
-          </div>
-          <input id="range-valor" aria-labelledby="rotulo-valor" type="range" min="300" max="5000" step="50" value="1000" class="mt-4">
-          <div class="mt-2 flex justify-between text-xs text-slate-400"><span id="min-valor">R$ 300,00</span><span id="max-valor">R$ 5.000,00</span></div>
-        </div>
-
-        <div class="rounded-2xl border border-white/10 bg-slate-900/40 p-5">
-          <div class="flex items-center justify-between">
-            <label for="range-parcelas" class="text-xs font-bold uppercase tracking-widest text-slate-400">Parcelas na fatura</label>
-            <span id="txt-parcelas" class="num text-2xl font-extrabold text-white">12x</span>
-          </div>
-          <input id="range-parcelas" type="range" min="2" max="12" step="1" value="12" class="mt-4">
-          <div class="mt-2 flex justify-between text-xs text-slate-400"><span>2x</span><span>12x</span></div>
-        </div>
-      </div>
-
-      <div aria-live="polite" class="flex flex-col gap-5 rounded-2xl border border-white/10 bg-slate-950/80 p-6">
-        <div>
-          <div class="text-xs font-bold uppercase tracking-widest text-slate-400">Você recebe via Pix</div>
-          <div id="r-pix" class="num mt-1 text-4xl font-extrabold text-violet-400">R$ 1.000,00</div>
-        </div>
-        <div>
-          <div class="text-xs font-bold uppercase tracking-widest text-slate-400">E paga na fatura do cartão</div>
-          <div id="r-parcelas" class="num mt-1 text-2xl font-extrabold text-white">12 parcelas</div>
-        </div>
-        <div class="rounded-xl border border-amber-400/40 bg-amber-400/10 p-4 text-sm text-amber-100">
-          <p id="r-custo-texto" class="font-semibold"></p>
-          <p class="mt-1 text-amber-200/90">Custo efetivo total (CET): <strong id="r-cet" class="num"></strong>. Juros: <strong id="r-juros" class="num"></strong>.</p>
-        </div>
-        <dl class="grid grid-cols-2 gap-4 border-t border-white/10 pt-4 text-sm">
-          <div><dt class="text-xs font-bold uppercase tracking-widest text-slate-400">Total na fatura</dt><dd id="r-total" class="num mt-1 text-lg font-bold text-white"></dd></div>
-          <div><dt class="text-xs font-bold uppercase tracking-widest text-slate-400">IOF (já incluso)</dt><dd id="r-iof" class="num mt-1 text-lg font-bold text-white"></dd></div>
-        </dl>
-        <p id="aviso-minimo" class="hidden text-sm text-amber-300">Com esse limite, o Pix ficaria abaixo do mínimo de R$ 300. Aumente o limite ou diminua as parcelas.</p>
-        <button id="cta-pix" type="button" class="mt-auto w-full rounded-xl bg-violet-400 px-4 py-4 text-base font-extrabold text-slate-950">Ver minha proposta</button>
-        <p id="aviso-celular" class="hidden text-center text-xs text-slate-400">A contratação é feita pelo celular: na próxima tela do parceiro, aponte a câmera para o QR Code e a proposta abre já preenchida. Tenha em mãos o RG ou a CNH original.</p>
-        <p class="text-center text-xs text-slate-400">Você não digita dado pessoal aqui. A contratação acontece no ambiente do parceiro e depende de análise de crédito.</p>
-      </div>
-    </div>
-
-    <div class="mt-6 rounded-2xl border border-violet-400/25 bg-violet-400/10 p-5">
-      <h3 class="text-xs font-bold uppercase tracking-widest text-white">Compare os prazos para o mesmo valor</h3>
-      <div id="comparativo" class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4"></div>
-      <p id="txt-comparativo" class="mt-3 text-sm text-slate-300"></p>
-    </div>
-  </section>
-
-  <section class="mt-10 grid gap-6 sm:grid-cols-2">
-    <div class="painel rounded-2xl p-6">
-      <h2 class="text-lg font-bold">Quanto custa, de verdade</h2>
-      <p class="mt-2 text-sm text-slate-300">O CET vai de 34,64% ao mês (2x) a 7,49% ao mês (12x). Ao ano, de 3.621% a 148,97%. Por isso o simulador mostra quanto você paga a mais antes do botão. Se você consegue outra forma de crédito mais barata, ela costuma valer mais a pena. <a class="text-violet-300 underline" href="/custo-cet-iof">Veja a tabela completa</a>.</p>
-      <p class="mt-2 text-sm text-slate-300">@@COMPARA@@</p>
-    </div>
-    <div class="painel rounded-2xl p-6">
-      <h2 class="text-lg font-bold">Quem oferece</h2>
-      <p class="mt-2 text-sm text-slate-300">A oferta é de um correspondente bancário parceiro. O contrato é uma Cédula de Crédito Bancário (CCB), e a aprovação depende de análise de crédito: não há garantia de aprovação nem de valor. A Datalab Global pode receber comissão do parceiro. <a class="text-violet-300 underline" href="/sobre">Saiba mais</a>.</p>
-    </div>
-  </section>
-
-  <section class="mt-10" aria-labelledby="guias">
-    <h2 id="guias" class="text-2xl font-bold">Entenda antes de decidir</h2>
-    <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">@@CARTOES@@</div>
-  </section>
-
-  <section class="mt-12" aria-labelledby="duvidas">
-    <h2 id="duvidas" class="text-2xl font-bold">Perguntas frequentes</h2>
-    <div class="mt-4 flex max-w-3xl flex-col gap-3">@@FAQ@@</div>
-  </section>
 """
 
 HOME_SCRIPTS = '<script src="/calculo.js"></script>\n<script src="/simulador.js"></script>\n'
@@ -302,21 +170,43 @@ def _ld(dados):
     return '<script type="application/ld+json">' + json.dumps(dados, ensure_ascii=False) + "</script>\n"
 
 
-def _nav(paginas):
-    return "".join('<a class="hover:text-white" href="/' + pg["slug"] + '">' + pg["menu"] + "</a>" for pg in paginas if pg.get("menu"))
+# Navegação: poucos links no cabeçalho, tudo no menu do celular e no rodapé (em colunas).
+DESTAQUES = ["como-funciona", "custo-cet-iof", "e-seguro-golpes", "taxas-de-referencia"]
+ENTENDA = ["como-funciona", "e-seguro-golpes", "custo-cet-iof", "pix-no-cartao-ou-outro-credito", "quando-nao-vale-a-pena"]
+TRANSPARENCIA = ["taxas-de-referencia", "metodologia", "dados-abertos", "atualizacoes", "sobre"]
+LEGAL = ["privacidade", "termos"]
+ROTULOS = {"atualizacoes": "Atualizações", "dados-abertos": "Dados abertos", "privacidade": "Privacidade", "termos": "Termos de uso",
+           "pix-no-cartao-ou-outro-credito": "Comparar com outros créditos", "taxas-de-referencia": "Taxas do Banco Central",
+           "custo-cet-iof": "CET e IOF", "e-seguro-golpes": "É seguro? Golpes", "quando-nao-vale-a-pena": "Quando não vale a pena"}
 
 
-def _footnav():
-    links = [("/", "Simulador")] + [("/" + pg["slug"], pg.get("menu") or pg["h1"]) for pg in conteudo.PAGINAS]
-    rotulos = {"/atualizacoes": "Atualizações", "/dados-abertos": "Dados abertos", "/privacidade": "Privacidade", "/termos": "Termos de uso"}
-    return "".join('<a class="underline" href="' + h + '">' + rotulos.get(h, r) + "</a>" for h, r in links)
+def _pg(slug):
+    return next(pg for pg in conteudo.PAGINAS if pg["slug"] == slug)
+
+
+def _rotulo(slug):
+    return ROTULOS.get(slug) or _pg(slug).get("menu") or _pg(slug)["h1"]
+
+
+def _nav_desktop():
+    return "".join('<a class="hover:text-white" href="/' + s + '">' + (_pg(s).get("menu") or _rotulo(s)) + "</a>" for s in DESTAQUES)
+
+
+def _nav_celular():
+    links = ENTENDA + [s for s in TRANSPARENCIA if s not in ENTENDA]
+    return "".join('<a class="rounded-lg px-3 py-2 hover:bg-white/5" href="/' + s + '">' + _rotulo(s) + "</a>" for s in links)
+
+
+def _lista_rodape(slugs, extra=""):
+    return "".join('<li><a class="hover:text-white" href="/' + s + '">' + _rotulo(s) + "</a></li>" for s in slugs) + extra
 
 
 def _faq_html():
     saida = ""
     for pergunta, resposta in conteudo.FAQ:
-        saida += ('<details class="rounded-xl border border-white/10 bg-slate-900/40 p-4"><summary class="cursor-pointer font-bold text-white">'
-                  + pergunta + '</summary><p class="mt-2 text-sm leading-relaxed text-slate-300">' + resposta + "</p></details>")
+        saida += ('<details class="faq rounded-2xl border border-white/10 bg-slate-900/40 p-5"><summary class="flex items-center justify-between gap-4 font-semibold text-white">'
+                  + pergunta + '<span class="mais text-xl text-slate-400" aria-hidden="true">+</span></summary><p class="mt-3 text-sm leading-relaxed text-slate-300">'
+                  + resposta + "</p></details>")
     return saida
 
 
@@ -325,8 +215,9 @@ def _cartoes_html():
     for pg in conteudo.PAGINAS:
         if not pg.get("menu"):
             continue
-        saida += ('<a href="/' + pg["slug"] + '" class="painel block rounded-2xl p-5 hover:border-violet-400/60"><span class="font-bold text-white">'
-                  + pg["menu"] + '</span><span class="mt-2 block text-sm text-slate-300">' + pg["desc"] + "</span></a>")
+        saida += ('<a href="/' + pg["slug"] + '" class="glass-panel block rounded-2xl p-6 hover:border-emerald-400/40"><span class="font-serif text-lg font-bold text-white">'
+                  + pg["menu"] + '</span><span class="mt-2 block text-sm leading-relaxed text-slate-400">' + pg["desc"]
+                  + '</span><span class="mt-4 block text-xs font-bold uppercase tracking-widest text-emerald-400">Ler &rarr;</span></a>')
     return saida
 
 
@@ -350,37 +241,33 @@ def _pagina_home(valores, hoje):
         {"@type": "WebSite", "@id": DOMINIO + "/#site", "url": DOMINIO + "/", "name": "Pix no cartão — Datalab Global", "inLanguage": "pt-BR",
          "publisher": {"@id": DOMINIO + "/#organizacao"}},
     ]}
-    main = _preencher(HOME_MAIN, {"CARTOES": _cartoes_html(), "FAQ": _faq_html(), "COMPARA": conteudo.frase_home()})
-    return _preencher(LAYOUT, dict(valores, TITLE=HOME_TITLE, DESC=HOME_DESC, CANONICAL=DOMINIO + "/", ROBOTS="index,follow,max-image-preview:large",
-                                   OGTYPE="website", JSONLD=_ld(site) + _ld(faq), MAIN=main, SCRIPTS=HOME_SCRIPTS))
+    main = _preencher(layout.HOME_MAIN, dict(valores, ROTULO=layout.ROTULO, CARTOES=_cartoes_html(), FAQ=_faq_html(), COMPARA=conteudo.frase_home()))
+    return _preencher(layout.LAYOUT, dict(valores, TITLE=HOME_TITLE, DESC=HOME_DESC, CANONICAL=DOMINIO + "/", ROBOTS="index,follow,max-image-preview:large",
+                                          OGTYPE="website", JSONLD=_ld(site) + _ld(faq), MAIN=main, SCRIPTS=HOME_SCRIPTS))
 
 
 def _pagina_guia(pg, valores, hoje, ctx):
     canonical = DOMINIO + "/" + pg["slug"]
     corpo = pg["corpo"](ctx)
     guia = pg.get("guia", True)
+    rotulo_pagina = pg.get("menu") or _rotulo(pg["slug"])
+    cabecalho = _preencher(layout.GUIA_CABECALHO, dict(valores, ROTULO_PAGINA=rotulo_pagina, H1=pg["h1"]))
     if guia:
         outros = [x for x in conteudo.PAGINAS if x.get("menu") and x["slug"] != pg["slug"]]
         i = next((k for k, x in enumerate(outros) if conteudo.PAGINAS.index(x) > conteudo.PAGINAS.index(pg)), 0)
         relacionados = (outros[i:] + outros[:i])[:3]
-        rel = "".join('<li><a class="text-violet-300 underline hover:text-white" href="/' + x["slug"] + '">' + x["h1"] + "</a></li>" for x in relacionados)
-        fecho = ('<aside class="painel mt-12 rounded-2xl p-6"><h2 class="text-lg font-bold">Simule com o seu valor</h2>'
-                 '<p class="mt-2 text-sm text-slate-300">Veja parcela, total na fatura, IOF e CET antes de decidir.</p>'
-                 '<p class="mt-4"><a href="/#simulador" class="inline-block rounded-xl bg-violet-400 px-5 py-3 font-extrabold text-slate-950">Abrir o simulador</a></p></aside>\n'
-                 '<section class="mt-10" aria-labelledby="veja-tambem"><h2 id="veja-tambem" class="text-lg font-bold">Veja também</h2>'
-                 '<ul class="mt-3 list-disc space-y-2 pl-6 text-slate-300">' + rel + "</ul></section>\n")
+        rel = "".join('<li><a class="glass-panel block rounded-2xl p-4 text-sm font-semibold leading-snug text-white hover:border-emerald-400/40" href="/'
+                      + x["slug"] + '">' + x["h1"] + "</a></li>" for x in relacionados)
+        fecho = _preencher(layout.GUIA_FECHO, {"RELACIONADOS": rel})
     else:
         fecho = ""
-    cabecalho = ('<nav aria-label="Você está em" class="pt-2 text-xs text-slate-400"><a class="underline" href="/">Início</a> › ' + pg["h1"] + "</nav>\n"
-                 '<article class="max-w-3xl pb-4"><h1 class="mt-4 text-3xl font-extrabold leading-tight sm:text-4xl">' + pg["h1"] + "</h1>\n"
-                 '<p class="mt-2 text-xs text-slate-400">Atualizado em ' + ctx["atualizado"] + " · " + RAZAO_SOCIAL + "</p>\n")
-    main = cabecalho + corpo + fecho + "</article>"
+    main = cabecalho + corpo + layout.GUIA_MEIO + fecho + "</article>"
     artigo = {"@context": "https://schema.org", "@type": "Article", "headline": pg["h1"], "description": pg["desc"], "inLanguage": "pt-BR",
               "dateModified": hoje.isoformat(), "mainEntityOfPage": canonical,
               "author": {"@type": "Organization", "name": "Datalab Global"}, "publisher": _organizacao()}
     ld = _ld(artigo) if guia else ""
-    return _preencher(LAYOUT, dict(valores, TITLE=pg["title"], DESC=pg["desc"], CANONICAL=canonical, ROBOTS="index,follow,max-image-preview:large",
-                                   OGTYPE="article" if guia else "website", JSONLD=ld, MAIN=main, SCRIPTS=""))
+    return _preencher(layout.LAYOUT, dict(valores, TITLE=pg["title"], DESC=pg["desc"], CANONICAL=canonical, ROBOTS="index,follow,max-image-preview:large",
+                                          OGTYPE="article" if guia else "website", JSONLD=ld, MAIN=main, SCRIPTS=""))
 
 
 def gerar_site(saida=SAIDA_PADRAO, hoje=None):
@@ -389,7 +276,9 @@ def gerar_site(saida=SAIDA_PADRAO, hoje=None):
     os.makedirs(saida, exist_ok=True)
     valores = {
         "DOMINIO": DOMINIO, "HUB": HUB, "UMAMI_ID": UMAMI_ID, "RAZAO": RAZAO_SOCIAL, "CNPJ": CNPJ, "EMAIL": EMAIL,
-        "ATUALIZADO": atualizado, "NAV": _nav(conteudo.PAGINAS), "FOOTNAV": _footnav(),
+        "ATUALIZADO": atualizado, "NAV": _nav_desktop(), "NAVMOBILE": _nav_celular(),
+        "FOOT_ENTENDA": _lista_rodape(ENTENDA), "FOOT_LEGAL": _lista_rodape(LEGAL),
+        "FOOT_TRANSP": _lista_rodape(TRANSPARENCIA, '<li><a class="hover:text-white" href="/feed.xml">Feed Atom</a></li>'),
     }
     ctx = _ctx(hoje)
 
