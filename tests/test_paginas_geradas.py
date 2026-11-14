@@ -50,7 +50,8 @@ def test_csp_libera_umami_e_parceiro_e_nada_a_mais(site):
 
 def test_html_sem_script_ou_estilo_inline(site):
     html = ler(site, "index.html")
-    assert not re.search(r"<script(?![^>]*\bsrc=)[^>]*>", html)
+    # dados estruturados (application/ld+json) não executam e não são bloqueados pela CSP
+    assert not re.search(r'<script(?![^>]*\bsrc=)(?![^>]*application/ld\+json)[^>]*>', html)
     assert " style=" not in html and "<style" not in html
 
 
