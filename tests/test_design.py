@@ -118,3 +118,14 @@ def test_css_tem_versao_no_endereco_e_bate_com_o_arquivo(site):
         html = ler(site, nome)
         assert 'href="/styles.css?v=' + esperado + '"' in html, nome
         assert 'href="/styles.css"' not in html, nome
+
+
+def test_scripts_tem_versao_no_endereco_e_bate_com_o_conteudo(site):
+    """O Cloudflare guarda .js na borda por horas: sem ?v=, o HTML novo podia receber o JS antigo (aconteceu no deploy do redesign)."""
+    html = ler(site, "index.html")
+    assert 'src="/calculo.js?v=' + g.versao_calculo_js() + '"' in html
+    assert 'src="/simulador.js?v=' + g.versao_simulador_js() + '"' in html
+    assert 'src="/simulador.js"' not in html and 'src="/calculo.js"' not in html
+    assert g.versao_simulador_js() != g.versao_calculo_js()
+    # o conteúdo servido é o do src (o gerador copia o arquivo sem alterar)
+    assert (site / "simulador.js").read_bytes() == open(os.path.join(RAIZ, "src", "simulador.js"), "rb").read()

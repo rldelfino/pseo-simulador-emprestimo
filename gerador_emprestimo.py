@@ -114,7 +114,6 @@ CALCULO_JS = """/* GERADO por gerador_emprestimo.py a partir de dados/pix-tabela
 })(typeof window !== 'undefined' ? window : globalThis);
 """
 
-HOME_SCRIPTS = '<script src="/calculo.js"></script>\n<script src="/simulador.js"></script>\n'
 
 NOT_FOUND = """<!doctype html>
 <html lang="pt-BR">
@@ -161,6 +160,26 @@ def _preencher(texto, valores):
 def gerar_calculo_js():
     tabela = json.dumps(calculo.TABELA, ensure_ascii=False, sort_keys=True)
     return _preencher(CALCULO_JS, {"TABELA": tabela, "PIX_MIN": str(calculo.PIX_MIN)})
+
+
+def _resumo(dados):
+    return hashlib.sha256(dados).hexdigest()[:10]
+
+
+def versao_simulador_js():
+    with open(os.path.join(AQUI, "src", "simulador.js"), "rb") as f:
+        return _resumo(f.read())
+
+
+def versao_calculo_js():
+    return _resumo(gerar_calculo_js().encode("utf-8"))
+
+
+def home_scripts():
+    """Os scripts também têm a versão no endereço: o Cloudflare guarda .js na borda por horas e ignora o max-age do _headers; com ?v=<resumo>
+    o endereço muda junto com o conteúdo e ninguém recebe HTML novo com JS velho."""
+    return ('<script src="/calculo.js?v=' + versao_calculo_js() + '"></script>\n'
+            '<script src="/simulador.js?v=' + versao_simulador_js() + '"></script>\n')
 
 
 def versao_css():
@@ -254,7 +273,7 @@ def _pagina_home(valores, hoje):
     ]}
     main = _preencher(layout.HOME_MAIN, dict(valores, ROTULO=layout.ROTULO, CARTOES=_cartoes_html(), FAQ=_faq_html(), COMPARA=conteudo.frase_home()))
     return _preencher(layout.LAYOUT, dict(valores, TITLE=HOME_TITLE, DESC=HOME_DESC, CANONICAL=DOMINIO + "/", ROBOTS="index,follow,max-image-preview:large",
-                                          OGTYPE="website", JSONLD=_ld(site) + _ld(faq), MAIN=main, SCRIPTS=HOME_SCRIPTS))
+                                          OGTYPE="website", JSONLD=_ld(site) + _ld(faq), MAIN=main, SCRIPTS=home_scripts()))
 
 
 def _pagina_guia(pg, valores, hoje, ctx):
