@@ -10,6 +10,13 @@
   <entry>
     <title>Atualização de 14/11/2026</title>
     <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:atualizacao-2026-11-14-6</id>
+    <updated>2026-11-14T00:00:00Z</updated>
+    <summary type="text">Correção: removemos a citação da Resolução CMN nº 3.954/2011, que foi revogada (o texto consolidado do Banco Central aponta a Resolução BCB nº 277/2022). Os textos agora falam em normas do Banco Central e do CMN sobre correspondentes.</summary>
+  </entry>
+  <entry>
+    <title>Atualização de 14/11/2026</title>
+    <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>
     <id>tag:emprestimo.datalabglobal.com,2026:atualizacao-2026-11-14-5</id>
     <updated>2026-11-14T00:00:00Z</updated>
     <summary type="text">Dados abertos (Tabela 10 do Pix no cartão em CC BY 4.0 e séries do Banco Central em ODbL 1.0), feed Atom e aviso ao Bing por IndexNow.</summary>

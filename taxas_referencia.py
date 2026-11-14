@@ -18,9 +18,12 @@ PREFIXO_TITULO = "Taxa média de juros das operações de crédito com recursos 
 
 # códigos conferidos no catálogo oficial do BCB em 14/11/2026
 SERIES = [
-    dict(codigo=20742, chave="pessoal-nao-consignado", nome="Crédito pessoal não consignado", titulo_bcb=PREFIXO_TITULO + "Crédito pessoal não consignado"),
-    dict(codigo=20741, chave="cheque-especial", nome="Cheque especial", titulo_bcb=PREFIXO_TITULO + "Cheque especial"),
-    dict(codigo=22022, chave="cartao-rotativo", nome="Cartão de crédito rotativo", titulo_bcb=PREFIXO_TITULO + "Cartão de crédito rotativo"),
+    dict(codigo=20742, chave="pessoal-nao-consignado", nome="Crédito pessoal não consignado", titulo_bcb=PREFIXO_TITULO + "Crédito pessoal não consignado",
+         pagina="20742-taxa-media-de-juros-das-operacoes-de-credito-com-recursos-livres---pessoas-fisicas---credito-"),
+    dict(codigo=20741, chave="cheque-especial", nome="Cheque especial", titulo_bcb=PREFIXO_TITULO + "Cheque especial",
+         pagina="20741-taxa-media-de-juros-das-operacoes-de-credito-com-recursos-livres---pessoas-fisicas---cheque-e"),
+    dict(codigo=22022, chave="cartao-rotativo", nome="Cartão de crédito rotativo", titulo_bcb=PREFIXO_TITULO + "Cartão de crédito rotativo",
+         pagina="22022-taxa-media-de-juros-das-operacoes-de-credito-com-recursos-livres---pessoas-fisicas---cartao-d"),
 ]
 LIMITE_PLAUSIVEL_AA = (10.0, 1500.0)  # protege contra série errada: os valores reais ficam entre ~100 e ~500 % ao ano
 
@@ -31,8 +34,10 @@ def url_json(codigo):
     return "https://api.bcb.gov.br/dados/serie/bcdata.sgs.%d/dados?formato=json" % codigo
 
 
-def url_grafico(codigo):
-    return "https://www3.bcb.gov.br/sgspub/consultarvalores/consultarValoresSeries.do?method=consultarGraficoPorId&hdOidSeriesSelecionadas=%d" % codigo
+def url_catalogo(codigo):
+    """Página oficial da série no catálogo de dados abertos do BCB (responde 200; o gráfico do www3 estava fora do ar em 14/11/2026)."""
+    pagina = next(sr["pagina"] for sr in SERIES if sr["codigo"] == codigo)
+    return "https://dadosabertos.bcb.gov.br/dataset/" + pagina
 
 
 def ler(caminho=CAMINHO_CSV):
