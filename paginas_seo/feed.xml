@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="pt-BR">
+  <title>Pix no cartão — Datalab Global</title>
+  <subtitle>Atualizações do simulador e taxas médias do Banco Central</subtitle>
+  <link href="https://emprestimo.datalabglobal.com/feed.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://emprestimo.datalabglobal.com/" rel="alternate" type="text/html"/>
+  <id>tag:emprestimo.datalabglobal.com,2026:feed</id>
+  <updated>2026-11-14T00:00:00Z</updated>
+  <author><name>Datalab Global</name></author>
+  <entry>
+    <title>Atualização de 14/11/2026</title>
+    <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:atualizacao-2026-11-14-5</id>
+    <updated>2026-11-14T00:00:00Z</updated>
+    <summary type="text">Dados abertos (Tabela 10 do Pix no cartão em CC BY 4.0 e séries do Banco Central em ODbL 1.0), feed Atom e aviso ao Bing por IndexNow.</summary>
+  </entry>
+  <entry>
+    <title>Atualização de 14/11/2026</title>
+    <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:atualizacao-2026-11-14-4</id>
+    <updated>2026-11-14T00:00:00Z</updated>
+    <summary type="text">Taxas médias do Banco Central (crédito pessoal não consignado, cheque especial e cartão rotativo) com mês de referência e link de cada série, e comparação com o Pix no cartão.</summary>
+  </entry>
+  <entry>
+    <title>Atualização de 14/11/2026</title>
+    <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:atualizacao-2026-11-14-3</id>
+    <updated>2026-11-14T00:00:00Z</updated>
+    <summary type="text">Guias com conteúdo próprio (como funciona, golpes, CET e IOF, comparação, quando não vale a pena), metodologia, página Sobre, privacidade e termos.</summary>
+  </entry>
+  <entry>
+    <title>Atualização de 13/11/2026</title>
+    <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:atualizacao-2026-11-13-2</id>
+    <updated>2026-11-13T00:00:00Z</updated>
+    <summary type="text">Conta do simulador conferida com a API do parceiro: R$ 1.000 em 2x a 12x, mesma Tabela 10, limites de R$ 300 a R$ 5.000 e 12 parcelas. Nenhuma diferença.</summary>
+  </entry>
+  <entry>
+    <title>Atualização de 13/11/2026</title>
+    <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:atualizacao-2026-11-13-1</id>
+    <updated>2026-11-13T00:00:00Z</updated>
+    <summary type="text">Simulador extraído do hub da Datalab Global para este projeto independente, com medição de uso sem cookies.</summary>
+  </entry>
+  <entry>
+    <title>Taxas médias do Banco Central de setembro de 2026</title>
+    <link href="https://emprestimo.datalabglobal.com/taxas-de-referencia"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:taxas-2026-09</id>
+    <updated>2026-10-01T00:00:00Z</updated>
+    <summary type="text">Média das novas operações em setembro de 2026: crédito pessoal não consignado 110,94% ao ano; cheque especial 139,02% ao ano; cartão de crédito rotativo 451,71% ao ano.</summary>
+  </entry>
+  <entry>
+    <title>Taxas médias do Banco Central de agosto de 2026</title>
+    <link href="https://emprestimo.datalabglobal.com/taxas-de-referencia"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:taxas-2026-08</id>
+    <updated>2026-09-01T00:00:00Z</updated>
+    <summary type="text">Média das novas operações em agosto de 2026: crédito pessoal não consignado 110,37% ao ano; cheque especial 136,34% ao ano; cartão de crédito rotativo 444,89% ao ano.</summary>
+  </entry>
+  <entry>
+    <title>Taxas médias do Banco Central de julho de 2026</title>
+    <link href="https://emprestimo.datalabglobal.com/taxas-de-referencia"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:taxas-2026-07</id>
+    <updated>2026-08-01T00:00:00Z</updated>
+    <summary type="text">Média das novas operações em julho de 2026: crédito pessoal não consignado 110,97% ao ano; cheque especial 137,62% ao ano; cartão de crédito rotativo 436,10% ao ano.</summary>
+  </entry>
+  <entry>
+    <title>Taxas médias do Banco Central de junho de 2026</title>
+    <link href="https://emprestimo.datalabglobal.com/taxas-de-referencia"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:taxas-2026-06</id>
+    <updated>2026-07-01T00:00:00Z</updated>
+    <summary type="text">Média das novas operações em junho de 2026: crédito pessoal não consignado 112,17% ao ano; cheque especial 139,95% ao ano; cartão de crédito rotativo 447,39% ao ano.</summary>
+  </entry>
+  <entry>
+    <title>Taxas médias do Banco Central de maio de 2026</title>
+    <link href="https://emprestimo.datalabglobal.com/taxas-de-referencia"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:taxas-2026-05</id>
+    <updated>2026-06-01T00:00:00Z</updated>
+    <summary type="text">Média das novas operações em maio de 2026: crédito pessoal não consignado 116,04% ao ano; cheque especial 137,25% ao ano; cartão de crédito rotativo 441,06% ao ano.</summary>
+  </entry>
+  <entry>
+    <title>Taxas médias do Banco Central de abril de 2026</title>
+    <link href="https://emprestimo.datalabglobal.com/taxas-de-referencia"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:taxas-2026-04</id>
+    <updated>2026-05-01T00:00:00Z</updated>
+    <summary type="text">Média das novas operações em abril de 2026: crédito pessoal não consignado 125,03% ao ano; cheque especial 140,93% ao ano; cartão de crédito rotativo 431,97% ao ano.</summary>
+  </entry>
+</feed>

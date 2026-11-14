@@ -1,0 +1,77 @@
+{
+ "name": "taxas-referencia-bcb",
+ "title": "Taxas médias de juros do Banco Central: cheque especial, crédito pessoal não consignado e cartão rotativo",
+ "description": "Taxa média de juros das novas operações de crédito com recursos livres, pessoas físicas, ponderada pelo valor das concessões, em % ao ano, série mensal, para cheque especial (SGS 20741), crédito pessoal não consignado (SGS 20742) e cartão de crédito rotativo (SGS 22022). Inclui a taxa ao mês equivalente, calculada por juros compostos.",
+ "licenses": [
+  {
+   "name": "ODbL-1.0",
+   "path": "https://opendatacommons.org/licenses/odbl/1-0/",
+   "title": "ODbL 1.0"
+  }
+ ],
+ "sources": [
+  {
+   "title": "Banco Central do Brasil — SGS (dados abertos, ODbL)",
+   "path": "https://dadosabertos.bcb.gov.br/"
+  }
+ ],
+ "contributors": [
+  {
+   "title": "Datalab Global",
+   "role": "publisher",
+   "path": "https://emprestimo.datalabglobal.com/"
+  }
+ ],
+ "resources": [
+  {
+   "name": "dados",
+   "path": "taxas-referencia-bcb.csv",
+   "format": "csv",
+   "mediatype": "text/csv",
+   "encoding": "utf-8",
+   "schema": {
+    "fields": [
+     {
+      "name": "codigo_serie",
+      "type": "integer",
+      "description": "Código da série no SGS do Banco Central"
+     },
+     {
+      "name": "modalidade",
+      "type": "string",
+      "description": "Modalidade de crédito"
+     },
+     {
+      "name": "mes_referencia",
+      "type": "string",
+      "description": "Mês de referência (AAAA-MM)"
+     },
+     {
+      "name": "taxa_aa_pct",
+      "type": "number",
+      "description": "Taxa média de juros, % ao ano (dado do Banco Central)"
+     },
+     {
+      "name": "taxa_am_equivalente_pct",
+      "type": "number",
+      "description": "Taxa ao mês equivalente, % (cálculo da Datalab Global)"
+     },
+     {
+      "name": "fonte_url",
+      "type": "string",
+      "description": "Endereço da série no SGS (JSON)"
+     }
+    ]
+   }
+  }
+ ],
+ "keywords": [
+  "crédito",
+  "juros",
+  "Brasil"
+ ],
+ "temporal": {
+  "start": "2024-11",
+  "end": "2026-09"
+ }
+}

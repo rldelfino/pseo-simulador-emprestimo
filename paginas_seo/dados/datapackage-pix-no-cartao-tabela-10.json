@@ -1,0 +1,83 @@
+{
+ "name": "pix-no-cartao-tabela-10",
+ "title": "Pix no cartão de crédito: Tabela 10 do parceiro (parcela, IOF, juros e CET)",
+ "description": "Condições do Pix no cartão de crédito segundo a Tabela 10 do parceiro (correspondente bancário), de 2 a 12 parcelas, para cada R$ 1.000 recebidos por Pix: fator total, parcela, total na fatura, IOF, juros ao mês, juros equivalentes ao ano e CET ao ano. Valor do Pix de R$ 300 a R$ 5.000. Os números são conferidos toda semana contra a API do próprio parceiro.",
+ "licenses": [
+  {
+   "name": "CC-BY-4.0",
+   "path": "https://creativecommons.org/licenses/by/4.0/deed.pt-br",
+   "title": "CC BY 4.0"
+  }
+ ],
+ "sources": [
+  {
+   "title": "Parceiro do Pix no cartão (correspondente bancário) — Tabela 10, conferida pela API de simulação",
+   "path": "https://emprestimo.datalabglobal.com/metodologia"
+  }
+ ],
+ "contributors": [
+  {
+   "title": "Datalab Global",
+   "role": "publisher",
+   "path": "https://emprestimo.datalabglobal.com/"
+  }
+ ],
+ "resources": [
+  {
+   "name": "dados",
+   "path": "pix-no-cartao-tabela-10.csv",
+   "format": "csv",
+   "mediatype": "text/csv",
+   "encoding": "utf-8",
+   "schema": {
+    "fields": [
+     {
+      "name": "parcelas",
+      "type": "integer",
+      "description": "Número de parcelas na fatura (2 a 12)"
+     },
+     {
+      "name": "juros_am_pct",
+      "type": "number",
+      "description": "Juros ao mês, % (tabelado pelo parceiro)"
+     },
+     {
+      "name": "juros_aa_equivalente_pct",
+      "type": "number",
+      "description": "Juros ao ano equivalentes (juros compostos sobre a taxa mensal), %"
+     },
+     {
+      "name": "cet_aa_pct",
+      "type": "number",
+      "description": "Custo efetivo total ao ano, % (tabelado pelo parceiro)"
+     },
+     {
+      "name": "fator_total",
+      "type": "number",
+      "description": "Fator da Tabela 10: 0,5479 + 0,003 x parcelas. Total na fatura = valor no Pix x (1 + fator)"
+     },
+     {
+      "name": "parcela_por_r1000",
+      "type": "number",
+      "description": "Valor de cada parcela, em R$, para receber R$ 1.000"
+     },
+     {
+      "name": "total_por_r1000",
+      "type": "number",
+      "description": "Total na fatura, em R$, para receber R$ 1.000"
+     },
+     {
+      "name": "iof_por_r1000",
+      "type": "number",
+      "description": "IOF (já incluso no total), em R$, para receber R$ 1.000"
+     }
+    ]
+   }
+  }
+ ],
+ "keywords": [
+  "crédito",
+  "juros",
+  "Brasil"
+ ]
+}

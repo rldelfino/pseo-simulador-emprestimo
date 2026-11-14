@@ -18,6 +18,9 @@ import sys
 
 import calculo
 import conteudo
+import dados_abertos
+import feed_atom
+import indexnow
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 SAIDA_PADRAO = os.path.join(AQUI, "paginas_seo")
@@ -124,6 +127,7 @@ LAYOUT = """<!doctype html>
 <meta property="og:image" content="@@DOMINIO@@/og-image.png">
 <meta name="theme-color" content="#0A192F">
 <link rel="stylesheet" href="/styles.css">
+<link rel="alternate" type="application/atom+xml" title="Pix no cartão — Datalab Global" href="/feed.xml">
 @@JSONLD@@<script defer src="https://cloud.umami.is/script.js" data-website-id="@@UMAMI_ID@@"></script>
 </head>
 <body>
@@ -271,6 +275,8 @@ LLMS = """# Pix no cartão de crédito (Datalab Global)
 - Fonte dos números: Tabela 10 do parceiro (correspondente bancário), conferida toda semana pela API do próprio parceiro.
 - Conta: fator = 0,5479 + 0,003 x parcelas; parcela = valor x (1 + fator) / parcelas; IOF = valor x (0,0038 + 0,00246 x parcelas).
 - A aprovação depende de análise de crédito. A simulação não é proposta de crédito. A Datalab Global pode receber comissão do parceiro.
+- Dados abertos (CSV e JSON): @@DOMINIO@@/dados-abertos. Tabela 10 em CC BY 4.0; séries do Banco Central em ODbL 1.0.
+- Feed Atom: @@DOMINIO@@/feed.xml
 
 ## Páginas
 @@LISTA@@
@@ -302,7 +308,7 @@ def _nav(paginas):
 
 def _footnav():
     links = [("/", "Simulador")] + [("/" + pg["slug"], pg.get("menu") or pg["h1"]) for pg in conteudo.PAGINAS]
-    rotulos = {"/atualizacoes": "Atualizações", "/privacidade": "Privacidade", "/termos": "Termos de uso"}
+    rotulos = {"/atualizacoes": "Atualizações", "/dados-abertos": "Dados abertos", "/privacidade": "Privacidade", "/termos": "Termos de uso"}
     return "".join('<a class="underline" href="' + h + '">' + rotulos.get(h, r) + "</a>" for h, r in links)
 
 
@@ -395,6 +401,9 @@ def gerar_site(saida=SAIDA_PADRAO, hoje=None):
     for pg in conteudo.PAGINAS:
         escrever(pg["slug"] + ".html", _pagina_guia(pg, valores, hoje, ctx))
     escrever("404.html", NOT_FOUND)
+    escrever(indexnow.CHAVE + ".txt", indexnow.CHAVE + "\n")
+    escrever("feed.xml", feed_atom.gerar(hoje))
+    dados_abertos.gerar(os.path.join(saida, "dados"))
     escrever("calculo.js", gerar_calculo_js())
     shutil.copyfile(os.path.join(AQUI, "src", "simulador.js"), os.path.join(saida, "simulador.js"))
     escrever("_headers", _preencher(HEADERS, {"CSP": CSP}))
