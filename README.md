@@ -12,6 +12,7 @@ pip install -r requirements-dev.txt
 npm ci
 python gerador_emprestimo.py   # gera paginas_seo/
 npm run build:css              # compila o Tailwind
+python gerador_emprestimo.py   # de novo: coloca a versão (?v=) do styles.css nas páginas
 python -m pytest -q            # critério de merge: saída 0
 ```
 

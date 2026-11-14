@@ -27,7 +27,7 @@ LAYOUT = """<!doctype html>
 <meta name="theme-color" content="#020617">
 <link rel="preload" href="/fonts/playfair-display-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/styles.css?v=@@CSSV@@">
 <link rel="alternate" type="application/atom+xml" title="Pix no cartão — Datalab Global" href="/feed.xml">
 @@JSONLD@@<script defer src="https://cloud.umami.is/script.js" data-website-id="@@UMAMI_ID@@"></script>
 </head>

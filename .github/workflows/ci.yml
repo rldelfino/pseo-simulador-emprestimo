@@ -25,5 +25,6 @@ jobs:
         run: |
           python gerador_emprestimo.py
           npm run build:css
+          python gerador_emprestimo.py  # de novo: só atualiza a versão (?v=) do styles.css
       - name: Testes (a saída do pytest é o critério de merge)
         run: python -m pytest -q

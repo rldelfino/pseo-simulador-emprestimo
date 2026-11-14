@@ -10,6 +10,7 @@ Páginas por valor (R$ 500 a R$ 5.000) NÃO são geradas: seriam quase iguais à
 simuladores). Se um dia tiverem conteúdo próprio, ligue PAGINAS_VALOR_INDEXAVEIS (hoje não existe gerador para elas).
 """
 import datetime
+import hashlib
 import json
 import os
 import re
@@ -162,6 +163,16 @@ def gerar_calculo_js():
     return _preencher(CALCULO_JS, {"TABELA": tabela, "PIX_MIN": str(calculo.PIX_MIN)})
 
 
+def versao_css():
+    """Resumo do styles.css compilado. O arquivo tem cache de 1 ano e imutável; a versão no endereço (?v=) faz o navegador buscar o novo
+    quando o CSS muda. Fluxo: gerar -> npm run build:css -> gerar de novo (a segunda rodada só atualiza esta versão)."""
+    caminho = os.path.join(AQUI, "paginas_seo", "styles.css")
+    if not os.path.exists(caminho):
+        return "0"
+    with open(caminho, "rb") as f:
+        return hashlib.sha256(f.read()).hexdigest()[:10]
+
+
 def _sem_tags(html):
     return re.sub(r"<[^>]+>", "", html).replace("&quot;", '"')
 
@@ -276,7 +287,7 @@ def gerar_site(saida=SAIDA_PADRAO, hoje=None):
     os.makedirs(saida, exist_ok=True)
     valores = {
         "DOMINIO": DOMINIO, "HUB": HUB, "UMAMI_ID": UMAMI_ID, "RAZAO": RAZAO_SOCIAL, "CNPJ": CNPJ, "EMAIL": EMAIL,
-        "ATUALIZADO": atualizado, "NAV": _nav_desktop(), "NAVMOBILE": _nav_celular(),
+        "ATUALIZADO": atualizado, "CSSV": versao_css(), "NAV": _nav_desktop(), "NAVMOBILE": _nav_celular(),
         "FOOT_ENTENDA": _lista_rodape(ENTENDA), "FOOT_LEGAL": _lista_rodape(LEGAL),
         "FOOT_TRANSP": _lista_rodape(TRANSPARENCIA, '<li><a class="hover:text-white" href="/feed.xml">Feed Atom</a></li>'),
     }
@@ -289,7 +300,7 @@ def gerar_site(saida=SAIDA_PADRAO, hoje=None):
     escrever("index.html", _pagina_home(valores, hoje))
     for pg in conteudo.PAGINAS:
         escrever(pg["slug"] + ".html", _pagina_guia(pg, valores, hoje, ctx))
-    escrever("404.html", NOT_FOUND)
+    escrever("404.html", NOT_FOUND.replace("/styles.css", "/styles.css?v=" + valores["CSSV"]))
     escrever(indexnow.CHAVE + ".txt", indexnow.CHAVE + "\n")
     escrever("feed.xml", feed_atom.gerar(hoje))
     dados_abertos.gerar(os.path.join(saida, "dados"))
