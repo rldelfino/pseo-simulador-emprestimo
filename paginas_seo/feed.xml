@@ -10,6 +10,13 @@
   <entry>
     <title>Atualização de 14/11/2026</title>
     <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:atualizacao-2026-11-14-8</id>
+    <updated>2026-11-14T00:00:00Z</updated>
+    <summary type="text">Novo visual, na mesma família dos outros simuladores da Datalab Global: títulos em Playfair Display, texto em Inter (fontes servidas pelo próprio site), gráfico da composição do total e barras com o custo a mais por prazo. A conta e os números não mudaram.</summary>
+  </entry>
+  <entry>
+    <title>Atualização de 14/11/2026</title>
+    <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>
     <id>tag:emprestimo.datalabglobal.com,2026:atualizacao-2026-11-14-7</id>
     <updated>2026-11-14T00:00:00Z</updated>
     <summary type="text">Simulador no ar em emprestimo.datalabglobal.com. Os dois conjuntos de dados abertos também estão no Kaggle, com a mesma licença.</summary>

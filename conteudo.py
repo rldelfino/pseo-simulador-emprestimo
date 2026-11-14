@@ -23,16 +23,16 @@ def pct(v):
 
 
 # ---------- blocos de HTML ----------
-C_H2 = "mt-10 text-2xl font-bold text-white"
+C_H2 = "mt-10 text-2xl font-bold text-white first:mt-0"
 C_H3 = "mt-6 text-lg font-bold text-white"
 C_P = "mt-3 leading-relaxed text-slate-300 break-words"
 C_UL = "mt-3 list-disc space-y-2 pl-6 leading-relaxed text-slate-300 break-words"
 C_OL = "mt-3 list-decimal space-y-2 pl-6 leading-relaxed text-slate-300 break-words"
-C_A = "text-violet-300 underline hover:text-white"
-C_AVISO = "mt-6 rounded-xl border border-amber-400/40 bg-amber-400/10 p-4 text-sm leading-relaxed text-amber-100 break-words"
+C_A = "text-emerald-300 underline hover:text-white"
+C_AVISO = "mt-6 rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm leading-relaxed text-amber-100 break-words"
 C_TAB = "w-full min-w-[34rem] border-collapse text-left text-sm"
-C_TH = "border-b border-white/15 px-3 py-2 font-bold text-white"
-C_TD = "border-b border-white/10 px-3 py-2 text-slate-300"
+C_TH = "border-b border-white/15 px-3 py-3 text-[11px] font-bold uppercase tracking-widest text-emerald-400"
+C_TD = "border-b border-white/10 px-3 py-3 text-slate-300"
 
 
 def h2(t):
@@ -68,7 +68,7 @@ def tabela(cabecalho, linhas, legenda):
     corpo = ""
     for linha in linhas:
         corpo += "<tr>" + "".join('<td class="' + C_TD + ' num">' + c + "</td>" for c in linha) + "</tr>"
-    return ('<div class="mt-4 overflow-x-auto rounded-xl border border-white/10"><table class="' + C_TAB + '">'
+    return ('<div class="mt-4 overflow-x-auto rounded-2xl border border-white/10 bg-slate-950/50"><table class="' + C_TAB + '">'
             '<caption class="px-3 py-2 text-left text-xs text-slate-400">' + legenda + "</caption>"
             "<thead><tr>" + h + "</tr></thead><tbody>" + corpo + "</tbody></table></div>\n")
 
@@ -242,7 +242,7 @@ def frase_home():
     cheque = next(u for sr, u in ultimas if sr["chave"] == "cheque-especial")
     return ("Para comparar: em " + ref + ", a média do Banco Central foi de " + pct(pessoal["taxa_aa"]) + " ao ano no crédito pessoal não consignado e de "
             + pct(cheque["taxa_aa"]) + " no cheque especial. O Pix no cartão em 12x tem juros equivalentes a " + pct(_pix_juros_ano(12)) + " ao ano. "
-            '<a class="text-violet-300 underline" href="/taxas-de-referencia">Veja as taxas de referência</a>.')
+            '<a class="text-emerald-300 underline" href="/taxas-de-referencia">Veja as taxas de referência</a>.')
 
 
 def _relacao(pix, ref):
@@ -457,6 +457,7 @@ def corpo_atualizacoes(ctx):
 
 
 ATUALIZACOES = [
+    ("14/11/2026", "Novo visual, na mesma família dos outros simuladores da Datalab Global: títulos em Playfair Display, texto em Inter (fontes servidas pelo próprio site), gráfico da composição do total e barras com o custo a mais por prazo. A conta e os números não mudaram."),
     ("14/11/2026", "Simulador no ar em emprestimo.datalabglobal.com. Os dois conjuntos de dados abertos também estão no Kaggle, com a mesma licença."),
     ("14/11/2026", "Correção: removemos a citação da Resolução CMN nº 3.954/2011, que foi revogada (o texto consolidado do Banco Central aponta a Resolução BCB nº 277/2022). Os textos agora falam em normas do Banco Central e do CMN sobre correspondentes."),
     ("14/11/2026", "Dados abertos (Tabela 10 do Pix no cartão em CC BY 4.0 e séries do Banco Central em ODbL 1.0), feed Atom e aviso ao Bing por IndexNow."),
