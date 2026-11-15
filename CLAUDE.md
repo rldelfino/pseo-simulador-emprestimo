@@ -10,6 +10,7 @@ Idioma: português do Brasil. Estilo: curto, sem jargão, números reais, dizer 
 - Nada de "Banco A × Banco B" nem ranking que induza a pedir um banco.
 - Sem segredo em arquivo/GitHub. Sem identificar modelo de IA em commits/PRs.
 - Merge só com `pytest` saindo 0 (não usar `pytest | tail`). Python 3.10 (sem f-string aninhado).
+- **Paleta: roxo/púrpura** (violet do Tailwind; logo `logo-full.png` e ícones roxos). Verde é do simulador imobiliário e azul dos veículos: não usar aqui.
 - Máximo ~30 páginas indexáveis, cada uma com conteúdo próprio. Sem grade de páginas quase iguais.
 
 ## Origem
