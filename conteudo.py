@@ -28,10 +28,10 @@ C_H3 = "mt-6 text-lg font-bold text-white"
 C_P = "mt-3 leading-relaxed text-slate-300 break-words"
 C_UL = "mt-3 list-disc space-y-2 pl-6 leading-relaxed text-slate-300 break-words"
 C_OL = "mt-3 list-decimal space-y-2 pl-6 leading-relaxed text-slate-300 break-words"
-C_A = "text-emerald-300 underline hover:text-white"
+C_A = "text-violet-300 underline hover:text-white"
 C_AVISO = "mt-6 rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm leading-relaxed text-amber-100 break-words"
 C_TAB = "w-full min-w-[34rem] border-collapse text-left text-sm"
-C_TH = "border-b border-white/15 px-3 py-3 text-[11px] font-bold uppercase tracking-widest text-emerald-400"
+C_TH = "border-b border-white/15 px-3 py-3 text-[11px] font-bold uppercase tracking-widest text-violet-400"
 C_TD = "border-b border-white/10 px-3 py-3 text-slate-300"
 
 
@@ -242,7 +242,7 @@ def frase_home():
     cheque = next(u for sr, u in ultimas if sr["chave"] == "cheque-especial")
     return ("Para comparar: em " + ref + ", a média do Banco Central foi de " + pct(pessoal["taxa_aa"]) + " ao ano no crédito pessoal não consignado e de "
             + pct(cheque["taxa_aa"]) + " no cheque especial. O Pix no cartão em 12x tem juros equivalentes a " + pct(_pix_juros_ano(12)) + " ao ano. "
-            '<a class="text-emerald-300 underline" href="/taxas-de-referencia">Veja as taxas de referência</a>.')
+            '<a class="text-violet-300 underline" href="/taxas-de-referencia">Veja as taxas de referência</a>.')
 
 
 def _relacao(pix, ref):

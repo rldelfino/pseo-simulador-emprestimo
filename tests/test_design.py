@@ -58,7 +58,7 @@ def test_fontes_pre_carregadas_e_logo_no_cabecalho(site):
         html = ler(site, nome)
         for f in FONTES:
             assert '<link rel="preload" href="/fonts/' + f + '"' in html, (nome, f)
-        assert 'src="/logo-full.png"' in html and 'href="/#simulador"' in html
+        assert 'src="/logo-full.png?v=' + g.versao_icones() + '"' in html and 'href="/#simulador"' in html
     assert os.path.exists(os.path.join(RAIZ, "paginas_seo", "logo-full.png"))
 
 
@@ -84,8 +84,8 @@ def test_home_tem_simulador_grafico_e_blocos_do_novo_visual(site):
               "donut", "barras", "txt-barras", "cta-pix", "aviso-celular", "aviso-minimo", "leg-pix", "leg-custo"):
         assert 'id="' + i + '"' in html, i
     assert html.count("<h1") == 1
-    assert "glass-panel" in html and "glass-panel-emerald" in html and "bg-gradient-to-br" in html
-    assert "violet" not in html  # a paleta agora é a esmeralda da família
+    assert "glass-panel" in html and "glass-panel-violet" in html and "bg-gradient-to-br" in html
+    assert "emerald" not in html and "violet" in html  # a paleta do Pix no cartão é a roxa (verde é do imobiliário, azul dos veículos)
 
 
 def test_guias_com_cabecalho_em_selo_e_painel(site):
@@ -95,10 +95,16 @@ def test_guias_com_cabecalho_em_selo_e_painel(site):
         assert html.count("<h1") == 1
 
 
-def test_textos_das_paginas_nao_usam_a_cor_antiga():
-    for classe in (conteudo.C_A, conteudo.C_AVISO, conteudo.C_TH, conteudo.C_TD, conteudo.C_H2):
-        assert "violet" not in classe
-    assert "violet" not in layout.HOME_MAIN and "violet" not in layout.LAYOUT
+def test_paleta_e_roxa_e_nao_usa_o_verde_do_imobiliario_nem_o_azul_dos_veiculos():
+    for classe in (conteudo.C_A, conteudo.C_TH):
+        assert "violet" in classe and "emerald" not in classe
+    for texto in (layout.HOME_MAIN, layout.LAYOUT, layout.GUIA_FECHO, layout.GUIA_CABECALHO, layout.GUIA_MEIO):
+        assert "emerald" not in texto and "teal" not in texto and "green" not in texto
+    css = open(os.path.join(RAIZ, "src", "input.css"), encoding="utf-8").read()
+    js = open(os.path.join(RAIZ, "src", "simulador.js"), encoding="utf-8").read()
+    for fonte in (css, js):
+        assert "#10b981" not in fonte and "#34d399" not in fonte and "16, 185, 129" not in fonte
+    assert "#8b5cf6" in js and "#a78bfa" in css
 
 
 def test_simulador_js_sem_innerhtml_e_com_rosca_e_barras():

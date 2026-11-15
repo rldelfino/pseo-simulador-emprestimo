@@ -39,7 +39,7 @@
     var s = svg('svg', { width: '120', height: '120', viewBox: '0 0 120 120', 'aria-hidden': 'true' });
     s.appendChild(svg('circle', { cx: '60', cy: '60', r: String(r), fill: 'none', stroke: '#f59e0b', 'stroke-width': '16' }));
     s.appendChild(svg('circle', {
-      cx: '60', cy: '60', r: String(r), fill: 'none', stroke: '#10b981', 'stroke-width': '16',
+      cx: '60', cy: '60', r: String(r), fill: 'none', stroke: '#8b5cf6', 'stroke-width': '16',
       'stroke-dasharray': parte.toFixed(2) + ' ' + (circ - parte).toFixed(2), transform: 'rotate(-90 60 60)'
     }));
     alvo.appendChild(s);
@@ -63,7 +63,7 @@
       b.type = 'button';
       var ativa = l.n === estado.parcelas;
       b.className = 'flex items-center gap-3 rounded-lg border px-3 py-2 text-left text-xs ' +
-        (ativa ? 'border-emerald-400/50 bg-emerald-400/10 text-white' : 'border-transparent text-slate-300 hover:bg-white/5');
+        (ativa ? 'border-violet-400/50 bg-violet-400/10 text-white' : 'border-transparent text-slate-300 hover:bg-white/5');
       b.setAttribute('aria-label', l.n + ' parcelas de ' + P.brl(l.parcela) + ', paga ' + P.brl(l.extra) + ' a mais');
       b.setAttribute('aria-pressed', String(ativa));
       var rot = document.createElement('span');
@@ -71,7 +71,7 @@
       rot.textContent = l.n + 'x';
       var barra = svg('svg', { viewBox: '0 0 100 8', preserveAspectRatio: 'none', 'class': 'h-2 w-0 min-w-0 flex-1', 'aria-hidden': 'true' });
       barra.appendChild(svg('rect', { width: '100', height: '8', rx: '4', fill: '#1e293b' }));
-      barra.appendChild(svg('rect', { width: (maior > 0 ? (l.extra / maior) * 100 : 0).toFixed(1), height: '8', rx: '4', fill: ativa ? '#34d399' : '#10b981' }));
+      barra.appendChild(svg('rect', { width: (maior > 0 ? (l.extra / maior) * 100 : 0).toFixed(1), height: '8', rx: '4', fill: ativa ? '#a78bfa' : '#8b5cf6' }));
       var val = document.createElement('span');
       val.className = 'num w-24 shrink-0 text-right font-semibold';
       val.textContent = P.brl(l.extra);

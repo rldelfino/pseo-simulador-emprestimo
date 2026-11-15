@@ -192,6 +192,15 @@ def versao_css():
         return hashlib.sha256(f.read()).hexdigest()[:10]
 
 
+def versao_icones():
+    """Resumo do logo e dos ícones. Sem a versão na URL, quem já visitou continuaria vendo o logo/ícone antigo pelo cache (o logo mudou de verde para roxo)."""
+    h = hashlib.sha256()
+    for nome in ("logo-full.png", "favicon.ico", "favicon-32.png", "apple-touch-icon.png"):
+        with open(os.path.join(AQUI, "paginas_seo", nome), "rb") as f:
+            h.update(f.read())
+    return h.hexdigest()[:10]
+
+
 def _sem_tags(html):
     return re.sub(r"<[^>]+>", "", html).replace("&quot;", '"')
 
@@ -245,9 +254,9 @@ def _cartoes_html():
     for pg in conteudo.PAGINAS:
         if not pg.get("menu"):
             continue
-        saida += ('<a href="/' + pg["slug"] + '" class="glass-panel block rounded-2xl p-6 hover:border-emerald-400/40"><span class="font-serif text-lg font-bold text-white">'
+        saida += ('<a href="/' + pg["slug"] + '" class="glass-panel block rounded-2xl p-6 hover:border-violet-400/40"><span class="font-serif text-lg font-bold text-white">'
                   + pg["menu"] + '</span><span class="mt-2 block text-sm leading-relaxed text-slate-400">' + pg["desc"]
-                  + '</span><span class="mt-4 block text-xs font-bold uppercase tracking-widest text-emerald-400">Ler &rarr;</span></a>')
+                  + '</span><span class="mt-4 block text-xs font-bold uppercase tracking-widest text-violet-400">Ler &rarr;</span></a>')
     return saida
 
 
@@ -286,7 +295,7 @@ def _pagina_guia(pg, valores, hoje, ctx):
         outros = [x for x in conteudo.PAGINAS if x.get("menu") and x["slug"] != pg["slug"]]
         i = next((k for k, x in enumerate(outros) if conteudo.PAGINAS.index(x) > conteudo.PAGINAS.index(pg)), 0)
         relacionados = (outros[i:] + outros[:i])[:3]
-        rel = "".join('<li><a class="glass-panel block rounded-2xl p-4 text-sm font-semibold leading-snug text-white hover:border-emerald-400/40" href="/'
+        rel = "".join('<li><a class="glass-panel block rounded-2xl p-4 text-sm font-semibold leading-snug text-white hover:border-violet-400/40" href="/'
                       + x["slug"] + '">' + x["h1"] + "</a></li>" for x in relacionados)
         fecho = _preencher(layout.GUIA_FECHO, {"RELACIONADOS": rel})
     else:
@@ -306,7 +315,7 @@ def gerar_site(saida=SAIDA_PADRAO, hoje=None):
     os.makedirs(saida, exist_ok=True)
     valores = {
         "DOMINIO": DOMINIO, "HUB": HUB, "UMAMI_ID": UMAMI_ID, "RAZAO": RAZAO_SOCIAL, "CNPJ": CNPJ, "EMAIL": EMAIL,
-        "ATUALIZADO": atualizado, "CSSV": versao_css(), "NAV": _nav_desktop(), "NAVMOBILE": _nav_celular(),
+        "ATUALIZADO": atualizado, "CSSV": versao_css(), "ICONV": versao_icones(), "NAV": _nav_desktop(), "NAVMOBILE": _nav_celular(),
         "FOOT_ENTENDA": _lista_rodape(ENTENDA), "FOOT_LEGAL": _lista_rodape(LEGAL),
         "FOOT_TRANSP": _lista_rodape(TRANSPARENCIA, '<li><a class="hover:text-white" href="/feed.xml">Feed Atom</a></li>'),
     }
