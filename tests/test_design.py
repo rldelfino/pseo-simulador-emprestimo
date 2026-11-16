@@ -135,3 +135,53 @@ def test_scripts_tem_versao_no_endereco_e_bate_com_o_conteudo(site):
     assert g.versao_simulador_js() != g.versao_calculo_js()
     # o conteúdo servido é o do src (o gerador copia o arquivo sem alterar)
     assert (site / "simulador.js").read_bytes() == open(os.path.join(RAIZ, "src", "simulador.js"), "rb").read()
+
+
+# --- revisão geral de 16/11/2026 -------------------------------------------------------------
+
+def test_menu_js_com_versao_em_todas_as_paginas_e_conteudo_igual_ao_src(site):
+    for nome in paginas():
+        assert 'src="/menu.js?v=' + g.versao_menu_js() + '"' in ler(site, nome), nome
+    assert (site / "menu.js").read_bytes() == open(os.path.join(RAIZ, "src", "menu.js"), "rb").read()
+    assert "/menu.js" in ler(site, "_headers")
+
+
+def test_cartao_do_twitter_e_security_txt(site):
+    for nome in paginas():
+        html = ler(site, nome)
+        assert 'name="twitter:card" content="summary_large_image"' in html, nome
+        assert 'name="twitter:image" content="' + g.DOMINIO + '/og-image.png"' in html, nome
+    sec = ler(site, ".well-known/security.txt")
+    assert "Contact: mailto:" + g.EMAIL in sec and "Expires: 2027-11-14T" in sec
+
+
+def test_home_nao_chama_juros_ao_mes_de_cet():
+    assert "O CET vai de 34,64% ao mês" not in layout.HOME_MAIN
+    assert "Os juros vão de 34,64% ao mês" in layout.HOME_MAIN
+
+
+def test_titulos_cabem_no_resultado_do_google():
+    for pg in conteudo.PAGINAS:
+        assert len(pg["title"]) <= 60, (pg["slug"], len(pg["title"]))
+
+
+def test_abas_com_painel_campo_de_texto_barra_fixa_e_aviso_da_proposta(site):
+    html = ler(site, "index.html")
+    assert html.count('aria-controls="painel-simulacao"') == 2 and 'id="painel-simulacao" role="tabpanel"' in html
+    assert 'id="campo-valor" type="text" inputmode="decimal"' in html
+    for i in ("barra-resumo", "btn-resumo", "resultado", "aviso-proposta", "txt-aviso-proposta", "link-parceiro"):
+        assert 'id="' + i + '"' in html, i
+    assert html.count("<div") == html.count("</div>")  # o painel novo não deixou tag aberta
+
+
+def test_modo_limite_aceita_a_partir_do_minimo_e_avisa_quando_falta_limite():
+    js = open(os.path.join(RAIZ, "src", "simulador.js"), encoding="utf-8").read()
+    assert "var LIMITE_MIN = 300;" in js and "limiteNecessario" in js
+    assert "aria-valuetext" in js and "ArrowRight" in js and "IntersectionObserver" in js
+    assert "cta-pix-sem-preenchimento" in js  # não segue calado quando o parceiro não responde
+
+
+def test_links_de_destaque_e_404_com_area_de_toque(site):
+    html = ler(site, "index.html")
+    assert 'inline-flex min-h-11 items-center font-semibold text-violet-300 underline hover:text-white" href="/custo-cet-iof"' in html
+    assert "min-h-11" in ler(site, "404.html")

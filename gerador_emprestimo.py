@@ -69,6 +69,9 @@ HEADERS = """/*
 /simulador.js
   Cache-Control: public, max-age=3600, must-revalidate
 
+/menu.js
+  Cache-Control: public, max-age=3600, must-revalidate
+
 /logo-header.webp
   Cache-Control: public, max-age=86400, must-revalidate
 
@@ -128,7 +131,7 @@ NOT_FOUND = """<!doctype html>
 <main class="mx-auto max-w-xl px-4 py-24 text-center">
   <h1 class="text-3xl font-extrabold">Página não encontrada</h1>
   <p class="mt-3 text-slate-300">O endereço não existe mais ou foi digitado errado.</p>
-  <p class="mt-6"><a class="underline" href="/">Voltar ao simulador do Pix no cartão</a></p>
+  <p class="mt-6"><a class="inline-flex min-h-11 items-center underline" href="/">Voltar ao simulador do Pix no cartão</a></p>
 </main>
 </body>
 </html>
@@ -171,6 +174,15 @@ def versao_simulador_js():
         return _resumo(f.read())
 
 
+def versao_menu_js():
+    with open(os.path.join(AQUI, "src", "menu.js"), "rb") as f:
+        return _resumo(f.read())
+
+
+def menu_script():
+    return '<script defer src="/menu.js?v=' + versao_menu_js() + '"></script>\n'
+
+
 def versao_calculo_js():
     return _resumo(gerar_calculo_js().encode("utf-8"))
 
@@ -179,7 +191,7 @@ def home_scripts():
     """Os scripts também têm a versão no endereço: o Cloudflare guarda .js na borda por horas e ignora o max-age do _headers; com ?v=<resumo>
     o endereço muda junto com o conteúdo e ninguém recebe HTML novo com JS velho."""
     return ('<script src="/calculo.js?v=' + versao_calculo_js() + '"></script>\n'
-            '<script src="/simulador.js?v=' + versao_simulador_js() + '"></script>\n')
+            '<script src="/simulador.js?v=' + versao_simulador_js() + '"></script>\n' + menu_script())
 
 
 def versao_css():
@@ -306,7 +318,7 @@ def _pagina_guia(pg, valores, hoje, ctx):
               "author": {"@type": "Organization", "name": "Datalab Global"}, "publisher": _organizacao()}
     ld = _ld(artigo) if guia else ""
     return _preencher(layout.LAYOUT, dict(valores, TITLE=pg["title"], DESC=pg["desc"], CANONICAL=canonical, ROBOTS="index,follow,max-image-preview:large",
-                                          OGTYPE="article" if guia else "website", JSONLD=ld, MAIN=main, SCRIPTS=""))
+                                          OGTYPE="article" if guia else "website", JSONLD=ld, MAIN=main, SCRIPTS=menu_script()))
 
 
 def gerar_site(saida=SAIDA_PADRAO, hoje=None):
@@ -334,6 +346,10 @@ def gerar_site(saida=SAIDA_PADRAO, hoje=None):
     dados_abertos.gerar(os.path.join(saida, "dados"))
     escrever("calculo.js", gerar_calculo_js())
     shutil.copyfile(os.path.join(AQUI, "src", "simulador.js"), os.path.join(saida, "simulador.js"))
+    shutil.copyfile(os.path.join(AQUI, "src", "menu.js"), os.path.join(saida, "menu.js"))
+    os.makedirs(os.path.join(saida, ".well-known"), exist_ok=True)
+    escrever(".well-known/security.txt", "Contact: mailto:" + EMAIL + "\nExpires: " + (hoje + datetime.timedelta(days=365)).isoformat() +
+             "T00:00:00.000Z\nPreferred-Languages: pt, en\nCanonical: " + DOMINIO + "/.well-known/security.txt\n")
     escrever("_headers", _preencher(HEADERS, {"CSP": CSP}))
     escrever("robots.txt", "User-agent: *\nAllow: /\n\nSitemap: " + DOMINIO + "/sitemap.xml\n")
     linhas = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
