@@ -191,3 +191,20 @@ def test_textos_quebram_linha_para_enderecos_longos_no_celular():
     # regressão: o endereço longo da licença estourava a largura em 375 px
     for classe in (conteudo.C_P, conteudo.C_UL, conteudo.C_OL, conteudo.C_AVISO):
         assert "break-words" in classe
+
+
+def test_cabecalho_yaml_do_readme_do_hugging_face_e_valido(site, tmp_path):
+    """O Hugging Face recusou o README (15/11/2026): 'pretty_name: Pix no cartão: parcela...' tem dois-pontos sem aspas, o que quebra o YAML."""
+    saida = tmp_path / "publicacao"
+    publicacao.gerar(str(site / "dados"), str(saida))
+    for nome in ("pix-no-cartao-tabela-10", "taxas-referencia-bcb"):
+        card = (saida / "huggingface" / nome / "README.md").read_text(encoding="utf-8")
+        topo = card.split("\n---\n", 1)[0].splitlines()[1:]
+        for linha in topo:
+            if linha.startswith("- ") or ":" not in linha:
+                valor = linha[2:] if linha.startswith("- ") else ""
+            else:
+                valor = linha.split(":", 1)[1].strip()
+            if ": " in valor or valor.startswith(("- ", "#")):
+                assert valor.startswith('"') and valor.endswith('"'), linha  # valor com dois-pontos tem de estar entre aspas
+        assert any(l.startswith('pretty_name: "') or ": " not in l.split("pretty_name:", 1)[-1] for l in topo if l.startswith("pretty_name:"))

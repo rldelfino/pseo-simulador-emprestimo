@@ -2,15 +2,15 @@
 license: cc-by-4.0
 language:
 - pt
-pretty_name: Pix no cartão: parcela, IOF e CET (Tabela 10)
+pretty_name: "Pix no cartão: parcela, IOF e CET (Tabela 10)"
 size_categories:
 - n<1K
 tags:
-- finance
-- brazil
-- credit card
-- interest rates
-- installments
+- "finance"
+- "brazil"
+- "credit card"
+- "interest rates"
+- "installments"
 ---
 
 # Pix no cartão de crédito: Tabela 10 do parceiro (parcela, IOF, juros e CET)
