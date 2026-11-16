@@ -35,14 +35,14 @@ LAYOUT = """<!doctype html>
 <a href="#conteudo" class="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-[60] focus:rounded focus:bg-white focus:px-3 focus:py-2 focus:text-slate-900">Ir para o conteúdo</a>
 <header class="sticky top-0 z-50 border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
   <div class="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-2 sm:gap-4">
-    <a href="/" class="shrink-0" aria-label="Pix no cartão — Datalab Global, página inicial">
+    <a href="/" class="flex min-h-11 shrink-0 items-center" aria-label="Pix no cartão — Datalab Global, página inicial">
       <img src="/logo-full.png?v=@@ICONV@@" alt="Datalab Global" width="139" height="48" class="h-9 w-auto drop-shadow-[0_0_15px_rgba(167,139,250,0.25)] sm:h-12">
     </a>
     <nav aria-label="Principal" class="hidden items-center gap-6 text-sm text-slate-300 lg:flex">@@NAV@@</nav>
     <div class="flex items-center gap-2 sm:gap-3">
-      <a href="/#simulador" class="rounded-full bg-violet-400 px-3 py-2 text-xs font-bold text-slate-950 shadow-lg shadow-violet-500/25 hover:bg-violet-300 sm:px-5 sm:py-2.5 sm:text-sm">Simular<span class="hidden sm:inline"> agora</span> &rarr;</a>
+      <a href="/#simulador" class="inline-flex min-h-11 items-center rounded-full bg-violet-400 px-4 text-xs font-bold text-slate-950 shadow-lg shadow-violet-500/25 hover:bg-violet-300 sm:px-5 sm:text-sm">Simular<span class="hidden sm:inline"> agora</span> &rarr;</a>
       <details class="relative lg:hidden">
-        <summary class="rounded-lg border border-white/10 px-3 py-2 text-xs text-slate-200 sm:text-sm">Menu</summary>
+        <summary class="inline-flex min-h-11 items-center rounded-lg border border-white/10 px-4 text-xs text-slate-200 sm:text-sm">Menu</summary>
         <nav aria-label="Menu" class="absolute right-0 mt-2 flex w-64 flex-col gap-1 rounded-2xl border border-white/10 bg-slate-900 p-3 text-sm text-slate-200 shadow-2xl">@@NAVMOBILE@@</nav>
       </details>
     </div>
@@ -62,15 +62,15 @@ LAYOUT = """<!doctype html>
     </div>
     <nav aria-label="Entenda">
       <p class="text-xs font-bold uppercase tracking-widest text-violet-400">Entenda</p>
-      <ul class="mt-4 space-y-2 text-sm text-slate-300">@@FOOT_ENTENDA@@</ul>
+      <ul class="mt-2 text-sm text-slate-300 md:mt-4">@@FOOT_ENTENDA@@</ul>
     </nav>
     <nav aria-label="Transparência">
       <p class="text-xs font-bold uppercase tracking-widest text-violet-400">Transparência</p>
-      <ul class="mt-4 space-y-2 text-sm text-slate-300">@@FOOT_TRANSP@@</ul>
+      <ul class="mt-2 text-sm text-slate-300 md:mt-4">@@FOOT_TRANSP@@</ul>
     </nav>
     <nav aria-label="Legal e mais">
       <p class="text-xs font-bold uppercase tracking-widest text-violet-400">Legal e mais</p>
-      <ul class="mt-4 space-y-2 text-sm text-slate-300">@@FOOT_LEGAL@@<li><a class="hover:text-white" href="@@HUB@@/">Outros simuladores</a></li></ul>
+      <ul class="mt-2 text-sm text-slate-300 md:mt-4">@@FOOT_LEGAL@@<li><a class="inline-flex min-h-11 items-center hover:text-white md:min-h-8" href="@@HUB@@/">Outros simuladores</a></li></ul>
     </nav>
   </div>
   <div class="border-t border-white/5">
@@ -229,7 +229,7 @@ HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
 """
 
 GUIA_CABECALHO = """<nav aria-label="Você está em" class="pt-8 text-center">
-  <a href="/" class="inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-full border border-white/10 bg-slate-900/60 px-5 py-2 text-xs">
+  <a href="/" class="inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-full border border-white/10 bg-slate-900/60 min-h-11 px-5 py-2 text-xs">
     <span class="font-semibold text-white">Pix no cartão</span>
     <span class="hidden h-3 w-px bg-white/20 sm:block"></span>
     <span class="uppercase tracking-widest text-violet-400">@@ROTULO_PAGINA@@</span>

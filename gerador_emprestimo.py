@@ -233,11 +233,11 @@ def _nav_desktop():
 
 def _nav_celular():
     links = ENTENDA + [s for s in TRANSPARENCIA if s not in ENTENDA]
-    return "".join('<a class="rounded-lg px-3 py-2 hover:bg-white/5" href="/' + s + '">' + _rotulo(s) + "</a>" for s in links)
+    return "".join('<a class="flex min-h-11 items-center rounded-lg px-3 hover:bg-white/5" href="/' + s + '">' + _rotulo(s) + "</a>" for s in links)
 
 
 def _lista_rodape(slugs, extra=""):
-    return "".join('<li><a class="hover:text-white" href="/' + s + '">' + _rotulo(s) + "</a></li>" for s in slugs) + extra
+    return "".join('<li><a class="inline-flex min-h-11 items-center hover:text-white md:min-h-8" href="/' + s + '">' + _rotulo(s) + "</a></li>" for s in slugs) + extra
 
 
 def _faq_html():
@@ -317,7 +317,7 @@ def gerar_site(saida=SAIDA_PADRAO, hoje=None):
         "DOMINIO": DOMINIO, "HUB": HUB, "UMAMI_ID": UMAMI_ID, "RAZAO": RAZAO_SOCIAL, "CNPJ": CNPJ, "EMAIL": EMAIL,
         "ATUALIZADO": atualizado, "CSSV": versao_css(), "ICONV": versao_icones(), "NAV": _nav_desktop(), "NAVMOBILE": _nav_celular(),
         "FOOT_ENTENDA": _lista_rodape(ENTENDA), "FOOT_LEGAL": _lista_rodape(LEGAL),
-        "FOOT_TRANSP": _lista_rodape(TRANSPARENCIA, '<li><a class="hover:text-white" href="/feed.xml">Feed Atom</a></li>'),
+        "FOOT_TRANSP": _lista_rodape(TRANSPARENCIA, '<li><a class="inline-flex min-h-11 items-center hover:text-white md:min-h-8" href="/feed.xml">Feed Atom</a></li>'),
     }
     ctx = _ctx(hoje)
 
