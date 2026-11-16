@@ -55,6 +55,17 @@ jobs:
           git commit -m "auto: atualização semanal das taxas do Banco Central e rebuild do site" || echo "Sem mudanças"
           git push
 
+      - name: Atualizar os datasets no Kaggle (só roda se o segredo KAGGLE_API_TOKEN existir)
+        # o token fica em Settings > Secrets and variables > Actions; sem ele este passo só avisa e segue. Falha de rede não derruba o pipeline.
+        env:
+          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+        run: |
+          if [ -z "$KAGGLE_API_TOKEN" ]; then echo "Sem token do Kaggle: passo ignorado"; exit 0; fi
+          pip install "kaggle>=1.8.0"
+          for pasta in pix-no-cartao-tabela-10 taxas-referencia-bcb; do
+            kaggle datasets version -p "publicacao/kaggle/$pasta" -m "atualização semanal" || echo "Não consegui atualizar $pasta no Kaggle"
+          done
+
       - name: Avisar o Bing (IndexNow) das páginas atualizadas
         # Só envia se o site já estiver no ar; espera o deploy do push acima. Falha de rede não derruba o pipeline.
         run: python indexnow.py --espera 240
