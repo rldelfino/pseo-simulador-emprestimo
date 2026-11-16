@@ -24,6 +24,10 @@ LAYOUT = """<!doctype html>
 <meta property="og:description" content="@@DESC@@">
 <meta property="og:url" content="@@CANONICAL@@">
 <meta property="og:image" content="@@DOMINIO@@/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="@@TITLE@@">
+<meta name="twitter:description" content="@@DESC@@">
+<meta name="twitter:image" content="@@DOMINIO@@/og-image.png">
 <meta name="theme-color" content="#020617">
 <link rel="preload" href="/fonts/playfair-display-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -108,15 +112,17 @@ HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
     <div class="mt-8 grid gap-6 lg:grid-cols-2">
       <div class="flex flex-col gap-4">
         <div role="tablist" class="grid grid-cols-2 gap-1 rounded-2xl border border-white/10 bg-slate-950/60 p-1.5">
-          <button id="btn-modo-valor" type="button" role="tab" aria-selected="true" class="rounded-xl px-2 py-3 text-sm font-bold text-slate-400 aria-selected:bg-gradient-to-br aria-selected:from-violet-600 aria-selected:to-violet-800 aria-selected:text-white">Quero um valor<span class="block text-xs font-normal opacity-80">quanto cai na conta</span></button>
-          <button id="btn-modo-limite" type="button" role="tab" aria-selected="false" class="rounded-xl px-2 py-3 text-sm font-bold text-slate-400 aria-selected:bg-gradient-to-br aria-selected:from-violet-600 aria-selected:to-violet-800 aria-selected:text-white">Usar meu limite<span class="block text-xs font-normal opacity-80">quanto tenho no cartão</span></button>
+          <button id="btn-modo-valor" type="button" role="tab" aria-selected="true" aria-controls="painel-simulacao" class="rounded-xl px-2 py-3 text-sm font-bold text-slate-400 aria-selected:bg-gradient-to-br aria-selected:from-violet-600 aria-selected:to-violet-800 aria-selected:text-white">Quero um valor<span class="block text-xs font-normal opacity-80">quanto cai na conta</span></button>
+          <button id="btn-modo-limite" type="button" role="tab" aria-selected="false" tabindex="-1" aria-controls="painel-simulacao" class="rounded-xl px-2 py-3 text-sm font-bold text-slate-400 aria-selected:bg-gradient-to-br aria-selected:from-violet-600 aria-selected:to-violet-800 aria-selected:text-white">Usar meu limite<span class="block text-xs font-normal opacity-80">quanto tenho no cartão</span></button>
         </div>
+
+        <div id="painel-simulacao" role="tabpanel" aria-labelledby="btn-modo-valor" class="flex flex-col gap-4">
 
         <div class="tile rounded-2xl p-5">
           <div class="flex items-center justify-between gap-3">
             <label id="rotulo-valor" for="campo-valor" class="@@ROTULO@@">Valor que você quer no Pix</label>
             <div class="flex items-baseline gap-1"><span class="text-lg font-semibold text-slate-300">R$</span>
-              <input id="campo-valor" type="number" inputmode="numeric" min="300" max="5000" step="50" value="1000" class="num w-32 bg-transparent text-right text-3xl font-semibold text-white">
+              <input id="campo-valor" type="text" inputmode="decimal" autocomplete="off" value="1.000" class="num w-32 bg-transparent text-right text-3xl font-semibold text-white">
             </div>
           </div>
           <input id="range-valor" aria-labelledby="rotulo-valor" type="range" min="300" max="5000" step="50" value="1000" class="mt-5">
@@ -146,9 +152,10 @@ HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
             </ul>
           </div>
         </div>
+        </div>
       </div>
 
-      <div aria-live="polite" class="flex flex-col gap-6 rounded-3xl border border-white/10 bg-slate-950/90 p-6 sm:p-8">
+      <div id="resultado" aria-live="polite" class="flex flex-col gap-6 rounded-3xl border border-white/10 bg-slate-950/90 p-6 sm:p-8">
         <p class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-violet-400"><span class="h-2 w-2 rounded-full bg-violet-400 shadow-[0_0_10px_#a78bfa]"></span>Resultado da simulação</p>
         <div>
           <p class="@@ROTULO@@">Você recebe via Pix</p>
@@ -166,6 +173,10 @@ HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
           <p id="r-custo-texto" class="font-semibold leading-relaxed"></p>
         </div>
         <p id="aviso-minimo" class="hidden text-sm text-amber-300">Com esse limite, o Pix ficaria abaixo do mínimo de R$ 300. Aumente o limite ou diminua as parcelas.</p>
+        <div id="aviso-proposta" class="hidden rounded-2xl border border-amber-400/40 bg-amber-400/10 p-4 text-sm text-amber-100">
+          <p id="txt-aviso-proposta"></p>
+          <a id="link-parceiro" href="#" rel="noopener" class="mt-3 inline-flex min-h-11 items-center font-semibold text-violet-300 underline hover:text-white">Continuar mesmo assim &rarr;</a>
+        </div>
         <button id="cta-pix" type="button" class="mt-auto w-full rounded-2xl bg-violet-400 px-5 py-4 text-base font-extrabold text-slate-950 shadow-lg shadow-violet-500/25 hover:bg-violet-300">Ver minha proposta &rarr;</button>
         <p id="aviso-celular" class="hidden text-center text-xs text-slate-400">A contratação é feita pelo celular: na próxima tela do parceiro, aponte a câmera para o QR Code e a proposta abre já preenchida. Tenha em mãos o RG ou a CNH original.</p>
         <p class="text-center text-xs text-slate-500">Você não digita dado pessoal aqui. A contratação acontece no ambiente do parceiro e depende de análise de crédito.</p>
@@ -175,7 +186,7 @@ HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
 
   <section aria-labelledby="titulo-dica" class="glass-panel-violet mt-8 rounded-[2rem] p-5 sm:p-10">
     <div class="flex flex-wrap items-center gap-3">
-      <span class="rounded-md bg-violet-400 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-widest text-violet-950">Dica</span>
+      <span class="rounded-md bg-violet-400 px-2 py-0.5 text-xs font-extrabold uppercase tracking-widest text-violet-950">Dica</span>
       <h2 id="titulo-dica" class="text-sm font-bold uppercase tracking-widest text-white sm:text-base">O custo quase não muda com o prazo</h2>
     </div>
     <div class="mt-6 grid gap-8 lg:grid-cols-5">
@@ -186,8 +197,8 @@ HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
       <div class="text-sm leading-relaxed text-slate-300 lg:col-span-2 lg:border-l lg:border-white/10 lg:pl-8">
         <p id="txt-barras"></p>
         <p class="mt-4">Prazo maior deixa a prestação menor, mas o dinheiro fica emprestado por mais tempo. O que pesa de verdade é o valor em reais da barra.</p>
-        <p class="mt-4"><a class="font-semibold text-violet-300 underline hover:text-white" href="/custo-cet-iof">Entenda CET e IOF &rarr;</a></p>
-        <p class="mt-2"><a class="font-semibold text-violet-300 underline hover:text-white" href="/pix-no-cartao-ou-outro-credito">Compare com outros créditos &rarr;</a></p>
+        <p class="mt-4"><a class="inline-flex min-h-11 items-center font-semibold text-violet-300 underline hover:text-white" href="/custo-cet-iof">Entenda CET e IOF &rarr;</a></p>
+        <p><a class="inline-flex min-h-11 items-center font-semibold text-violet-300 underline hover:text-white" href="/pix-no-cartao-ou-outro-credito">Compare com outros créditos &rarr;</a></p>
       </div>
     </div>
   </section>
@@ -195,7 +206,7 @@ HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
   <section class="mt-8 grid gap-6 sm:grid-cols-2">
     <div class="glass-panel rounded-3xl p-6 sm:p-8">
       <h2 class="text-xl font-bold text-white">Quanto custa, de verdade</h2>
-      <p class="mt-3 text-sm leading-relaxed text-slate-300">O CET vai de 34,64% ao mês (2x) a 7,49% ao mês (12x). Ao ano, de 3.621% a 148,97%. Por isso o simulador mostra quanto você paga a mais antes do botão. Se você consegue outra forma de crédito mais barata, ela costuma valer mais a pena. <a class="font-semibold text-violet-300 underline" href="/custo-cet-iof">Veja a tabela completa</a>.</p>
+      <p class="mt-3 text-sm leading-relaxed text-slate-300">Os juros vão de 34,64% ao mês (2x) a 7,49% ao mês (12x). O CET, que inclui o IOF e é contado ao ano, vai de 3.621% a 148,97%. Por isso o simulador mostra quanto você paga a mais antes do botão. Se você consegue outra forma de crédito mais barata, ela costuma valer mais a pena. <a class="font-semibold text-violet-300 underline" href="/custo-cet-iof">Veja a tabela completa</a>.</p>
       <p class="mt-3 text-sm leading-relaxed text-slate-300">@@COMPARA@@</p>
     </div>
     <div class="glass-panel rounded-3xl p-6 sm:p-8">
@@ -217,7 +228,7 @@ HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
   <section class="mt-14 rounded-[2rem] bg-gradient-to-br from-violet-600 to-violet-900 p-8 shadow-2xl shadow-violet-950/40 sm:p-12">
     <div class="grid items-center gap-8 md:grid-cols-3">
       <div class="md:col-span-2">
-        <span class="inline-block rounded-md bg-amber-400 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-amber-950">Antes de contratar</span>
+        <span class="inline-block rounded-md bg-amber-400 px-2.5 py-1 text-xs font-extrabold uppercase tracking-widest text-amber-950">Antes de contratar</span>
         <p class="font-serif mt-4 text-3xl font-bold leading-tight text-white sm:text-4xl">Compare o custo e só então peça a proposta.</p>
         <p class="mt-4 text-violet-50/90">A contratação é feita no ambiente de um parceiro (correspondente bancário) e depende de análise de crédito. Sem garantia de aprovação.</p>
       </div>
@@ -226,6 +237,16 @@ HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
       </div>
     </div>
   </section>
+
+  <div id="barra-resumo" class="hidden fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-slate-950/95 px-4 py-2 backdrop-blur lg:hidden">
+    <button id="btn-resumo" type="button" class="mx-auto flex min-h-11 w-full max-w-md items-center justify-between gap-3 text-left">
+      <span class="min-w-0">
+        <span id="resumo-parcela" class="num block truncate text-sm font-semibold text-white"></span>
+        <span id="resumo-total" class="num block truncate text-xs text-slate-400"></span>
+      </span>
+      <span class="shrink-0 rounded-full bg-violet-400 px-4 py-2 text-xs font-bold text-slate-950">Ver resultado &darr;</span>
+    </button>
+  </div>
 """
 
 GUIA_CABECALHO = """<nav aria-label="Você está em" class="pt-8 text-center">

@@ -15,6 +15,9 @@
 /simulador.js
   Cache-Control: public, max-age=3600, must-revalidate
 
+/menu.js
+  Cache-Control: public, max-age=3600, must-revalidate
+
 /logo-header.webp
   Cache-Control: public, max-age=86400, must-revalidate
 

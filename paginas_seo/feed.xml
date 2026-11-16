@@ -5,8 +5,22 @@
   <link href="https://emprestimo.datalabglobal.com/feed.xml" rel="self" type="application/atom+xml"/>
   <link href="https://emprestimo.datalabglobal.com/" rel="alternate" type="text/html"/>
   <id>tag:emprestimo.datalabglobal.com,2026:feed</id>
-  <updated>2026-11-15T00:00:00Z</updated>
+  <updated>2026-11-16T00:00:00Z</updated>
   <author><name>Datalab Global</name></author>
+  <entry>
+    <title>Atualização de 16/11/2026</title>
+    <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:atualizacao-2026-11-16-10</id>
+    <updated>2026-11-16T00:00:00Z</updated>
+    <summary type="text">Revisão geral do site, com correções: a home chamava os juros ao mês de CET (agora diz juros ao mês e CET ao ano); o modo usar meu limite passou a aceitar limites a partir de R$ 300 e mostra quanto falta para o mínimo; se não conseguirmos pré-preencher a proposta no parceiro, avisamos antes de abrir a tela dele; no celular, uma barra fixa mostra parcela e total enquanto você mexe nos controles; o campo de valor aceita milhar e vírgula; o menu fecha ao tocar fora; títulos mais curtos e acessibilidade das abas e dos controles deslizantes.</summary>
+  </entry>
+  <entry>
+    <title>Atualização de 15/11/2026</title>
+    <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:atualizacao-2026-11-15-9</id>
+    <updated>2026-11-15T00:00:00Z</updated>
+    <summary type="text">Visual em roxo, com logo e ícones novos, e botões e links do celular com 44 px de altura.</summary>
+  </entry>
   <entry>
     <title>Atualização de 14/11/2026</title>
     <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>

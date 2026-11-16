@@ -301,7 +301,7 @@ def corpo_taxas(ctx):
         + tabela(["Mês"] + [sr["nome"] for sr in tr.SERIES], hist, "Juros ao ano, em %. Mesmas séries da tabela acima.")
         + h2("E o Pix no cartão?")
         + tabela(["Prazo", "Juros ao mês (Tabela 10)", "Equivale a, ao ano", "CET ao ano"], pix_linhas,
-                 "Pix no cartão, Tabela 10 do parceiro. A coluna &quot;ao ano&quot; é a taxa mensal acumulada por 12 meses (juros compostos).")
+                 "Pix no cartão, Tabela 10 do parceiro. A coluna &quot;ao ano&quot; é a taxa mensal acumulada por 12 meses (juros compostos); como partimos da taxa mensal já arredondada, pode diferir em centésimos do valor que o parceiro mostra.")
         + p("Em 12x, o Pix no cartão tem juros equivalentes a " + pct(pix12) + " ao ano: " + "; ".join(cmp12) + ". " + conclusao)
         + p("Em prazos curtos a conta anualizada fica enorme (" + pct(tr.ano_equivalente(_r(2)["jurosMes"])) + " ao ano em 2x) porque a taxa mensal é alta; "
             "o que pesa de verdade é quanto você paga a mais em reais, como mostra " + a("/custo-cet-iof", "CET e IOF") + ".")
@@ -457,6 +457,8 @@ def corpo_atualizacoes(ctx):
 
 
 ATUALIZACOES = [
+    ("16/11/2026", "Revisão geral do site, com correções: a home chamava os juros ao mês de CET (agora diz juros ao mês e CET ao ano); o modo usar meu limite passou a aceitar limites a partir de R$ 300 e mostra quanto falta para o mínimo; se não conseguirmos pré-preencher a proposta no parceiro, avisamos antes de abrir a tela dele; no celular, uma barra fixa mostra parcela e total enquanto você mexe nos controles; o campo de valor aceita milhar e vírgula; o menu fecha ao tocar fora; títulos mais curtos e acessibilidade das abas e dos controles deslizantes."),
+    ("15/11/2026", "Visual em roxo, com logo e ícones novos, e botões e links do celular com 44 px de altura."),
     ("14/11/2026", "Novo visual, na mesma família dos outros simuladores da Datalab Global: títulos em Playfair Display, texto em Inter (fontes servidas pelo próprio site), gráfico da composição do total e barras com o custo a mais por prazo. A conta e os números não mudaram."),
     ("14/11/2026", "Simulador no ar em emprestimo.datalabglobal.com. Os dois conjuntos de dados abertos também estão no Kaggle, com a mesma licença."),
     ("14/11/2026", "Correção: removemos a citação da Resolução CMN nº 3.954/2011, que foi revogada (o texto consolidado do Banco Central aponta a Resolução BCB nº 277/2022). Os textos agora falam em normas do Banco Central e do CMN sobre correspondentes."),
@@ -578,11 +580,11 @@ PAGINAS = [
          desc="Tabela com parcela, total, IOF, juros e CET de 2x a 12x para R$ 1.000. Veja por que o prazo muda a parcela, mas quase não muda o custo.",
          corpo=corpo_custo),
     dict(slug="pix-no-cartao-ou-outro-credito", menu="Comparar créditos",
-         title="Pix no cartão, empréstimo pessoal, cheque especial ou rotativo: como comparar",
+         title="Pix no cartão ou outro crédito: como comparar o custo",
          h1="Pix no cartão, empréstimo pessoal, cheque especial ou rotativo: como comparar",
          desc="Método para comparar quatro tipos de crédito pelo total pago e pelo CET, sem indicar banco: o que muda em prazo, pagamento e custo.",
          corpo=corpo_comparar),
-    dict(slug="taxas-de-referencia", menu="Taxas do BC", title="Taxas médias do Banco Central: cheque especial, crédito pessoal e rotativo",
+    dict(slug="taxas-de-referencia", menu="Taxas do BC", title="Taxas do Banco Central: cheque especial, pessoal e rotativo",
          h1="Taxas médias do Banco Central: cheque especial, crédito pessoal e rotativo",
          desc="Taxas médias de juros de três créditos para pessoa física, com mês de referência e link de cada série, comparadas ao Pix no cartão.",
          corpo=corpo_taxas),
@@ -598,13 +600,13 @@ PAGINAS = [
          h1="Sobre a Datalab Global e este simulador",
          desc="Quem mantém o simulador, quem realiza a operação (correspondente bancário), como a Datalab Global ganha com comissão e como falar com a gente.",
          corpo=corpo_sobre),
-    dict(slug="dados-abertos", menu=None, title="Dados abertos: Pix no cartão e taxas do Banco Central (CSV e JSON)",
+    dict(slug="dados-abertos", menu=None, title="Dados abertos: Pix no cartão e taxas do BC (CSV e JSON)",
          h1="Dados abertos: Pix no cartão e taxas do Banco Central",
          desc="Baixe em CSV e JSON a Tabela 10 do Pix no cartão (CC BY 4.0) e as taxas médias do Banco Central (ODbL 1.0), com colunas, licença e como citar.",
          corpo=corpo_dados_abertos),
     dict(slug="atualizacoes", menu=None, title="Atualizações do simulador do Pix no cartão",
          h1="Atualizações do simulador do Pix no cartão",
-         desc="Registro de conferências da tabela do parceiro, correções e novas páginas do simulador.",
+         desc="Registro de conferências da tabela do parceiro, correções, melhorias de uso e novas páginas do simulador do Pix no cartão de crédito.",
          corpo=corpo_atualizacoes, min_palavras=60),
     dict(slug="privacidade", menu=None, title="Política de Privacidade", h1="Política de Privacidade",
          desc="Como este site trata dados: nenhum dado pessoal pedido, medição sem cookies e o que o parceiro faz com seus dados na contratação.",
