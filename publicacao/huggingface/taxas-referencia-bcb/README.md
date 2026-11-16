@@ -2,15 +2,15 @@
 license: odbl
 language:
 - pt
-pretty_name: Taxas médias de crédito PF do Banco Central
+pretty_name: "Taxas médias de crédito PF do Banco Central"
 size_categories:
 - n<1K
 tags:
-- finance
-- brazil
-- banking
-- interest rates
-- central bank
+- "finance"
+- "brazil"
+- "banking"
+- "interest rates"
+- "central bank"
 ---
 
 # Taxas médias de juros do Banco Central: cheque especial, crédito pessoal não consignado e cartão rotativo

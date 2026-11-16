@@ -60,8 +60,8 @@ def gerar(pasta_dados=PASTA_DADOS, pasta_saida=PASTA_SAIDA, usuario=USUARIO_KAGG
         _escrever(os.path.join(pasta_saida, "kaggle", nome, "dataset-metadata.json"), json.dumps(meta, ensure_ascii=False, indent=2) + "\n")
         shutil.copy(csv_origem, os.path.join(pasta_saida, "kaggle", nome, nome + ".csv"))
 
-        card = ("---\nlicense: " + k["hf_licenca"] + "\nlanguage:\n- pt\npretty_name: " + k["titulo"] + "\nsize_categories:\n- n<1K\ntags:\n"
-                + "".join("- " + t + "\n" for t in k["keywords"]) + "---\n\n# " + c["titulo"] + "\n\n" + c["descricao"] + "\n\n## Colunas\n"
+        card = ("---\nlicense: " + k["hf_licenca"] + "\nlanguage:\n- pt\npretty_name: " + json.dumps(k["titulo"], ensure_ascii=False) + "\nsize_categories:\n- n<1K\ntags:\n"
+                + "".join("- " + json.dumps(t, ensure_ascii=False) + "\n" for t in k["keywords"]) + "---\n\n# " + c["titulo"] + "\n\n" + c["descricao"] + "\n\n## Colunas\n"
                 + "".join("- `" + n + "` (" + t + "): " + d + "\n" for n, t, d in c["colunas"])
                 + "\n## Licença e fonte\n" + da.texto_licenca(c) + "\n\nFonte: " + c["fonte"]["title"] + " (" + c["fonte"]["path"] + ").\n")
         _escrever(os.path.join(pasta_saida, "huggingface", nome, "README.md"), card)
