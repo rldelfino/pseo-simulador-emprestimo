@@ -36,6 +36,11 @@ CNPJ = "63.998.502/0001-73"
 EMAIL = "contato@datalabglobal.com"
 PAGINAS_VALOR_INDEXAVEIS = False
 
+# Data de atualização de cada página: só muda quando o conteúdo muda (ver _datas_das_paginas). O arquivo fica no repositório
+# e o robô semanal o commita junto com as páginas.
+MANIFESTO_PADRAO = os.path.join(AQUI, "dados", "datas_paginas.json")
+DATA_SENTINELA = datetime.date(2000, 1, 1)
+
 HOME_TITLE = "Pix no cartão de crédito: simule parcela, IOF e CET"
 HOME_DESC = ("Simule o Pix no cartão de crédito (R$ 300 a R$ 5.000, em 2x a 12x) e veja parcela, total na fatura, IOF e CET antes de contratar. "
              "Crédito caro: confira o custo.")
@@ -344,8 +349,60 @@ def _pagina_guia(pg, valores, hoje, ctx):
                                           OGTYPE="article" if guia else "website", JSONLD=ld, MAIN=main, SCRIPTS=menu_script()))
 
 
-def gerar_site(saida=SAIDA_PADRAO, hoje=None):
+def _ler_manifesto(caminho):
+    if not caminho:
+        return {}
+    try:
+        with open(caminho, encoding="utf-8") as f:
+            dados = json.load(f)
+    except (OSError, ValueError):
+        return {}
+    return dados if isinstance(dados, dict) else {}
+
+
+def _gravar_manifesto(caminho, dados):
+    texto = json.dumps(dados, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    try:
+        with open(caminho, encoding="utf-8", newline="") as f:
+            if f.read() == texto:
+                return
+    except OSError:
+        pass
+    os.makedirs(os.path.dirname(caminho), exist_ok=True)
+    with open(caminho, "w", encoding="utf-8", newline="\n") as f:
+        f.write(texto)
+
+
+def _impressao(html):
+    """Resumo do conteúdo da página sem o que muda sem mudar o texto: a data (a página é gerada com uma data fixa) e as versões (?v=) dos arquivos."""
+    return _resumo(re.sub(r"\?v=[0-9a-f]+", "?v=X", html).encode("utf-8"))
+
+
+def _datas_das_paginas(feitas, hoje, manifesto):
+    """feitas: {chave: função(data) -> html}. Devolve ({chave: data}, manifesto novo).
+
+    A data de uma página só vai para hoje quando o conteúdo dela mudou desde a última geração; se não mudou, fica a data guardada.
+    Assim o "Atualizado em", o lastmod do sitemap e o dateModified não mentem quando o robô semanal só regera o site."""
+    datas, novo = {}, {}
+    for chave, fazer in feitas.items():
+        h = _impressao(fazer(DATA_SENTINELA))
+        antigo = manifesto.get(chave) or {}
+        data = hoje
+        if antigo.get("hash") == h:
+            try:
+                data = datetime.date.fromisoformat(antigo.get("data", ""))
+            except ValueError:
+                data = hoje
+        datas[chave] = data
+        novo[chave] = {"hash": h, "data": data.isoformat()}
+    return datas, novo
+
+
+def gerar_site(saida=SAIDA_PADRAO, hoje=None, manifesto=None):
+    """manifesto: arquivo com as datas das páginas. Sem ele (e fora da pasta padrão, como nos testes) todas as páginas levam a data de hoje."""
     hoje = hoje or datetime.date.today()
+    if manifesto is None and os.path.abspath(saida) == os.path.abspath(SAIDA_PADRAO):
+        manifesto = MANIFESTO_PADRAO
     atualizado = hoje.strftime("%d/%m/%Y")
     os.makedirs(saida, exist_ok=True)
     valores = {
@@ -354,15 +411,24 @@ def gerar_site(saida=SAIDA_PADRAO, hoje=None):
         "FOOT_ENTENDA": _lista_rodape(ENTENDA), "FOOT_LEGAL": _lista_rodape(LEGAL),
         "FOOT_TRANSP": _lista_rodape(TRANSPARENCIA, '<li><a class="inline-flex min-h-11 items-center hover:text-white md:min-h-8" href="/feed.xml">Feed Atom</a></li>'),
     }
-    ctx = _ctx(hoje)
 
     def escrever(nome, texto):
         with open(os.path.join(saida, nome), "w", encoding="utf-8", newline="\n") as f:
             f.write(texto)
 
-    escrever("index.html", _pagina_home(valores, hoje))
+    def com_data(d):
+        return dict(valores, ATUALIZADO=d.strftime("%d/%m/%Y"))
+
+    feitas = {"index": lambda d: _pagina_home(com_data(d), d)}
     for pg in conteudo.PAGINAS:
-        escrever(pg["slug"] + ".html", _pagina_guia(pg, valores, hoje, ctx))
+        feitas[pg["slug"]] = (lambda pg_: lambda d: _pagina_guia(pg_, com_data(d), d, _ctx(d)))(pg)
+    datas, novo_manifesto = _datas_das_paginas(feitas, hoje, _ler_manifesto(manifesto))
+    escrever("index.html", feitas["index"](datas["index"]))
+    for pg in conteudo.PAGINAS:
+        escrever(pg["slug"] + ".html", feitas[pg["slug"]](datas[pg["slug"]]))
+    if manifesto:
+        _gravar_manifesto(manifesto, novo_manifesto)
+    valores["ATUALIZADO"] = max(datas.values()).strftime("%d/%m/%Y")  # llms.txt: a data da página mais recente
     escrever("404.html", NOT_FOUND.replace("/styles.css", "/styles.css?v=" + valores["CSSV"]))
     escrever(indexnow.CHAVE + ".txt", indexnow.CHAVE + "\n")
     escrever("feed.xml", feed_atom.gerar(hoje))
@@ -377,7 +443,7 @@ def gerar_site(saida=SAIDA_PADRAO, hoje=None):
     escrever("robots.txt", "User-agent: *\nAllow: /\n\nSitemap: " + DOMINIO + "/sitemap.xml\n")
     linhas = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for caminho in PAGINAS_INDEXAVEIS:
-        linhas.append("  <url><loc>" + DOMINIO + caminho + "</loc><lastmod>" + hoje.isoformat() + "</lastmod></url>")
+        linhas.append("  <url><loc>" + DOMINIO + caminho + "</loc><lastmod>" + datas["index" if caminho == "/" else caminho[1:]].isoformat() + "</lastmod></url>")
     linhas.append("</urlset>")
     escrever("sitemap.xml", "\n".join(linhas) + "\n")
     lista = "\n".join("- " + DOMINIO + c for c in PAGINAS_INDEXAVEIS)
