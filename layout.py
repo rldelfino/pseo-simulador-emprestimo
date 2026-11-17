@@ -58,7 +58,7 @@ LAYOUT = """<!doctype html>
 </main>
 
 <footer class="mt-16 border-t border-white/5 bg-slate-950/60">
-  <div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 md:grid-cols-4">
+  <div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 md:grid-cols-5">
     <div>
       <img src="/logo-full.png?v=@@ICONV@@" alt="Datalab Global" width="139" height="48" class="h-12 w-auto" loading="lazy">
       <p class="mt-4 text-sm leading-relaxed text-slate-400">Simulador do Pix no cartão de crédito. O custo aparece antes de qualquer botão.</p>
@@ -74,7 +74,11 @@ LAYOUT = """<!doctype html>
     </nav>
     <nav aria-label="Legal e mais">
       <p class="text-xs font-bold uppercase tracking-widest text-violet-400">Legal e mais</p>
-      <ul class="mt-2 text-sm text-slate-300 md:mt-4">@@FOOT_LEGAL@@<li><a class="inline-flex min-h-11 items-center hover:text-white md:min-h-8" href="@@HUB@@/">Outros simuladores</a></li></ul>
+      <ul class="mt-2 text-sm text-slate-300 md:mt-4">@@FOOT_LEGAL@@</ul>
+    </nav>
+    <nav aria-label="Outros simuladores da Datalab Global">
+      <p class="text-xs font-bold uppercase tracking-widest text-violet-400">Outros simuladores</p>
+      <ul class="mt-2 text-sm text-slate-300 md:mt-4">@@FOOT_OUTROS@@</ul>
     </nav>
   </div>
   <div class="border-t border-white/5">
