@@ -172,12 +172,22 @@ HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
         <div class="rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-100">
           <p id="r-custo-texto" class="font-semibold leading-relaxed"></p>
         </div>
+        <div id="referencia" class="hidden rounded-2xl border border-white/10 bg-slate-900/50 p-4">
+          <p class="@@ROTULO@@">E o mercado? Juros ao mês</p>
+          <ul id="ref-lista" class="mt-3 space-y-2 text-sm"></ul>
+          <p id="ref-veredito" class="mt-3 text-sm font-semibold leading-relaxed text-white"></p>
+          <p id="ref-nota" class="mt-2 text-xs leading-relaxed text-slate-400"></p>
+          <a class="mt-1 inline-flex min-h-11 items-center text-xs font-semibold text-violet-300 underline hover:text-white" href="/taxas-de-referencia">Ver as taxas do Banco Central e a fonte &rarr;</a>
+        </div>
         <p id="aviso-minimo" class="hidden text-sm text-amber-300">Com esse limite, o Pix ficaria abaixo do mínimo de R$ 300. Aumente o limite ou diminua as parcelas.</p>
         <div id="aviso-proposta" class="hidden rounded-2xl border border-amber-400/40 bg-amber-400/10 p-4 text-sm text-amber-100">
           <p id="txt-aviso-proposta"></p>
           <a id="link-parceiro" href="#" rel="noopener" class="mt-3 inline-flex min-h-11 items-center font-semibold text-violet-300 underline hover:text-white">Continuar mesmo assim &rarr;</a>
         </div>
+        <p id="aviso-pedido" class="text-center text-xs leading-relaxed text-slate-300">No parceiro você faz o pedido real: 6 passos, com CPF e documento original (RG ou CNH). Clique só se quiser contratar.</p>
         <button id="cta-pix" type="button" class="mt-auto w-full rounded-2xl bg-violet-400 px-5 py-4 text-base font-extrabold text-slate-950 shadow-lg shadow-violet-500/25 hover:bg-violet-300">Ver minha proposta &rarr;</button>
+        <button id="btn-copiar" type="button" class="inline-flex min-h-11 w-full items-center justify-center rounded-2xl border border-white/15 px-4 text-sm font-semibold text-violet-300 hover:border-violet-400/40 hover:text-white">Copiar o link desta simulação</button>
+        <p id="msg-copiado" role="status" class="hidden text-center text-xs text-violet-300"></p>
         <p id="aviso-celular" class="hidden text-center text-xs text-slate-400">A contratação é feita pelo celular: na próxima tela do parceiro, aponte a câmera para o QR Code e a proposta abre já preenchida. Tenha em mãos o RG ou a CNH original.</p>
         <p class="text-center text-xs text-slate-500">Você não digita dado pessoal aqui. A contratação acontece no ambiente do parceiro e depende de análise de crédito.</p>
       </div>
@@ -201,6 +211,23 @@ HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
         <p><a class="inline-flex min-h-11 items-center font-semibold text-violet-300 underline hover:text-white" href="/pix-no-cartao-ou-outro-credito">Compare com outros créditos &rarr;</a></p>
       </div>
     </div>
+    <details id="detalhe-prazos" class="mt-8 rounded-2xl border border-white/10 bg-slate-950/40 p-4">
+      <summary class="flex min-h-11 cursor-pointer items-center font-semibold text-white">Ver a tabela de todos os prazos (2x a 12x)</summary>
+      <div class="mt-3 overflow-x-auto">
+        <table class="w-full min-w-[34rem] border-collapse text-left text-sm">
+          <caption id="cap-prazos" class="pb-2 text-left text-xs text-slate-400"></caption>
+          <thead><tr>
+            <th scope="col" class="border-b border-white/15 px-3 py-2 text-[11px] font-bold uppercase tracking-widest text-violet-400">Prazo</th>
+            <th scope="col" class="border-b border-white/15 px-3 py-2 text-[11px] font-bold uppercase tracking-widest text-violet-400">Parcela</th>
+            <th scope="col" class="border-b border-white/15 px-3 py-2 text-[11px] font-bold uppercase tracking-widest text-violet-400">Total na fatura</th>
+            <th scope="col" class="border-b border-white/15 px-3 py-2 text-[11px] font-bold uppercase tracking-widest text-violet-400">Custo a mais</th>
+            <th scope="col" class="border-b border-white/15 px-3 py-2 text-[11px] font-bold uppercase tracking-widest text-violet-400">Juros ao mês</th>
+            <th scope="col" class="border-b border-white/15 px-3 py-2 text-[11px] font-bold uppercase tracking-widest text-violet-400">CET ao ano</th>
+          </tr></thead>
+          <tbody id="corpo-prazos"></tbody>
+        </table>
+      </div>
+    </details>
   </section>
 
   <section class="mt-8 grid gap-6 sm:grid-cols-2">

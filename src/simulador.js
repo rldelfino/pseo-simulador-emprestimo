@@ -13,6 +13,9 @@
 
   var estado = { modo: 'valor', valor: 1000, limite: 2000, parcelas: 12 };
   var usou = false;
+  var desenhos = 0;
+  var timerUrl = null;
+  var timerCopiado = null;
   var BRL_NUM = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 });
   var reduzMovimento = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -102,6 +105,127 @@
       ' a mais em 12x: só ' + P.brl(maximo.extra - minimo.extra) + ' de diferença entre o prazo mais curto e o mais longo.';
   }
 
+  function desenharTabela(pix) {
+    $('cap-prazos').textContent = 'Para receber ' + P.brl(pix) + ' por Pix. Fonte: Tabela 10 do parceiro.';
+    var corpo = $('corpo-prazos');
+    limpar(corpo);
+    for (var n = 2; n <= 12; n++) {
+      var c = P.simular('valor', pix, 0, n);
+      var ativa = n === estado.parcelas;
+      var tr = document.createElement('tr');
+      if (ativa) { tr.setAttribute('aria-current', 'true'); tr.className = 'bg-violet-400/10'; }
+      [n + 'x', P.brl(c.parcela), P.brl(c.total), P.brl(c.total - pix), P.pct(c.jurosMes), P.pct(c.cetAno)].forEach(function (txt) {
+        var td = document.createElement('td');
+        td.className = 'num border-b border-white/10 px-3 py-2 ' + (ativa ? 'font-semibold text-white' : 'text-slate-300');
+        td.textContent = txt;
+        tr.appendChild(td);
+      });
+      corpo.appendChild(tr);
+    }
+  }
+
+  // Compara os juros ao mês do Pix com as médias do Banco Central (juros com juros, nunca CET com juros). Sem dado, o bloco some.
+  function desenharReferencia(r, escondido) {
+    var refs = P.referencias || [];
+    var bloco = $('referencia');
+    if (!refs.length || escondido) { bloco.classList.add('hidden'); return; }
+    bloco.classList.remove('hidden');
+    var lista = $('ref-lista');
+    limpar(lista);
+    function linha(nome, valor, destaque) {
+      var li = document.createElement('li');
+      li.className = 'flex items-baseline justify-between gap-3 ' + (destaque ? 'font-semibold text-violet-300' : 'text-slate-300');
+      var a = document.createElement('span');
+      a.textContent = nome;
+      var b = document.createElement('span');
+      b.className = 'num shrink-0';
+      b.textContent = valor;
+      li.appendChild(a); li.appendChild(b);
+      lista.appendChild(li);
+    }
+    linha('Pix no cartão em ' + estado.parcelas + 'x', P.pct(r.jurosMes) + ' ao mês', true);
+    var meses = [];
+    refs.forEach(function (x) {
+      linha(x.nome + ' (média)', P.pct(x.am) + ' ao mês', false);
+      if (meses.indexOf(x.mes) < 0) meses.push(x.mes);
+    });
+    var menores = refs.filter(function (x) { return x.am < r.jurosMes * 0.97; });
+    var texto;
+    if (menores.length === refs.length) {
+      texto = 'Em média, as ' + refs.length + ' modalidades acima têm juros menores que o Pix em ' + estado.parcelas + 'x. Peça o CET dessas alternativas antes de decidir.';
+    } else if (menores.length === 0) {
+      texto = 'Nenhuma das médias acima tem juros claramente menores que o Pix em ' + estado.parcelas + 'x.';
+    } else {
+      var nomes = menores.map(function (x) { return x.nome.toLowerCase(); }).join(' e ');
+      texto = 'Em média, ' + nomes + (menores.length > 1 ? ' têm' : ' tem') + ' juros menores que o Pix em ' + estado.parcelas + 'x. Peça o CET dessas alternativas antes de decidir.';
+    }
+    $('ref-veredito').textContent = texto;
+    $('ref-nota').textContent = 'Média das novas operações de crédito de pessoas físicas (Banco Central, ' + meses.join(' e ') +
+      '). É taxa de juros, não é CET, e não é oferta: a sua pode ser maior ou menor.';
+  }
+
+  // Endereço compartilhável: modo, valor (ou limite) e parcelas. Sem dado pessoal. O canonical da página continua sendo a home.
+  function lerEndereco() {
+    try {
+      var q = new URLSearchParams(window.location.search);
+      var modo = q.get('modo');
+      if (modo === 'valor' || modo === 'limite') estado.modo = modo;
+      var par = parseInt(q.get('parcelas'), 10);
+      if (par >= 2 && par <= 12) estado.parcelas = par;
+      var soNumero = /^[\d.,]+$/;  // qualquer outra coisa no endereço é ignorada
+      var tv = q.get('valor') || '';
+      var v = soNumero.test(tv) ? lerNumero(tv) : 0;
+      if (v > 0) estado.valor = clamp(v, P.PIX_MIN, P.PIX_MAX);
+      var tl = q.get('limite') || '';
+      var l = soNumero.test(tl) ? lerNumero(tl) : 0;
+      if (l > 0) estado.limite = clamp(l, LIMITE_MIN, LIMITE_MAX);
+    } catch (e) { /* endereço estranho: usa os valores padrão */ }
+  }
+
+  function enderecoDaSimulacao() {
+    var q = new URLSearchParams();
+    var campo = estado.modo === 'valor' ? estado.valor : estado.limite;
+    q.set('modo', estado.modo);
+    q.set(estado.modo, String(Math.round(campo * 100) / 100));
+    q.set('parcelas', String(estado.parcelas));
+    return window.location.origin + window.location.pathname + '?' + q.toString() + '#simulador';
+  }
+
+  function atualizarEndereco() {
+    clearTimeout(timerUrl);
+    // espera a pessoa parar de mexer: o navegador limita as trocas de endereço por segundo
+    timerUrl = setTimeout(function () {
+      try { window.history.replaceState(null, '', enderecoDaSimulacao()); } catch (e) { /* sem histórico: o botão de copiar continua valendo */ }
+    }, 400);
+  }
+
+  async function copiarLink() {
+    var url = enderecoDaSimulacao();
+    var ok = false;
+    try { window.history.replaceState(null, '', url); } catch (e) { /* ignora */ }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) { await navigator.clipboard.writeText(url); ok = true; }
+    } catch (e) { /* tenta o plano B abaixo */ }
+    if (!ok) {
+      try {
+        var t = document.createElement('textarea');
+        t.value = url;
+        t.setAttribute('readonly', '');
+        t.className = 'fixed left-0 top-0 opacity-0';
+        document.body.appendChild(t);
+        t.select();
+        ok = document.execCommand('copy');
+        document.body.removeChild(t);
+      } catch (e) { ok = false; }
+    }
+    var msg = $('msg-copiado');
+    msg.textContent = ok ? 'Link copiado. Quem abrir vê esta mesma simulação.' : 'Não deu para copiar sozinho. O link já está na barra de endereço do navegador.';
+    msg.classList.remove('hidden');
+    clearTimeout(timerCopiado);
+    timerCopiado = setTimeout(function () { msg.classList.add('hidden'); }, 4000);
+    evento('copiou-link', { valor: estado.modo === 'valor' ? estado.valor : estado.limite, prazo: estado.parcelas, modo: estado.modo });
+  }
+
   function desenhar() {
     var r = P.simular(estado.modo, estado.valor, estado.limite, estado.parcelas);
     var lim = limitesDoCampo();
@@ -145,6 +269,10 @@
 
     desenharRosca(r.pix, r.total);
     desenharBarras(r.pix);
+    desenharReferencia(r, abaixo);
+    desenharTabela(r.pix);
+    desenhos += 1;
+    if (desenhos > 1) atualizarEndereco();  // o primeiro desenho é o da carga da página
   }
 
   function interagiu() {
@@ -216,6 +344,7 @@
   }
 
   function iniciar() {
+    lerEndereco();
     $('btn-modo-valor').addEventListener('click', function () { estado.modo = 'valor'; desenhar(); });
     $('btn-modo-limite').addEventListener('click', function () { estado.modo = 'limite'; desenhar(); });
     $('btn-modo-valor').parentNode.addEventListener('keydown', function (e) {
@@ -241,6 +370,7 @@
     $('campo-valor').addEventListener('keydown', function (e) { if (e.key === 'Enter') e.target.blur(); });
     $('range-parcelas').addEventListener('input', function (e) { estado.parcelas = Number(e.target.value); interagiu(); desenhar(); });
     $('cta-pix').addEventListener('click', abrirProposta);
+    $('btn-copiar').addEventListener('click', copiarLink);
     iniciarBarraResumo();
     var pc = window.matchMedia && window.matchMedia('(pointer: fine) and (min-width: 900px)').matches;
     $('aviso-celular').classList.toggle('hidden', !pc);

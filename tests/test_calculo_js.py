@@ -44,3 +44,16 @@ def test_js_formata_em_reais(tmp_path):
     codigo = "const P=require(process.argv[1]);console.log(P.pct(148.97));console.log(P.PIX_MAX);"
     saida = subprocess.run([NODE, "-e", codigo, str(caminho)], capture_output=True, text=True, check=True, timeout=30).stdout.split()
     assert saida == ["148,97%", "5000"]
+
+
+@pytest.mark.skipif(NODE is None, reason="Node não instalado")
+def test_js_leva_as_medias_do_bcb_iguais_ao_csv(tmp_path):
+    caminho = tmp_path / "calculo.js"
+    caminho.write_text(gerador_emprestimo.gerar_calculo_js(), encoding="utf-8")
+    codigo = "const P=require(process.argv[1]);console.log(JSON.stringify(P.referencias));"
+    refs = json.loads(subprocess.run([NODE, "-e", codigo, str(caminho)], capture_output=True, text=True, encoding="utf-8", check=True, timeout=30).stdout)
+    esperado = gerador_emprestimo.referencias_bcb()
+    assert refs == esperado and len(refs) == 3
+    for r in refs:
+        assert r["am"] < r["aa"] and 10 < r["aa"] < 1500  # mensal equivalente é menor que a taxa anual; valor plausível
+        assert r["mes"].split(" de ")[1].isdigit()
