@@ -457,6 +457,7 @@ def corpo_atualizacoes(ctx):
 
 
 ATUALIZACOES = [
+    ("17/11/2026", "Os dois conjuntos de dados abertos também estão no Hugging Face, com a mesma licença (link na página Dados abertos)."),
     ("16/11/2026", "Revisão geral do site, com correções: a home chamava os juros ao mês de CET (agora diz juros ao mês e CET ao ano); o modo usar meu limite passou a aceitar limites a partir de R$ 300 e mostra quanto falta para o mínimo; se não conseguirmos pré-preencher a proposta no parceiro, avisamos antes de abrir a tela dele; no celular, uma barra fixa mostra parcela e total enquanto você mexe nos controles; o campo de valor aceita milhar e vírgula; o menu fecha ao tocar fora; títulos mais curtos e acessibilidade das abas e dos controles deslizantes."),
     ("15/11/2026", "Visual em roxo, com logo e ícones novos, e botões e links do celular com 44 px de altura."),
     ("14/11/2026", "Novo visual, na mesma família dos outros simuladores da Datalab Global: títulos em Playfair Display, texto em Inter (fontes servidas pelo próprio site), gráfico da composição do total e barras com o custo a mais por prazo. A conta e os números não mudaram."),
@@ -487,6 +488,7 @@ def corpo_dados_abertos(ctx):
             [a("/dados/" + c["nome"] + ".json", c["nome"] + ".json"), "JSON"],
             [a("/dados/datapackage-" + c["nome"] + ".json", "datapackage-" + c["nome"] + ".json"), "Descrição do conjunto (Data Package)"],
             [a(c["kaggle"], "Kaggle"), "Cópia no Kaggle (mesma licença)"],
+            [a(c["huggingface"], "Hugging Face"), "Cópia no Hugging Face (mesma licença)"],
         ]
         saida += (
             h2(c["titulo"])

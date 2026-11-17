@@ -138,6 +138,7 @@ def test_pagina_de_dados_abertos(site):
     assert 'href="/dados-abertos"' in ler(site, "index.html")  # rodapé
     for c in da.CONJUNTOS:
         assert c["kaggle"].startswith("https://www.kaggle.com/datasets/rodolfodelfino/") and 'href="' + c["kaggle"] + '"' in html
+        assert c["huggingface"].startswith("https://huggingface.co/datasets/datalabglobal/") and 'href="' + c["huggingface"] + '"' in html
 
 
 # ---------- feed Atom ----------
@@ -201,6 +202,8 @@ def test_cabecalho_yaml_do_readme_do_hugging_face_e_valido(site, tmp_path):
         card = (saida / "huggingface" / nome / "README.md").read_text(encoding="utf-8")
         topo = card.split("\n---\n", 1)[0].splitlines()[1:]
         for linha in topo:
+            if linha.startswith("- config_name:"):
+                continue  # item de mapa do bloco configs, não é um texto livre
             if linha.startswith("- ") or ":" not in linha:
                 valor = linha[2:] if linha.startswith("- ") else ""
             else:

@@ -5,6 +5,9 @@ language:
 pretty_name: "Taxas médias de crédito PF do Banco Central"
 size_categories:
 - n<1K
+configs:
+- config_name: default
+  data_files: taxas-referencia-bcb.csv
 tags:
 - "finance"
 - "brazil"

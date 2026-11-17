@@ -5,6 +5,9 @@ language:
 pretty_name: "Pix no cartão: parcela, IOF e CET (Tabela 10)"
 size_categories:
 - n<1K
+configs:
+- config_name: default
+  data_files: pix-no-cartao-tabela-10.csv
 tags:
 - "finance"
 - "brazil"
