@@ -50,7 +50,7 @@ CSP = (
     "img-src 'self' data:; "
     "font-src 'self'; "
     "connect-src 'self' https://api.triagem.digital https://cloudflareinsights.com https://cloud.umami.is https://gateway.umami.is; "
-    "frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+    "frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
 )
 
 HEADERS = """/*
@@ -58,7 +58,8 @@ HEADERS = """/*
   X-Content-Type-Options: nosniff
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=()
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=(), usb=(), interest-cohort=()
+  Cross-Origin-Opener-Policy: same-origin
   Content-Security-Policy: @@CSP@@
 
 /styles.css
@@ -229,6 +230,12 @@ def versao_icones():
     return h.hexdigest()[:10]
 
 
+def versao_og_image():
+    """A imagem de compartilhamento muda de endereço (?v=) quando muda o arquivo: Facebook, WhatsApp e LinkedIn guardam a antiga por semanas."""
+    with open(os.path.join(AQUI, "paginas_seo", "og-image.png"), "rb") as f:
+        return _resumo(f.read())
+
+
 def _sem_tags(html):
     return re.sub(r"<[^>]+>", "", html).replace("&quot;", '"')
 
@@ -271,7 +278,7 @@ def _lista_rodape(slugs, extra=""):
 def _faq_html():
     saida = ""
     for pergunta, resposta in conteudo.FAQ:
-        saida += ('<details class="faq rounded-2xl border border-white/10 bg-slate-900/40 p-5"><summary class="flex items-center justify-between gap-4 font-semibold text-white">'
+        saida += ('<details class="faq rounded-2xl border border-white/10 bg-slate-900/40 p-5"><summary class="flex min-h-11 cursor-pointer items-center justify-between gap-4 font-semibold text-white">'
                   + pergunta + '<span class="mais text-xl text-slate-400" aria-hidden="true">+</span></summary><p class="mt-3 text-sm leading-relaxed text-slate-300">'
                   + resposta + "</p></details>")
     return saida
@@ -343,7 +350,7 @@ def gerar_site(saida=SAIDA_PADRAO, hoje=None):
     os.makedirs(saida, exist_ok=True)
     valores = {
         "DOMINIO": DOMINIO, "HUB": HUB, "UMAMI_ID": UMAMI_ID, "RAZAO": RAZAO_SOCIAL, "CNPJ": CNPJ, "EMAIL": EMAIL,
-        "ATUALIZADO": atualizado, "CSSV": versao_css(), "ICONV": versao_icones(), "NAV": _nav_desktop(), "NAVMOBILE": _nav_celular(),
+        "ATUALIZADO": atualizado, "CSSV": versao_css(), "ICONV": versao_icones(), "OGV": versao_og_image(), "NAV": _nav_desktop(), "NAVMOBILE": _nav_celular(),
         "FOOT_ENTENDA": _lista_rodape(ENTENDA), "FOOT_LEGAL": _lista_rodape(LEGAL),
         "FOOT_TRANSP": _lista_rodape(TRANSPARENCIA, '<li><a class="inline-flex min-h-11 items-center hover:text-white md:min-h-8" href="/feed.xml">Feed Atom</a></li>'),
     }

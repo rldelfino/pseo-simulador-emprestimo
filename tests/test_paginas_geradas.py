@@ -46,6 +46,13 @@ def test_csp_libera_umami_e_parceiro_e_nada_a_mais(site):
     assert "https://api.triagem.digital" in cab
     assert "frame-ancestors 'none'" in cab
     assert "'unsafe-inline'" not in cab and "'unsafe-eval'" not in cab
+    assert "object-src 'none'" in cab and "Cross-Origin-Opener-Policy: same-origin" in cab
+
+
+def test_texto_pequeno_nao_usa_cinza_de_baixo_contraste():
+    # slate-500 sobre o fundo escuro dá cerca de 4:1 (o mínimo para texto pequeno é 4,5:1)
+    import layout
+    assert "text-slate-500" not in layout.HOME_MAIN and "text-slate-500" not in layout.LAYOUT
 
 
 def test_html_sem_script_ou_estilo_inline(site):

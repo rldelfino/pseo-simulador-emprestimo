@@ -23,11 +23,11 @@ LAYOUT = """<!doctype html>
 <meta property="og:title" content="@@TITLE@@">
 <meta property="og:description" content="@@DESC@@">
 <meta property="og:url" content="@@CANONICAL@@">
-<meta property="og:image" content="@@DOMINIO@@/og-image.png">
+<meta property="og:image" content="@@DOMINIO@@/og-image.png?v=@@OGV@@">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="@@TITLE@@">
 <meta name="twitter:description" content="@@DESC@@">
-<meta name="twitter:image" content="@@DOMINIO@@/og-image.png">
+<meta name="twitter:image" content="@@DOMINIO@@/og-image.png?v=@@OGV@@">
 <meta name="theme-color" content="#020617">
 <link rel="preload" href="/fonts/playfair-display-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -62,7 +62,7 @@ LAYOUT = """<!doctype html>
     <div>
       <img src="/logo-full.png?v=@@ICONV@@" alt="Datalab Global" width="139" height="48" class="h-12 w-auto" loading="lazy">
       <p class="mt-4 text-sm leading-relaxed text-slate-400">Simulador do Pix no cartão de crédito. O custo aparece antes de qualquer botão.</p>
-      <p class="mt-3 text-xs leading-relaxed text-slate-500">A Datalab Global pode receber comissão do parceiro pelas contratações feitas a partir deste site. Não somos banco e não concedemos crédito.</p>
+      <p class="mt-3 text-xs leading-relaxed text-slate-400">A Datalab Global pode receber comissão do parceiro pelas contratações feitas a partir deste site. Não somos banco e não concedemos crédito.</p>
     </div>
     <nav aria-label="Entenda">
       <p class="text-xs font-bold uppercase tracking-widest text-violet-400">Entenda</p>
@@ -78,7 +78,7 @@ LAYOUT = """<!doctype html>
     </nav>
   </div>
   <div class="border-t border-white/5">
-    <div class="mx-auto max-w-6xl px-4 py-6 text-xs leading-relaxed text-slate-500">
+    <div class="mx-auto max-w-6xl px-4 py-6 text-xs leading-relaxed text-slate-400">
       <p>Atualizado em @@ATUALIZADO@@. Condições da Tabela 10 do parceiro, conferidas automaticamente toda semana.</p>
       <p class="mt-1">Datalab Global é marca de @@RAZAO@@, CNPJ @@CNPJ@@. Contato: <a class="underline hover:text-slate-300" href="mailto:@@EMAIL@@">@@EMAIL@@</a>.</p>
       <p class="mt-1">A simulação não é proposta de crédito. Crédito sujeito a análise e aprovação do parceiro, sem garantia de aprovação.</p>
@@ -101,7 +101,7 @@ HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
     </a>
     <h1 class="mx-auto mt-6 max-w-4xl text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">Pix no cartão de crédito: veja o custo real antes de contratar</h1>
     <p class="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">Receba de <strong class="text-white">R$ 300 a R$ 5.000</strong> por Pix e pague em <strong class="text-white">2x a 12x</strong> na fatura do cartão. É crédito caro: o custo aparece primeiro, antes de qualquer botão.</p>
-    <p class="mt-5 text-[11px] uppercase tracking-widest text-slate-500">Tabela 10 do parceiro, conferida toda semana. Atualizado em @@ATUALIZADO@@</p>
+    <p class="mt-5 text-[11px] uppercase tracking-widest text-slate-400">Tabela 10 do parceiro, conferida toda semana. Atualizado em @@ATUALIZADO@@</p>
   </section>
 
   <section id="simulador" aria-labelledby="titulo-simulador" class="glass-panel mt-10 rounded-[2rem] p-5 sm:p-10">
@@ -122,11 +122,11 @@ HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
           <div class="flex items-center justify-between gap-3">
             <label id="rotulo-valor" for="campo-valor" class="@@ROTULO@@">Valor que você quer no Pix</label>
             <div class="flex items-baseline gap-1"><span class="text-lg font-semibold text-slate-300">R$</span>
-              <input id="campo-valor" type="text" inputmode="decimal" autocomplete="off" value="1.000" class="num w-32 bg-transparent text-right text-3xl font-semibold text-white">
+              <input id="campo-valor" type="text" inputmode="decimal" autocomplete="off" value="1.000" class="num min-h-11 w-32 bg-transparent text-right text-3xl font-semibold text-white">
             </div>
           </div>
           <input id="range-valor" aria-labelledby="rotulo-valor" type="range" min="300" max="5000" step="50" value="1000" class="mt-5">
-          <div class="mt-2 flex justify-between text-xs text-slate-500"><span id="min-valor">R$ 300,00</span><span id="max-valor">R$ 5.000,00</span></div>
+          <div class="mt-2 flex justify-between text-xs text-slate-400"><span id="min-valor">R$ 300,00</span><span id="max-valor">R$ 5.000,00</span></div>
         </div>
 
         <div class="tile rounded-2xl p-5">
@@ -135,7 +135,7 @@ HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
             <span id="txt-parcelas" class="num text-3xl font-semibold text-white">12x</span>
           </div>
           <input id="range-parcelas" type="range" min="2" max="12" step="1" value="12" class="mt-5">
-          <div class="mt-2 flex justify-between text-xs text-slate-500"><span>2x</span><span>12x</span></div>
+          <div class="mt-2 flex justify-between text-xs text-slate-400"><span>2x</span><span>12x</span></div>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
@@ -172,7 +172,7 @@ HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
         <div class="rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-100">
           <p id="r-custo-texto" class="font-semibold leading-relaxed"></p>
         </div>
-        <div id="referencia" class="hidden rounded-2xl border border-white/10 bg-slate-900/50 p-4">
+        <div id="referencia" aria-live="off" class="hidden rounded-2xl border border-white/10 bg-slate-900/50 p-4">
           <p class="@@ROTULO@@">E o mercado? Juros ao mês</p>
           <ul id="ref-lista" class="mt-3 space-y-2 text-sm"></ul>
           <p id="ref-veredito" class="mt-3 text-sm font-semibold leading-relaxed text-white"></p>
@@ -189,7 +189,7 @@ HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
         <button id="btn-copiar" type="button" class="inline-flex min-h-11 w-full items-center justify-center rounded-2xl border border-white/15 px-4 text-sm font-semibold text-violet-300 hover:border-violet-400/40 hover:text-white">Copiar o link desta simulação</button>
         <p id="msg-copiado" role="status" class="hidden text-center text-xs text-violet-300"></p>
         <p id="aviso-celular" class="hidden text-center text-xs text-slate-400">A contratação é feita pelo celular: na próxima tela do parceiro, aponte a câmera para o QR Code e a proposta abre já preenchida. Tenha em mãos o RG ou a CNH original.</p>
-        <p class="text-center text-xs text-slate-500">Você não digita dado pessoal aqui. A contratação acontece no ambiente do parceiro e depende de análise de crédito.</p>
+        <p class="text-center text-xs text-slate-400">Você não digita dado pessoal aqui. A contratação acontece no ambiente do parceiro e depende de análise de crédito.</p>
       </div>
     </div>
   </section>
@@ -285,7 +285,7 @@ GUIA_CABECALHO = """<nav aria-label="Você está em" class="pt-8 text-center">
 </nav>
 <article class="mx-auto max-w-3xl pb-4">
   <h1 class="mt-6 text-center text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">@@H1@@</h1>
-  <p class="mt-4 text-center text-[11px] uppercase tracking-widest text-slate-500">Atualizado em @@ATUALIZADO@@ &middot; @@RAZAO@@</p>
+  <p class="mt-4 text-center text-[11px] uppercase tracking-widest text-slate-400">Atualizado em @@ATUALIZADO@@ &middot; @@RAZAO@@</p>
   <div class="glass-panel mt-10 rounded-[2rem] p-6 sm:p-10">
 """
 

@@ -79,7 +79,7 @@
       var b = document.createElement('button');
       b.type = 'button';
       var ativa = l.n === estado.parcelas;
-      b.className = 'flex items-center gap-3 rounded-lg border px-3 py-2 text-left text-xs ' +
+      b.className = 'flex min-h-11 items-center gap-3 rounded-lg border px-3 py-2 text-left text-xs ' +
         (ativa ? 'border-violet-400/50 bg-violet-400/10 text-white' : 'border-transparent text-slate-300 hover:bg-white/5');
       b.setAttribute('aria-label', l.n + ' parcelas de ' + P.brl(l.parcela) + ', paga ' + P.brl(l.extra) + ' a mais');
       b.setAttribute('aria-pressed', String(ativa));
