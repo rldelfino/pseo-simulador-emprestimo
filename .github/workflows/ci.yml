@@ -26,5 +26,8 @@ jobs:
           python gerador_emprestimo.py
           npm run build:css
           python gerador_emprestimo.py  # de novo: só atualiza a versão (?v=) do styles.css
+      - name: Datas das páginas em dia (o gerador não pode mudar o arquivo versionado)
+        # Se falhar: rode o gerador, confira e commite dados/datas_paginas.json (conteúdo mudou sem o arquivo de datas, ou a geração diverge entre sistemas).
+        run: git diff --exit-code -- dados/datas_paginas.json
       - name: Testes (a saída do pytest é o critério de merge)
         run: python -m pytest -q

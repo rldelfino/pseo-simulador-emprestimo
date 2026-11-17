@@ -49,7 +49,7 @@ def _pct(v):
 def gerar(hoje=None):
     hoje = hoje or datetime.date.today()
     itens = entradas()
-    atualizado = max([e["data"] for e in itens] + [hoje.isoformat() + "T00:00:00Z"])
+    atualizado = max(e["data"] for e in itens)  # a data da última entrada, não a de hoje: gerar o site de novo não atualiza o feed
     linhas = ['<?xml version="1.0" encoding="utf-8"?>', '<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="pt-BR">',
               "  <title>Pix no cartão — Datalab Global</title>",
               "  <subtitle>Atualizações do simulador e taxas médias do Banco Central</subtitle>",

@@ -16,7 +16,7 @@ Idioma: português do Brasil. Estilo: curto, sem jargão, números reais, dizer 
 
 ## Comandos
 - Build: `python gerador_emprestimo.py` → `npm run build:css` → `python gerador_emprestimo.py` (o hash `?v=` do CSS/JS é calculado na geração).
-- Testes: `python -m pytest -q` (98). Pacote de publicação: `python publicacao.py`.
+- Testes: `python -m pytest -q` (105). Pacote de publicação: `python publicacao.py`.
 - Fontes: `layout.py` (HTML), `conteudo.py` (textos, títulos ≤ 60 caracteres), `src/simulador.js`, `src/menu.js`, `gerador_emprestimo.py`. Saída: `paginas_seo/` (Cloudflare Pages, sem build). `gh` portátil: `C:\Users\rldel\tools\gh\app\bin`.
 - Robô semanal `.github/workflows/atualiza_taxas.yml` (seg 08:00 UTC): taxas BCB, rebuild, IndexNow e, por último, Kaggle (Python 3.12, `continue-on-error`).
 
@@ -33,6 +33,7 @@ Idioma: português do Brasil. Estilo: curto, sem jargão, números reais, dizer 
 - No ar e testado: auditoria completa (links, SEO, a11y, WebKit iPhone 13/SE/desktop, PageSpeed 97–100), correções, barra fixa no celular, campo com milhar/vírgula, menu que fecha fora, botões 44 px, security.txt, twitter:card. PRs 10 a 17 mesclados.
 - 17/11 (PR 19): resultado compara os juros ao mês do Pix com as médias do BCB (`calculo.js` leva `referencias`, vindas de `taxas_referencia`; o robô semanal já regenera), aviso "pedido real: 6 passos, com CPF e documento original" antes do botão, link compartilhável da simulação (`/?modo=valor&valor=1000&parcelas=12#simulador`, só número; o canonical segue sendo a home) com botão de copiar (evento Umami `copiou-link`) e tabela de todos os prazos em `<details>`.
 - 17/11 (PR 20, auditoria): cabeçalhos com `object-src 'none'`, `upgrade-insecure-requests` e COOP; contraste (slate-500 virou slate-400); alvos de toque de 44 px nas barras de prazo, no campo de valor e no FAQ; lista do BCB fora do anúncio automático do leitor de tela; og-image nova (custo primeiro, domínio certo) com `?v=`. Imagem sai de `src/og-image.html` + `python gerar_og_image.py` (precisa do Playwright; não roda no CI).
+- 17/11 (PR 21): data de cada página só muda quando o conteúdo muda. `dados/datas_paginas.json` guarda hash e data por página; o gerador compara (com data fixa e sem `?v=`) e só leva a data de hoje se o hash mudou. Vale para "Atualizado em", `lastmod` do sitemap, `dateModified` e `llms.txt`; o feed usa a data da última entrada. O arquivo é commitado pelo robô semanal; o CI falha (`git diff --exit-code`) se o gerador o alterar.
 - NÃO verificado: iPhone físico; passos 2–6 do checkout; Umami só do empréstimo (ID compartilhado).
 
 ## Próximos Passos
