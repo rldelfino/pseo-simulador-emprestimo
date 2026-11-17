@@ -72,7 +72,9 @@ jobs:
           KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
         run: |
           if [ -z "$KAGGLE_API_TOKEN" ]; then echo "Sem token do Kaggle: passo ignorado"; exit 0; fi
-          pip install "kaggle>=1.8.0"
+          pip install "kaggle>=1.8.0" six
+          falhou=0
           for pasta in pix-no-cartao-tabela-10 taxas-referencia-bcb; do
-            kaggle datasets version -p "publicacao/kaggle/$pasta" -m "atualização semanal" || echo "Não consegui atualizar $pasta no Kaggle"
+            kaggle datasets version -p "publicacao/kaggle/$pasta" -m "atualização semanal" || { echo "Não consegui atualizar $pasta no Kaggle"; falhou=1; }
           done
+          exit $falhou
