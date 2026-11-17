@@ -22,6 +22,7 @@ ODBL = {"id": "ODbL-1.0", "titulo": "ODbL 1.0", "url": "https://opendatacommons.
 PIX = dict(
     nome="pix-no-cartao-tabela-10",
     kaggle="https://www.kaggle.com/datasets/rodolfodelfino/pix-no-carto-parcela-iof-e-cet-tabela-10",
+    huggingface="https://huggingface.co/datasets/datalabglobal/pix-no-cartao-tabela-10",
     titulo="Pix no cartão de crédito: Tabela 10 do parceiro (parcela, IOF, juros e CET)",
     descricao=("Condições do Pix no cartão de crédito segundo a Tabela 10 do parceiro (correspondente bancário), de 2 a 12 parcelas, para cada R$ 1.000 recebidos por Pix: "
                "fator total, parcela, total na fatura, IOF, juros ao mês, juros equivalentes ao ano e CET ao ano. Valor do Pix de R$ 300 a R$ 5.000. "
@@ -43,6 +44,7 @@ PIX = dict(
 BCB = dict(
     nome="taxas-referencia-bcb",
     kaggle="https://www.kaggle.com/datasets/rodolfodelfino/taxas-mdias-de-crdito-pf-do-banco-central",
+    huggingface="https://huggingface.co/datasets/datalabglobal/taxas-referencia-bcb",
     titulo="Taxas médias de juros do Banco Central: cheque especial, crédito pessoal não consignado e cartão rotativo",
     descricao=("Taxa média de juros das novas operações de crédito com recursos livres, pessoas físicas, ponderada pelo valor das concessões, em % ao ano, série mensal, "
                "para cheque especial (SGS 20741), crédito pessoal não consignado (SGS 20742) e cartão de crédito rotativo (SGS 22022). "
