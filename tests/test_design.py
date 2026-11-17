@@ -185,3 +185,22 @@ def test_links_de_destaque_e_404_com_area_de_toque(site):
     html = ler(site, "index.html")
     assert 'inline-flex min-h-11 items-center font-semibold text-violet-300 underline hover:text-white" href="/custo-cet-iof"' in html
     assert "min-h-11" in ler(site, "404.html")
+
+
+def test_resultado_compara_com_o_bcb_avisa_do_pedido_real_e_copia_o_link(site):
+    html = ler(site, "index.html")
+    for i in ("referencia", "ref-lista", "ref-veredito", "ref-nota", "aviso-pedido", "btn-copiar", "msg-copiado",
+              "detalhe-prazos", "corpo-prazos", "cap-prazos"):
+        assert 'id="' + i + '"' in html, i
+    # o aviso do pedido real vem ANTES do botão que abre o parceiro, e o texto do botão não mudou
+    assert html.index('id="aviso-pedido"') < html.index('id="cta-pix"')
+    assert "6 passos, com CPF e documento original" in html and "Ver minha proposta" in html
+    assert html.count("<div") == html.count("</div>") and html.count("<details") == html.count("</details>")
+    assert 'href="/taxas-de-referencia"' in html[html.index('id="referencia"'):html.index('id="aviso-minimo"')]
+
+
+def test_simulador_js_le_e_grava_o_endereco_sem_dado_pessoal():
+    js = open(os.path.join(RAIZ, "src", "simulador.js"), encoding="utf-8").read()
+    assert "URLSearchParams" in js and "replaceState" in js and "copiou-link" in js
+    assert ".innerHTML" not in js and "insertAdjacentHTML" not in js  # texto vindo do endereço nunca vira HTML
+    assert "parcelas" in js and "cpf" not in js.lower()

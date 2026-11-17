@@ -23,6 +23,7 @@ import dados_abertos
 import feed_atom
 import indexnow
 import layout
+import taxas_referencia
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 SAIDA_PADRAO = os.path.join(AQUI, "paginas_seo")
@@ -92,6 +93,8 @@ CALCULO_JS = """/* GERADO por gerador_emprestimo.py a partir de dados/pix-tabela
   var T = @@TABELA@@;
   var PIX_MIN = @@PIX_MIN@@;
   var PIX_MAX = T.pix_max;
+  // Taxas médias de juros do Banco Central (referência, não oferta): aa = ao ano, am = ao mês equivalente (juros compostos).
+  var REF = @@REFERENCIAS@@;
 
   function simular(modo, valor, limite, parcelas) {
     var fator = T.fator_base + T.fator_por_parcela * parcelas;
@@ -111,7 +114,7 @@ CALCULO_JS = """/* GERADO por gerador_emprestimo.py a partir de dados/pix-tabela
   function brl(v) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v); }
   function pct(v) { return v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%'; }
 
-  var api = { simular: simular, brl: brl, pct: pct, PIX_MIN: PIX_MIN, PIX_MAX: PIX_MAX, tableUUID: T.table_uuid, tabela: T };
+  var api = { simular: simular, brl: brl, pct: pct, PIX_MIN: PIX_MIN, PIX_MAX: PIX_MAX, tableUUID: T.table_uuid, tabela: T, referencias: REF };
   root.DatalabPix = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -160,9 +163,22 @@ def _preencher(texto, valores):
     return texto
 
 
+def referencias_bcb():
+    """Última taxa média do BCB de cada série, para o simulador comparar com os juros do Pix. Sem dado, lista vazia (o bloco some)."""
+    linhas = taxas_referencia.ler()
+    saida = []
+    for sr in taxas_referencia.SERIES:
+        u = taxas_referencia.ultima(sr["codigo"], linhas)
+        if u:
+            saida.append({"chave": sr["chave"], "nome": sr["nome"], "mes": taxas_referencia.mes_extenso(u["mes"]),
+                          "aa": u["taxa_aa"], "am": round(taxas_referencia.mensal_equivalente(u["taxa_aa"]), 4)})
+    return saida
+
+
 def gerar_calculo_js():
     tabela = json.dumps(calculo.TABELA, ensure_ascii=False, sort_keys=True)
-    return _preencher(CALCULO_JS, {"TABELA": tabela, "PIX_MIN": str(calculo.PIX_MIN)})
+    refs = json.dumps(referencias_bcb(), ensure_ascii=False, sort_keys=True)
+    return _preencher(CALCULO_JS, {"TABELA": tabela, "PIX_MIN": str(calculo.PIX_MIN), "REFERENCIAS": refs})
 
 
 def _resumo(dados):

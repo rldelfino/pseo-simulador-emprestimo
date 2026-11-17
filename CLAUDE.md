@@ -16,7 +16,7 @@ Idioma: português do Brasil. Estilo: curto, sem jargão, números reais, dizer 
 
 ## Comandos
 - Build: `python gerador_emprestimo.py` → `npm run build:css` → `python gerador_emprestimo.py` (o hash `?v=` do CSS/JS é calculado na geração).
-- Testes: `python -m pytest -q` (94). Pacote de publicação: `python publicacao.py`.
+- Testes: `python -m pytest -q` (97). Pacote de publicação: `python publicacao.py`.
 - Fontes: `layout.py` (HTML), `conteudo.py` (textos, títulos ≤ 60 caracteres), `src/simulador.js`, `src/menu.js`, `gerador_emprestimo.py`. Saída: `paginas_seo/` (Cloudflare Pages, sem build). `gh` portátil: `C:\Users\rldel\tools\gh\app\bin`.
 - Robô semanal `.github/workflows/atualiza_taxas.yml` (seg 08:00 UTC): taxas BCB, rebuild, IndexNow e, por último, Kaggle (Python 3.12, `continue-on-error`).
 
@@ -31,11 +31,12 @@ Idioma: português do Brasil. Estilo: curto, sem jargão, números reais, dizer 
 
 ## Estado (17/11/2026)
 - No ar e testado: auditoria completa (links, SEO, a11y, WebKit iPhone 13/SE/desktop, PageSpeed 97–100), correções, barra fixa no celular, campo com milhar/vírgula, menu que fecha fora, botões 44 px, security.txt, twitter:card. PRs 10 a 17 mesclados.
+- 17/11 (PR 19): resultado compara os juros ao mês do Pix com as médias do BCB (`calculo.js` leva `referencias`, vindas de `taxas_referencia`; o robô semanal já regenera), aviso "pedido real: 6 passos, com CPF e documento original" antes do botão, link compartilhável da simulação (`/?modo=valor&valor=1000&parcelas=12#simulador`, só número; o canonical segue sendo a home) com botão de copiar (evento Umami `copiou-link`) e tabela de todos os prazos em `<details>`.
 - NÃO verificado: iPhone físico; passos 2–6 do checkout; Umami só do empréstimo (ID compartilhado).
 
 ## Próximos Passos
 1. Tarefa agendada `gsc-indexacao-emprestimo-2` (17/11 10:00, precisa do Claude aberto): Google (cota estourava em 16/11 e às 6h de 17/11) empréstimo `/custo-cet-iof`, `/taxas-de-referencia`, `/dados-abertos`, depois veículos/simulador (pedido de outra sessão, dono confirmou); confere Bing das 13 (em 16/11 só a home). Ler o relatório e reagendar se bater na cota.
 2. Hugging Face: viewer das tabelas não montou (revisão lida só no commit vazio); dono deve reenviar o `README.md` de `publicacao/huggingface/*/` (agora com `configs`).
 3. Umami: se o dono criar o site "Empréstimo", trocar o Website ID (layout/gerador, CLAUDE.md, testes).
-4. Pendente de aprovação do dono: linha embaixo do botão ("No parceiro você faz o pedido real: 6 passos, com CPF e documento original"), mantendo o texto "Ver minha proposta".
-5. Gyroo: 0 propostas até o fim do cadastro; medir interesse pelo evento `cta-pix` (filtro Hostname no Umami).
+4. Feito em 17/11 (PR 19): aviso antes do botão, aprovado pelo dono.
+5. Gyroo: 0 propostas até o fim do cadastro; medir interesse pelo evento `cta-pix` (filtro Hostname no Umami). Novo evento `copiou-link` mede quem compartilha.
