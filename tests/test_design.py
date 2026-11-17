@@ -69,6 +69,10 @@ def test_rodape_em_colunas_linka_todas_as_paginas(site):
         for pg in conteudo.PAGINAS:
             assert 'href="/' + pg["slug"] + '"' in rodape, (nome, pg["slug"])
         assert 'href="/feed.xml"' in rodape
+        # os outros simuladores da Datalab Global: links diretos (sem redirecionamento) com texto que descreve o destino
+        assert 'href="https://simulador.datalabglobal.com/">Financiamento imobiliário</a>' in rodape, nome
+        assert 'href="https://veiculos.datalabglobal.com/">Financiamento de veículos</a>' in rodape, nome
+        assert 'href="' + g.HUB + '/">Datalab Global</a>' in rodape, nome
 
 
 def test_menu_do_celular_nativo_sem_javascript(site):

@@ -280,6 +280,19 @@ def _lista_rodape(slugs, extra=""):
     return "".join('<li><a class="inline-flex min-h-11 items-center hover:text-white md:min-h-8" href="/' + s + '">' + _rotulo(s) + "</a></li>" for s in slugs) + extra
 
 
+# Os outros simuladores da Datalab Global (outros produtos, outros subdomínios). O texto do link descreve o destino.
+OUTROS_SIMULADORES = [
+    ("https://simulador.datalabglobal.com/", "Financiamento imobiliário"),
+    ("https://veiculos.datalabglobal.com/", "Financiamento de veículos"),
+    (HUB + "/", "Datalab Global"),
+]
+
+
+def _lista_outros():
+    return "".join('<li><a class="inline-flex min-h-11 items-center hover:text-white md:min-h-8" href="' + url + '">' + texto + "</a></li>"
+                   for url, texto in OUTROS_SIMULADORES)
+
+
 def _faq_html():
     saida = ""
     for pergunta, resposta in conteudo.FAQ:
@@ -408,7 +421,7 @@ def gerar_site(saida=SAIDA_PADRAO, hoje=None, manifesto=None):
     valores = {
         "DOMINIO": DOMINIO, "HUB": HUB, "UMAMI_ID": UMAMI_ID, "RAZAO": RAZAO_SOCIAL, "CNPJ": CNPJ, "EMAIL": EMAIL,
         "ATUALIZADO": atualizado, "CSSV": versao_css(), "ICONV": versao_icones(), "OGV": versao_og_image(), "NAV": _nav_desktop(), "NAVMOBILE": _nav_celular(),
-        "FOOT_ENTENDA": _lista_rodape(ENTENDA), "FOOT_LEGAL": _lista_rodape(LEGAL),
+        "FOOT_ENTENDA": _lista_rodape(ENTENDA), "FOOT_LEGAL": _lista_rodape(LEGAL), "FOOT_OUTROS": _lista_outros(),
         "FOOT_TRANSP": _lista_rodape(TRANSPARENCIA, '<li><a class="inline-flex min-h-11 items-center hover:text-white md:min-h-8" href="/feed.xml">Feed Atom</a></li>'),
     }
 
