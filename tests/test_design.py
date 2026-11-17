@@ -150,7 +150,8 @@ def test_cartao_do_twitter_e_security_txt(site):
     for nome in paginas():
         html = ler(site, nome)
         assert 'name="twitter:card" content="summary_large_image"' in html, nome
-        assert 'name="twitter:image" content="' + g.DOMINIO + '/og-image.png"' in html, nome
+        assert 'name="twitter:image" content="' + g.DOMINIO + '/og-image.png?v=' + g.versao_og_image() + '"' in html, nome
+        assert 'property="og:image" content="' + g.DOMINIO + '/og-image.png?v=' + g.versao_og_image() + '"' in html, nome
     sec = ler(site, ".well-known/security.txt")
     assert "Contact: mailto:" + g.EMAIL in sec and "Expires: 2027-11-14T" in sec
 
