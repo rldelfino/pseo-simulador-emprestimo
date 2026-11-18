@@ -284,6 +284,7 @@ def _lista_rodape(slugs, extra=""):
 OUTROS_SIMULADORES = [
     ("https://simulador.datalabglobal.com/", "Financiamento imobiliário"),
     ("https://veiculos.datalabglobal.com/", "Financiamento de veículos"),
+    ("https://homeequity.datalabglobal.com/", "Crédito com imóvel em garantia (Home Equity)"),
     (HUB + "/", "Datalab Global"),
 ]
 
