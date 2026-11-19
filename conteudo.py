@@ -86,6 +86,9 @@ FAQ = [
      "Sim. É no cartão que o valor é parcelado: ele precisa estar ativo e com limite no momento da contratação."),
     ("Qual o valor mínimo e o máximo, e quantas parcelas?",
      "De R$ 300 a R$ 5.000, em 2 a 12 parcelas na fatura, sempre respeitando o limite do cartão."),
+    ("Pix parcelado, Pix no cartão e saque do limite são a mesma coisa?",
+     "\"Pix parcelado\" é o nome popular do Pix no cartão. Na prática, é um empréstimo no cartão de crédito: você usa o limite do cartão para receber dinheiro por Pix "
+     "(o que muita gente chama de saque do limite) e paga em parcelas na fatura, com juros e IOF."),
     ("Como recebo o dinheiro?",
      "Por Pix, em uma chave em seu próprio nome. O parceiro não aceita chave de outra pessoa."),
     ("Como pago?",
@@ -107,8 +110,8 @@ FAQ = [
 def corpo_como_funciona(ctx):
     r2, r12 = _r(2), _r(12)
     return (
-        p("O Pix no cartão é um crédito: você recebe um valor por Pix e devolve em parcelas lançadas na fatura do seu cartão de crédito, "
-          "com juros e IOF. Esta página explica o caminho do pedido ao dinheiro na conta, com o que o próprio parceiro informa na tela de contratação.")
+        p("O Pix no cartão, também chamado de Pix parcelado, é um empréstimo no cartão de crédito: você recebe um valor por Pix e devolve em parcelas lançadas na fatura do seu cartão, "
+          "com juros e IOF. Na prática, é uma forma de sacar o limite do cartão em dinheiro. Esta página explica o caminho do pedido ao dinheiro na conta, com o que o próprio parceiro informa na tela de contratação.")
         + h2("Em resumo")
         + ul([
             "Você escolhe um valor entre R$ 300 e R$ 5.000 e um prazo de 2 a 12 parcelas.",

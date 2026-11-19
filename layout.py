@@ -104,7 +104,7 @@ HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
       <span class="uppercase tracking-widest text-violet-400">Ver o custo &rarr;</span>
     </a>
     <h1 class="mx-auto mt-6 max-w-4xl text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">Pix no cartão de crédito: veja o custo real antes de contratar</h1>
-    <p class="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">Receba de <strong class="text-white">R$ 300 a R$ 5.000</strong> por Pix e pague em <strong class="text-white">2x a 12x</strong> na fatura do cartão. É crédito caro: o custo aparece primeiro, antes de qualquer botão.</p>
+    <p class="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">Receba de <strong class="text-white">R$ 300 a R$ 5.000</strong> por Pix e pague em <strong class="text-white">2x a 12x</strong> na fatura do cartão (o chamado Pix parcelado, um empréstimo no cartão de crédito). É crédito caro: o custo aparece primeiro, antes de qualquer botão.</p>
     <p class="mt-5 text-[11px] uppercase tracking-widest text-slate-400">Tabela 10 do parceiro, conferida toda semana. Atualizado em @@ATUALIZADO@@</p>
   </section>
 

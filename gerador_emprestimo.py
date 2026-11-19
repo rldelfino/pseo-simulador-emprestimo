@@ -71,13 +71,13 @@ HEADERS = """/*
   Cache-Control: public, max-age=31536000, immutable
 
 /calculo.js
-  Cache-Control: public, max-age=3600, must-revalidate
+  Cache-Control: public, max-age=31536000, immutable
 
 /simulador.js
-  Cache-Control: public, max-age=3600, must-revalidate
+  Cache-Control: public, max-age=31536000, immutable
 
 /menu.js
-  Cache-Control: public, max-age=3600, must-revalidate
+  Cache-Control: public, max-age=31536000, immutable
 
 /logo-header.webp
   Cache-Control: public, max-age=86400, must-revalidate
@@ -323,7 +323,33 @@ def _ctx(hoje):
 
 def _organizacao():
     return {"@type": "Organization", "@id": DOMINIO + "/#organizacao", "name": "Datalab Global", "legalName": RAZAO_SOCIAL,
-            "taxID": CNPJ, "url": HUB + "/", "email": EMAIL}
+            "taxID": CNPJ, "url": HUB + "/", "email": EMAIL, "logo": {"@type": "ImageObject", "url": DOMINIO + "/apple-touch-icon.png", "width": 180, "height": 180}}
+
+
+def _breadcrumb(pg, canonical):
+    """Trilha Início > página, para as páginas internas."""
+    return {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Pix no cartão", "item": DOMINIO + "/"},
+        {"@type": "ListItem", "position": 2, "name": pg["h1"], "item": canonical}]}
+
+
+def _datasets(hoje):
+    """Um Dataset (schema.org) para cada conjunto de dados abertos da página /dados-abertos."""
+    saida = []
+    for c in dados_abertos.CONJUNTOS:
+        d = {"@context": "https://schema.org", "@type": "Dataset", "name": c["titulo"], "description": c["descricao"],
+             "url": DOMINIO + "/dados-abertos", "inLanguage": "pt-BR", "isAccessibleForFree": True, "license": c["licenca"]["url"],
+             "creator": {"@type": "Organization", "name": "Datalab Global", "url": HUB + "/"}, "publisher": {"@id": DOMINIO + "/#organizacao"},
+             "dateModified": hoje.isoformat(), "keywords": ["crédito", "juros", "Brasil", "Pix no cartão" if c is dados_abertos.PIX else "Banco Central"],
+             "sameAs": [c["kaggle"], c["huggingface"]], "isBasedOn": c["fonte"]["path"],
+             "variableMeasured": [{"@type": "PropertyValue", "name": n, "description": desc} for n, _t, desc in c["colunas"]],
+             "distribution": [{"@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": DOMINIO + "/dados/" + c["nome"] + ".csv"},
+                              {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": DOMINIO + "/dados/" + c["nome"] + ".json"}]}
+        if c is dados_abertos.BCB:
+            meses = sorted({l["mes_referencia"] for l in dados_abertos.linhas_bcb()})
+            d["temporalCoverage"] = meses[0] + "/" + meses[-1]
+        saida.append(d)
+    return saida
 
 
 def _pagina_home(valores, hoje):
@@ -358,7 +384,9 @@ def _pagina_guia(pg, valores, hoje, ctx):
     artigo = {"@context": "https://schema.org", "@type": "Article", "headline": pg["h1"], "description": pg["desc"], "inLanguage": "pt-BR",
               "dateModified": hoje.isoformat(), "mainEntityOfPage": canonical,
               "author": {"@type": "Organization", "name": "Datalab Global"}, "publisher": _organizacao()}
-    ld = _ld(artigo) if guia else ""
+    ld = (_ld(artigo) if guia else "") + _ld(_breadcrumb(pg, canonical))
+    if pg["slug"] == "dados-abertos":
+        ld += "".join(_ld(d) for d in _datasets(hoje))
     return _preencher(layout.LAYOUT, dict(valores, TITLE=pg["title"], DESC=pg["desc"], CANONICAL=canonical, ROBOTS="index,follow,max-image-preview:large",
                                           OGTYPE="article" if guia else "website", JSONLD=ld, MAIN=main, SCRIPTS=menu_script()))
 

@@ -17,7 +17,7 @@ Idioma: português do Brasil. Estilo: curto, sem jargão, números reais, dizer 
 
 ## Comandos
 - Build: `python gerador_emprestimo.py` → `npm run build:css` → `python gerador_emprestimo.py` (o hash `?v=` do CSS/JS é calculado na geração).
-- Testes: `python -m pytest -q` (105). Pacote de publicação: `python publicacao.py`. Imagem de compartilhamento: `python gerar_og_image.py` (molde `src/og-image.html`, precisa do Playwright, fora do CI).
+- Testes: `python -m pytest -q` (109). Pacote de publicação: `python publicacao.py`. Imagem de compartilhamento: `python gerar_og_image.py` (molde `src/og-image.html`, precisa do Playwright, fora do CI).
 - Fontes: `layout.py` (HTML), `conteudo.py` (textos, títulos ≤ 60 caracteres), `src/simulador.js`, `src/menu.js`, `gerador_emprestimo.py`. Saída: `paginas_seo/` (Cloudflare Pages, sem build). `gh` portátil: `C:\Users\rldel\tools\gh\app\bin` (logado como rldelfino).
 - Robô semanal `.github/workflows/atualiza_taxas.yml` (seg 08:00 UTC): taxas BCB, rebuild, testes, IndexNow, commit de `dados paginas_seo publicacao` e, por último, Kaggle (Python 3.12, `continue-on-error`). CI (`ci.yml`) roda build, pytest e `git diff --exit-code dados/datas_paginas.json`.
 
@@ -39,6 +39,8 @@ Idioma: português do Brasil. Estilo: curto, sem jargão, números reais, dizer 
 - Google: home e `/custo-cet-iof` rastreadas, NÃO indexadas ("rastreada, não indexada", comum em subdomínio novo); `/taxas-de-referencia` e `/dados-abertos` tiveram indexação pedida em 17/11 (eram desconhecidas). Sitemap enviado e lido (13). Outras 9 páginas não inspecionadas.
 - Bing: só a home indexada; as outras 12 estavam "Discovered but not crawled", indexação pedida em 17/11 (cota 95/dia) + IndexNow 200. Sitemap lido (13).
 - NÃO verificado: iPhone físico; passos 2–6 do checkout; Umami só do empréstimo (ID compartilhado); robô semanal rodando com o código novo.
+
+- SEO (19/11): JSON-LD com `logo` na Organization, BreadcrumbList nas páginas internas e Dataset (2 conjuntos) em `/dados-abertos`; termos "Pix parcelado", "empréstimo no cartão" e "saque do limite" na home, em `/como-funciona` e na FAQ; JS com `?v=` agora tem cache imutável.
 
 ## Próximos Passos
 1. Em ~3–7 dias reinspecionar Google (GSC: caixa "Inspecionar" do topo, propriedade de domínio `sc-domain:datalabglobal.com`) e Bing (`bing.com/webmasters/urlinspection?siteUrl=https%3A%2F%2Fwww.datalabglobal.com%2F&urlToInspect=<URL com :// e / codificados duas vezes>`) via Claude in Chrome (dono logado). Ver quais das 13 entraram; não repetir pedido de URL já rastreada.

@@ -107,3 +107,44 @@ def test_sem_cpf_ou_telefone_no_codigo():
             texto = open(os.path.join(raiz, a), encoding="utf-8", errors="ignore").read()
             for p in padroes:
                 assert not p.search(texto), (a, p.pattern)
+
+
+def _json_ld(html):
+    import json
+    return [json.loads(m) for m in re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)]
+
+
+def test_organizacao_tem_logo_e_paginas_internas_tem_trilha(site):
+    home = _json_ld(ler(site, "index.html"))
+    org = [n for blk in home for n in blk.get("@graph", []) if n.get("@type") == "Organization"][0]
+    assert org["logo"]["url"].endswith("/apple-touch-icon.png") and org["logo"]["width"] >= 112
+    for slug in ("como-funciona", "metodologia", "privacidade", "dados-abertos"):
+        blocos = _json_ld(ler(site, slug + ".html"))
+        trilha = [b for b in blocos if b["@type"] == "BreadcrumbList"]
+        assert len(trilha) == 1, slug
+        itens = trilha[0]["itemListElement"]
+        assert [i["position"] for i in itens] == [1, 2] and itens[1]["item"].endswith("/" + slug)
+
+
+def test_dados_abertos_traz_dataset_dos_dois_conjuntos(site):
+    blocos = _json_ld(ler(site, "dados-abertos.html"))
+    datasets = [b for b in blocos if b["@type"] == "Dataset"]
+    assert len(datasets) == 2
+    for d in datasets:
+        assert d["license"].startswith("https://") and d["isAccessibleForFree"] is True
+        assert {x["encodingFormat"] for x in d["distribution"]} == {"text/csv", "application/json"}
+        assert all(x["contentUrl"].startswith("https://emprestimo.datalabglobal.com/dados/") for x in d["distribution"])
+        assert d["variableMeasured"] and d["sameAs"]
+    assert any("temporalCoverage" in d for d in datasets)
+
+
+def test_termos_de_busca_do_pix_parcelado_aparecem_onde_o_assunto_ja_e_esse(site):
+    home = ler(site, "index.html")
+    assert "Pix parcelado" in home and "empréstimo no cartão" in home
+    assert "saque do limite" in ler(site, "index.html") or "saque do limite" in ler(site, "como-funciona.html")
+
+
+def test_js_com_versao_no_endereco_tem_cache_imutavel():
+    for nome in ("calculo.js", "simulador.js", "menu.js"):
+        trecho = g.HEADERS.split("/" + nome)[1].split("\n\n")[0]
+        assert "immutable" in trecho, nome

@@ -11,13 +11,13 @@
   Cache-Control: public, max-age=31536000, immutable
 
 /calculo.js
-  Cache-Control: public, max-age=3600, must-revalidate
+  Cache-Control: public, max-age=31536000, immutable
 
 /simulador.js
-  Cache-Control: public, max-age=3600, must-revalidate
+  Cache-Control: public, max-age=31536000, immutable
 
 /menu.js
-  Cache-Control: public, max-age=3600, must-revalidate
+  Cache-Control: public, max-age=31536000, immutable
 
 /logo-header.webp
   Cache-Control: public, max-age=86400, must-revalidate
