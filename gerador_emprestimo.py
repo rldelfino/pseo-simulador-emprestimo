@@ -285,6 +285,7 @@ OUTROS_SIMULADORES = [
     ("https://simulador.datalabglobal.com/", "Financiamento imobiliário"),
     ("https://veiculos.datalabglobal.com/", "Financiamento de veículos"),
     ("https://homeequity.datalabglobal.com/", "Crédito com imóvel em garantia (Home Equity)"),
+    ("https://autoequity.datalabglobal.com/", "Crédito com veículo em garantia (Auto Equity)"),
     (HUB + "/", "Datalab Global"),
 ]
 
