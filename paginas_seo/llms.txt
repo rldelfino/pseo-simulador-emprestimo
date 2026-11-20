@@ -1,6 +1,6 @@
-# Pix no cartão de crédito (Datalab Global)
+# Empréstimo pessoal com crédito do cartão (Datalab Global)
 
-> Simulador gratuito do Pix no cartão de crédito: você recebe um Pix de R$ 300 a R$ 5.000 e paga em 2x a 12x na fatura. Mostra parcela, total na fatura, IOF e CET antes de qualquer contratação. É crédito caro.
+> Simulador gratuito do empréstimo pessoal com crédito do cartão: o limite do cartão de crédito é a fonte do dinheiro, que você recebe por Pix (de R$ 300 a R$ 5.000) e paga em 2x a 12x na fatura. Mostra parcela, total na fatura, IOF e CET antes de qualquer contratação. É crédito caro.
 
 - Responsável: Satori Soluções Comerciais LTDA, CNPJ 63.998.502/0001-73
 - Atualizado em 20/11/2026
@@ -15,7 +15,7 @@
 - https://emprestimo.datalabglobal.com/como-funciona
 - https://emprestimo.datalabglobal.com/e-seguro-golpes
 - https://emprestimo.datalabglobal.com/custo-cet-iof
-- https://emprestimo.datalabglobal.com/pix-no-cartao-ou-outro-credito
+- https://emprestimo.datalabglobal.com/emprestimo-com-cartao-ou-outro-credito
 - https://emprestimo.datalabglobal.com/taxas-de-referencia
 - https://emprestimo.datalabglobal.com/quando-nao-vale-a-pena
 - https://emprestimo.datalabglobal.com/metodologia

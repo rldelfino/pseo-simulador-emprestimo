@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="pt-BR">
-  <title>Pix no cartão — Datalab Global</title>
+  <title>Empréstimo pessoal com crédito do cartão — Datalab Global</title>
   <subtitle>Atualizações do simulador e taxas médias do Banco Central</subtitle>
   <link href="https://emprestimo.datalabglobal.com/feed.xml" rel="self" type="application/atom+xml"/>
   <link href="https://emprestimo.datalabglobal.com/" rel="alternate" type="text/html"/>
   <id>tag:emprestimo.datalabglobal.com,2026:feed</id>
-  <updated>2026-11-17T00:00:00Z</updated>
+  <updated>2026-11-20T00:00:00Z</updated>
   <author><name>Datalab Global</name></author>
+  <entry>
+    <title>Atualização de 20/11/2026</title>
+    <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:atualizacao-2026-11-20-13</id>
+    <updated>2026-11-20T00:00:00Z</updated>
+    <summary type="text">Correção do nome: o produto passou a se chamar Empréstimo pessoal com crédito do cartão, porque é um empréstimo pessoal em que o limite do cartão é a fonte do dinheiro, entregue por Pix. O nome antigo induzia a erro. A página de comparação mudou de endereço (o antigo continua funcionando e leva ao novo) e os arquivos de dados abertos também (os endereços antigos redirecionam). Os eventos de medição foram renomeados. A conta e os números não mudaram.</summary>
+  </entry>
+  <entry>
+    <title>Atualização de 20/11/2026</title>
+    <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:atualizacao-2026-11-20-12</id>
+    <updated>2026-11-20T00:00:00Z</updated>
+    <summary type="text">Novo visual do simulador, igual ao dos outros simuladores da Datalab Global: cartões por campo, painel de resultado, faixa com três números, campo para comparar a taxa de uma proposta que você já tem, tela de confirmação antes de abrir o parceiro, logo redesenhado e rodapé com os demais simuladores.</summary>
+  </entry>
   <entry>
     <title>Atualização de 17/11/2026</title>
     <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>
@@ -54,14 +68,14 @@
     <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>
     <id>tag:emprestimo.datalabglobal.com,2026:atualizacao-2026-11-14-5</id>
     <updated>2026-11-14T00:00:00Z</updated>
-    <summary type="text">Dados abertos (Tabela 10 do Pix no cartão em CC BY 4.0 e séries do Banco Central em ODbL 1.0), feed Atom e aviso ao Bing por IndexNow.</summary>
+    <summary type="text">Dados abertos (Tabela 10 em CC BY 4.0 e séries do Banco Central em ODbL 1.0), feed Atom e aviso ao Bing por IndexNow.</summary>
   </entry>
   <entry>
     <title>Atualização de 14/11/2026</title>
     <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>
     <id>tag:emprestimo.datalabglobal.com,2026:atualizacao-2026-11-14-4</id>
     <updated>2026-11-14T00:00:00Z</updated>
-    <summary type="text">Taxas médias do Banco Central (crédito pessoal não consignado, cheque especial e cartão rotativo) com mês de referência e link de cada série, e comparação com o Pix no cartão.</summary>
+    <summary type="text">Taxas médias do Banco Central (crédito pessoal não consignado, cheque especial e cartão rotativo) com mês de referência e link de cada série, e comparação com este empréstimo.</summary>
   </entry>
   <entry>
     <title>Atualização de 14/11/2026</title>

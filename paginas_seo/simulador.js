@@ -1,8 +1,9 @@
-/* Interface do simulador. Só textContent e atributos SVG (nada de innerHTML). Depende de calculo.js (window.DatalabPix).
-   Sem cookies e sem dado pessoal: só valor e prazo vão para a simulação do parceiro e para o Umami. */
+/* Interface do simulador do empréstimo pessoal com crédito do cartão. Só textContent e atributos SVG (nada de innerHTML).
+   Depende de calculo.js (window.DatalabEmprestimo). Sem cookies e sem dado pessoal: só valor e prazo vão para a simulação do parceiro e para o Umami.
+   Eventos do Umami: usou-simulador-emprestimo, abriu-confirmacao, cta-parceiro, cta-parceiro-sem-preenchimento, copiou-link, usou-proposta-propria. */
 (function () {
   'use strict';
-  var P = window.DatalabPix;
+  var P = window.DatalabEmprestimo;
   if (!P) return;
 
   var API = 'https://api.triagem.digital/proposals/simulator';
@@ -10,9 +11,12 @@
   var LIMITE_MIN = 300;
   var LIMITE_MAX = 8000;
   var SVG = 'http://www.w3.org/2000/svg';
+  var CHAVE_SESSAO = 'emp-sim';
+  var CIRC = 289.03;
 
-  var estado = { modo: 'valor', valor: 1000, limite: 2000, parcelas: 12 };
+  var estado = { modo: 'valor', valor: 1000, limite: 2000, parcelas: 12, prop: '' };
   var usou = false;
+  var usouProp = false;
   var desenhos = 0;
   var timerUrl = null;
   var timerCopiado = null;
@@ -38,62 +42,61 @@
     return Number(t);
   }
 
+  function valorCampo() { return estado.modo === 'valor' ? estado.valor : estado.limite; }
+
   function limiteNecessario(parcelas) {
     var T = P.tabela;
-    return Math.ceil(P.PIX_MIN * (1 + T.fator_base + T.fator_por_parcela * parcelas));
+    return Math.ceil(P.VALOR_MIN * (1 + T.fator_base + T.fator_por_parcela * parcelas));
   }
 
   function limitesDoCampo() {
-    return estado.modo === 'valor' ? [P.PIX_MIN, P.PIX_MAX] : [LIMITE_MIN, LIMITE_MAX];
+    return estado.modo === 'valor' ? [P.VALOR_MIN, P.VALOR_MAX] : [LIMITE_MIN, LIMITE_MAX];
   }
 
-  function desenharRosca(pix, total) {
-    var alvo = $('donut');
-    limpar(alvo);
-    var r = 44;
-    var circ = 2 * Math.PI * r;
-    var parte = total > 0 ? (pix / total) * circ : 0;
-    var s = svg('svg', { width: '120', height: '120', viewBox: '0 0 120 120', 'aria-hidden': 'true' });
-    s.appendChild(svg('circle', { cx: '60', cy: '60', r: String(r), fill: 'none', stroke: '#f59e0b', 'stroke-width': '16' }));
-    s.appendChild(svg('circle', {
-      cx: '60', cy: '60', r: String(r), fill: 'none', stroke: '#8b5cf6', 'stroke-width': '16',
-      'stroke-dasharray': parte.toFixed(2) + ' ' + (circ - parte).toFixed(2), transform: 'rotate(-90 60 60)'
-    }));
-    alvo.appendChild(s);
-    var pct = total > 0 ? Math.round((pix / total) * 100) : 0;
-    $('leg-pix').textContent = pct + '%';
-    $('leg-custo').textContent = (100 - pct) + '% (' + P.brl(total - pix) + ')';
+  // O preenchimento colorido do controle deslizante usa data-p (0 a 100): o CSS não permite style no HTML, então a variável vem de uma regra por valor.
+  function marcarSlider(el, min, max) {
+    var p = max > min ? Math.round(((Number(el.value) - min) / (max - min)) * 100) : 0;
+    el.setAttribute('data-p', String(clamp(p, 0, 100)));
   }
 
-  function desenharBarras(pix) {
+  function desenharRosca(receber, total) {
+    var parte = total > 0 ? (receber / total) * CIRC : 0;
+    $('rosca-valor').setAttribute('stroke-dasharray', parte.toFixed(2) + ' ' + (CIRC - parte).toFixed(2));
+    var custo = total > 0 ? Math.round(((total - receber) / total) * 100) : 0;
+    $('rosca-pct').textContent = custo + '%';
+    $('donut').setAttribute('aria-label', 'Do total na fatura, ' + custo + '% é juros e IOF');
+    $('leg-valor').textContent = P.brl(receber);
+    $('leg-custo').textContent = P.brl(total - receber);
+  }
+
+  function desenharBarras(receber) {
     var alvo = $('barras');
     limpar(alvo);
     var linhas = [];
     var maior = 0;
     for (var n = 2; n <= 12; n++) {
-      var c = P.simular('valor', pix, 0, n);
-      linhas.push({ n: n, extra: c.total - pix, parcela: c.parcela });
-      if (c.total - pix > maior) maior = c.total - pix;
+      var c = P.simular('valor', receber, 0, n);
+      linhas.push({ n: n, extra: c.total - receber, parcela: c.parcela });
+      if (c.total - receber > maior) maior = c.total - receber;
     }
     linhas.forEach(function (l) {
       var b = document.createElement('button');
       b.type = 'button';
       var ativa = l.n === estado.parcelas;
-      b.className = 'flex min-h-11 items-center gap-3 rounded-lg border px-3 py-2 text-left text-xs ' +
-        (ativa ? 'border-violet-400/50 bg-violet-400/10 text-white' : 'border-transparent text-slate-300 hover:bg-white/5');
+      b.className = 'pz';
       b.setAttribute('aria-label', l.n + ' parcelas de ' + P.brl(l.parcela) + ', paga ' + P.brl(l.extra) + ' a mais');
       b.setAttribute('aria-pressed', String(ativa));
       var rot = document.createElement('span');
-      rot.className = 'num w-7 shrink-0 font-bold';
+      rot.className = 'pzn num';
       rot.textContent = l.n + 'x';
-      var barra = svg('svg', { viewBox: '0 0 100 8', preserveAspectRatio: 'none', 'class': 'h-2 w-0 min-w-0 flex-1', 'aria-hidden': 'true' });
-      barra.appendChild(svg('rect', { width: '100', height: '8', rx: '4', fill: '#1e293b' }));
-      barra.appendChild(svg('rect', { width: (maior > 0 ? (l.extra / maior) * 100 : 0).toFixed(1), height: '8', rx: '4', fill: ativa ? '#a78bfa' : '#8b5cf6' }));
+      var barra = svg('svg', { viewBox: '0 0 100 8', preserveAspectRatio: 'none', 'class': 'pzb', 'aria-hidden': 'true' });
+      barra.appendChild(svg('rect', { width: '100', height: '8', rx: '4', fill: 'rgba(255,255,255,.08)' }));
+      barra.appendChild(svg('rect', { width: (maior > 0 ? (l.extra / maior) * 100 : 0).toFixed(1), height: '8', rx: '4', fill: ativa ? '#c4b5fd' : '#8b5cf6' }));
       var val = document.createElement('span');
-      val.className = 'num w-24 shrink-0 text-right font-semibold';
+      val.className = 'pv num';
       val.textContent = P.brl(l.extra);
       var parc = document.createElement('span');
-      parc.className = 'num hidden w-28 shrink-0 text-right text-slate-400 sm:inline';
+      parc.className = 'pp num';
       parc.textContent = 'parcela ' + P.brl(l.parcela);
       b.appendChild(rot); b.appendChild(barra); b.appendChild(val); b.appendChild(parc);
       b.addEventListener('click', function () { estado.parcelas = l.n; interagiu(); desenhar(); });
@@ -101,22 +104,24 @@
     });
     var minimo = linhas[0];
     var maximo = linhas[linhas.length - 1];
-    $('txt-barras').textContent = 'Para receber ' + P.brl(pix) + ', você paga ' + P.brl(minimo.extra) + ' a mais em 2x e ' + P.brl(maximo.extra) +
+    $('txt-barras').textContent = 'Para receber ' + P.brl(receber) + ', você paga ' + P.brl(minimo.extra) + ' a mais em 2x e ' + P.brl(maximo.extra) +
       ' a mais em 12x: só ' + P.brl(maximo.extra - minimo.extra) + ' de diferença entre o prazo mais curto e o mais longo.';
   }
 
-  function desenharTabela(pix) {
-    $('cap-prazos').textContent = 'Para receber ' + P.brl(pix) + ' por Pix. Fonte: Tabela 10 do parceiro.';
+  function desenharTabela(receber) {
+    $('cap-prazos').textContent = 'Para receber ' + P.brl(receber) + ' na conta. Fonte: Tabela 10 do parceiro.';
     var corpo = $('corpo-prazos');
     limpar(corpo);
+    var rotulos = ['Prazo', 'Parcela', 'Total na fatura', 'Custo a mais', 'Juros ao mês', 'CET ao ano'];
     for (var n = 2; n <= 12; n++) {
-      var c = P.simular('valor', pix, 0, n);
+      var c = P.simular('valor', receber, 0, n);
       var ativa = n === estado.parcelas;
       var tr = document.createElement('tr');
-      if (ativa) { tr.setAttribute('aria-current', 'true'); tr.className = 'bg-violet-400/10'; }
-      [n + 'x', P.brl(c.parcela), P.brl(c.total), P.brl(c.total - pix), P.pct(c.jurosMes), P.pct(c.cetAno)].forEach(function (txt) {
+      if (ativa) { tr.setAttribute('aria-current', 'true'); tr.className = 'atual'; }
+      [n + 'x', P.brl(c.parcela), P.brl(c.total), P.brl(c.total - receber), P.pct(c.jurosMes), P.pct(c.cetAno)].forEach(function (txt, i) {
         var td = document.createElement('td');
-        td.className = 'num border-b border-white/10 px-3 py-2 ' + (ativa ? 'font-semibold text-white' : 'text-slate-300');
+        td.className = 'num';
+        td.setAttribute('data-l', rotulos[i]);
         td.textContent = txt;
         tr.appendChild(td);
       });
@@ -124,26 +129,26 @@
     }
   }
 
-  // Compara os juros ao mês do Pix com as médias do Banco Central (juros com juros, nunca CET com juros). Sem dado, o bloco some.
+  // Compara os juros ao mês deste empréstimo com as médias do Banco Central (juros com juros, nunca CET com juros). Sem dado, o bloco some.
   function desenharReferencia(r, escondido) {
     var refs = P.referencias || [];
     var bloco = $('referencia');
-    if (!refs.length || escondido) { bloco.classList.add('hidden'); return; }
-    bloco.classList.remove('hidden');
+    if (!refs.length || escondido) { bloco.hidden = true; return; }
+    bloco.hidden = false;
     var lista = $('ref-lista');
     limpar(lista);
     function linha(nome, valor, destaque) {
       var li = document.createElement('li');
-      li.className = 'flex items-baseline justify-between gap-3 ' + (destaque ? 'font-semibold text-violet-300' : 'text-slate-300');
+      if (destaque) li.className = 'us';
       var a = document.createElement('span');
       a.textContent = nome;
       var b = document.createElement('span');
-      b.className = 'num shrink-0';
+      b.className = 'num';
       b.textContent = valor;
       li.appendChild(a); li.appendChild(b);
       lista.appendChild(li);
     }
-    linha('Pix no cartão em ' + estado.parcelas + 'x', P.pct(r.jurosMes) + ' ao mês', true);
+    linha('Empréstimo com crédito do cartão em ' + estado.parcelas + 'x', P.pct(r.jurosMes) + ' ao mês', true);
     var meses = [];
     refs.forEach(function (x) {
       linha(x.nome + ' (média)', P.pct(x.am) + ' ao mês', false);
@@ -152,19 +157,48 @@
     var menores = refs.filter(function (x) { return x.am < r.jurosMes * 0.97; });
     var texto;
     if (menores.length === refs.length) {
-      texto = 'Em média, as ' + refs.length + ' modalidades acima têm juros menores que o Pix em ' + estado.parcelas + 'x. Peça o CET dessas alternativas antes de decidir.';
+      texto = 'Em média, as ' + refs.length + ' modalidades acima têm juros menores que este empréstimo em ' + estado.parcelas + 'x. Peça o CET dessas alternativas antes de decidir.';
     } else if (menores.length === 0) {
-      texto = 'Nenhuma das médias acima tem juros claramente menores que o Pix em ' + estado.parcelas + 'x.';
+      texto = 'Nenhuma das médias acima tem juros claramente menores que este empréstimo em ' + estado.parcelas + 'x.';
     } else {
       var nomes = menores.map(function (x) { return x.nome.toLowerCase(); }).join(' e ');
-      texto = 'Em média, ' + nomes + (menores.length > 1 ? ' têm' : ' tem') + ' juros menores que o Pix em ' + estado.parcelas + 'x. Peça o CET dessas alternativas antes de decidir.';
+      texto = 'Em média, ' + nomes + (menores.length > 1 ? ' têm' : ' tem') + ' juros menores que este empréstimo em ' + estado.parcelas + 'x. Peça o CET dessas alternativas antes de decidir.';
     }
     $('ref-veredito').textContent = texto;
     $('ref-nota').textContent = 'Média das novas operações de crédito de pessoas físicas (Banco Central, ' + meses.join(' e ') +
       '). É taxa de juros, não é CET, e não é oferta: a sua pode ser maior ou menor.';
   }
 
-  // Endereço compartilhável: modo, valor (ou limite) e parcelas. Sem dado pessoal. O canonical da página continua sendo a home.
+  // "Já tem uma proposta?": a taxa de juros ao mês que a parcela informada cobra, para o mesmo valor e prazo, ao lado da Tabela 10.
+  var MSG_PROP_PADRAO = 'Usa o valor que você recebe e o número de parcelas escolhidos acima. Informe a parcela que aparece na proposta e veja quanto ela cobra de juros ao mês.';
+  function desenharProposta(r, abaixo) {
+    var msg = $('msg-prop');
+    var v = lerNumero(estado.prop);
+    msg.classList.remove('warn');
+    if (!(v > 0) || abaixo) { msg.textContent = MSG_PROP_PADRAO; return; }
+    var taxa = P.taxaImplicita(r.receber, v, estado.parcelas);
+    if (taxa === null) {
+      msg.textContent = 'Com ' + estado.parcelas + ' parcelas de ' + P.brl(v) + ' você pagaria menos do que recebe (' + P.brl(r.receber) + '). Confira a parcela e o valor.';
+      msg.classList.add('warn');
+      return;
+    }
+    if (taxa > 500) {
+      msg.textContent = 'Essa parcela dá juros acima de 500% ao mês. Confira os números da proposta.';
+      msg.classList.add('warn');
+      return;
+    }
+    var totalProp = v * estado.parcelas;
+    var dif = totalProp - r.total;
+    var comp = Math.abs(dif) < 1 ? 'praticamente o mesmo total' : (dif > 0 ? P.brl(dif) + ' a mais no total' : P.brl(-dif) + ' a menos no total');
+    // as duas taxas saem da mesma conta (parcelas iguais, sem tarifas): a taxa que o parceiro tabela (r.jurosMes) usa outro método e fica um pouco abaixo
+    var taxaTabela = P.taxaImplicita(r.receber, r.parcela, estado.parcelas);
+    msg.textContent = 'Pela mesma conta, a proposta equivale a ' + P.pct(taxa) + ' ao mês (' + estado.parcelas + ' x ' + P.brl(v) + ' = ' + P.brl(totalProp) + ') e a Tabela 10, em ' +
+      estado.parcelas + 'x, a ' + P.pct(taxaTabela) + ' ao mês (total ' + P.brl(r.total) + '; o parceiro informa ' + P.pct(r.jurosMes) + ' por outro método de cálculo). A proposta tem ' + comp +
+      '. Se a parcela dela inclui tarifas ou seguros, a taxa de juros é menor; peça o CET por escrito.';
+    if (!usouProp) { usouProp = true; evento('usou-proposta-propria', { prazo: estado.parcelas }); }
+  }
+
+  // Endereço compartilhável: modo, valor (ou limite), parcelas e a parcela da proposta. Sem dado pessoal. O canonical da página continua sendo a home.
   function lerEndereco() {
     try {
       var q = new URLSearchParams(window.location.search);
@@ -175,20 +209,28 @@
       var soNumero = /^[\d.,]+$/;  // qualquer outra coisa no endereço é ignorada
       var tv = q.get('valor') || '';
       var v = soNumero.test(tv) ? lerNumero(tv) : 0;
-      if (v > 0) estado.valor = clamp(v, P.PIX_MIN, P.PIX_MAX);
+      if (v > 0) estado.valor = clamp(v, P.VALOR_MIN, P.VALOR_MAX);
       var tl = q.get('limite') || '';
       var l = soNumero.test(tl) ? lerNumero(tl) : 0;
       if (l > 0) estado.limite = clamp(l, LIMITE_MIN, LIMITE_MAX);
+      var tp = q.get('prop') || '';
+      if (soNumero.test(tp) && lerNumero(tp) > 0) estado.prop = tp;
     } catch (e) { /* endereço estranho: usa os valores padrão */ }
   }
 
-  function enderecoDaSimulacao() {
+  function enderecoDaSimulacao(comHash) {
     var q = new URLSearchParams();
-    var campo = estado.modo === 'valor' ? estado.valor : estado.limite;
     q.set('modo', estado.modo);
-    q.set(estado.modo, String(Math.round(campo * 100) / 100));
+    q.set(estado.modo, String(Math.round(valorCampo() * 100) / 100));
     q.set('parcelas', String(estado.parcelas));
-    return window.location.origin + window.location.pathname + '?' + q.toString() + '#simulador';
+    var v = lerNumero(estado.prop);
+    if (v > 0) q.set('prop', String(Math.round(v * 100) / 100));
+    return window.location.origin + window.location.pathname + '?' + q.toString() + (comHash === false ? '' : '#simulador');
+  }
+
+  // Guarda a última simulação só nesta aba (sessionStorage, sem cookie) para o botão "Voltar à simulação" das páginas internas.
+  function guardarSimulacao() {
+    try { window.sessionStorage.setItem(CHAVE_SESSAO, '?' + enderecoDaSimulacao(false).split('?')[1]); } catch (e) { /* sem armazenamento: o botão leva ao simulador */ }
   }
 
   function atualizarEndereco() {
@@ -196,6 +238,7 @@
     // espera a pessoa parar de mexer: o navegador limita as trocas de endereço por segundo
     timerUrl = setTimeout(function () {
       try { window.history.replaceState(null, '', enderecoDaSimulacao()); } catch (e) { /* sem histórico: o botão de copiar continua valendo */ }
+      guardarSimulacao();
     }, 400);
   }
 
@@ -211,7 +254,7 @@
         var t = document.createElement('textarea');
         t.value = url;
         t.setAttribute('readonly', '');
-        t.className = 'fixed left-0 top-0 opacity-0';
+        t.className = 'sr';
         document.body.appendChild(t);
         t.select();
         ok = document.execCommand('copy');
@@ -220,57 +263,65 @@
     }
     var msg = $('msg-copiado');
     msg.textContent = ok ? 'Link copiado. Quem abrir vê esta mesma simulação.' : 'Não deu para copiar sozinho. O link já está na barra de endereço do navegador.';
-    msg.classList.remove('hidden');
     clearTimeout(timerCopiado);
-    timerCopiado = setTimeout(function () { msg.classList.add('hidden'); }, 4000);
-    evento('copiou-link', { valor: estado.modo === 'valor' ? estado.valor : estado.limite, prazo: estado.parcelas, modo: estado.modo });
+    timerCopiado = setTimeout(function () { msg.textContent = ''; }, 4000);
+    evento('copiou-link', { valor: valorCampo(), prazo: estado.parcelas, modo: estado.modo });
   }
 
   function desenhar() {
     var r = P.simular(estado.modo, estado.valor, estado.limite, estado.parcelas);
     var lim = limitesDoCampo();
-    var campo = estado.modo === 'valor' ? estado.valor : estado.limite;
-    var abaixo = estado.modo === 'limite' && r.pix < P.PIX_MIN;
+    var campo = valorCampo();
+    var abaixo = estado.modo === 'limite' && r.receber < P.VALOR_MIN;
+    var ehValor = estado.modo === 'valor';
 
-    $('rotulo-valor').textContent = estado.modo === 'valor' ? 'Valor que você quer no Pix' : 'Limite disponível no cartão';
+    $('rotulo-valor').firstChild.textContent = ehValor ? 'Valor que você quer receber ' : 'Limite disponível no cartão ';
+    $('sub-valor').textContent = ehValor ? 'cai na conta, por Pix' : 'o quanto você pode usar';
     $('range-valor').min = lim[0]; $('range-valor').max = lim[1];
     $('range-valor').value = clamp(campo, lim[0], lim[1]);
     $('range-valor').setAttribute('aria-valuetext', P.brl(Number($('range-valor').value)));
+    marcarSlider($('range-valor'), lim[0], lim[1]);
     if (document.activeElement !== $('campo-valor')) $('campo-valor').value = BRL_NUM.format(campo);
     $('min-valor').textContent = P.brl(lim[0]);
     $('max-valor').textContent = P.brl(lim[1]);
     $('range-parcelas').value = estado.parcelas;
     $('range-parcelas').setAttribute('aria-valuetext', estado.parcelas + ' parcelas');
+    marcarSlider($('range-parcelas'), 2, 12);
     $('txt-parcelas').textContent = estado.parcelas + 'x';
+    if (document.activeElement !== $('campo-prop')) $('campo-prop').value = estado.prop;
 
-    var ehValor = estado.modo === 'valor';
     $('btn-modo-valor').setAttribute('aria-selected', String(ehValor));
     $('btn-modo-limite').setAttribute('aria-selected', String(!ehValor));
     $('btn-modo-valor').tabIndex = ehValor ? 0 : -1;
     $('btn-modo-limite').tabIndex = ehValor ? -1 : 0;
     $('painel-simulacao').setAttribute('aria-labelledby', ehValor ? 'btn-modo-valor' : 'btn-modo-limite');
 
-    $('r-pix').textContent = P.brl(r.pix);
-    $('r-parcelas').textContent = estado.parcelas + ' parcelas de ' + P.brl(r.parcela);
+    $('r-parcela').textContent = P.brl(r.parcela);
+    $('r-sub').textContent = estado.parcelas + ' parcelas · você recebe ' + P.brl(r.receber);
     $('r-total').textContent = P.brl(r.total);
+    $('r-receber').textContent = P.brl(r.receber);
+    $('nota-limite').textContent = 'O total na fatura (' + P.brl(r.total) + ') fica comprometido no limite até as parcelas serem pagas.';
     $('r-iof').textContent = P.brl(r.iof);
     $('r-juros').textContent = P.pct(r.jurosMes);
     $('r-cet').textContent = P.pct(r.cetAno);
-    $('r-custo-texto').textContent = 'Você recebe ' + P.brl(r.pix) + ' e paga ' + P.brl(r.total) +
-      ' na fatura: ' + P.brl(r.total - r.pix) + ' a mais, com juros e IOF.';
-    $('aviso-minimo').classList.toggle('hidden', !abaixo);
+    $('k-real').textContent = P.brl(r.total / r.receber);
+    $('r-resumo').textContent = 'Você recebe ' + P.brl(r.receber) + ' e paga ' + P.brl(r.total) + ' na fatura: ' + P.brl(r.total - r.receber) + ' a mais, com juros e IOF.';
+    $('aviso-minimo').hidden = !abaixo;
     if (abaixo) {
-      $('aviso-minimo').textContent = 'Com esse limite, o Pix ficaria abaixo do mínimo de ' + P.brl(P.PIX_MIN) + '. Em ' + estado.parcelas +
+      $('aviso-minimo').textContent = 'Com esse limite, o valor ficaria abaixo do mínimo de ' + P.brl(P.VALOR_MIN) + '. Em ' + estado.parcelas +
         'x, você precisa de um limite de pelo menos ' + P.brl(limiteNecessario(estado.parcelas)) + ', ou diminua as parcelas.';
     }
-    $('cta-pix').disabled = abaixo;
+    $('btn-cta').disabled = abaixo;
     $('resumo-parcela').textContent = abaixo ? 'Limite abaixo do mínimo' : estado.parcelas + 'x de ' + P.brl(r.parcela);
     $('resumo-total').textContent = abaixo ? 'Aumente o limite ou diminua as parcelas' : 'Total na fatura ' + P.brl(r.total);
+    $('dlg-resumo').textContent = 'Você recebe ' + P.brl(r.receber) + ' por Pix e paga ' + P.brl(r.total) + ' na fatura (' + estado.parcelas + 'x de ' + P.brl(r.parcela) +
+      '): ' + P.brl(r.total - r.receber) + ' a mais, com juros e IOF.';
 
-    desenharRosca(r.pix, r.total);
-    desenharBarras(r.pix);
+    desenharRosca(r.receber, r.total);
+    desenharBarras(r.receber);
     desenharReferencia(r, abaixo);
-    desenharTabela(r.pix);
+    desenharTabela(r.receber);
+    desenharProposta(r, abaixo);
     desenhos += 1;
     if (desenhos > 1) atualizarEndereco();  // o primeiro desenho é o da carga da página
   }
@@ -278,7 +329,7 @@
   function interagiu() {
     if (usou) return;
     usou = true;
-    evento('usou-simulador-pix', { valor: estado.modo === 'valor' ? estado.valor : estado.limite, prazo: estado.parcelas });
+    evento('usou-simulador-emprestimo', { valor: valorCampo(), prazo: estado.parcelas });
   }
 
   function definirCampo(v) {
@@ -286,14 +337,15 @@
     if (estado.modo === 'valor') estado.valor = clamp(v, lim[0], lim[1]); else estado.limite = clamp(v, lim[0], lim[1]);
   }
 
-  async function abrirProposta() {
-    var btn = $('cta-pix');
+  // Segundo passo: com a pessoa já ciente (tela de confirmação), pede ao parceiro uma simulação com o valor e o prazo e abre a proposta pré-preenchida.
+  async function irParaParceiro() {
+    var btn = $('btn-parceiro');
     if (btn.disabled) return;
     btn.disabled = true;
     var rotulo = btn.textContent;
-    $('aviso-proposta').classList.add('hidden');
-    btn.textContent = 'Abrindo sua proposta...';
-    evento('cta-pix', { valor: estado.modo === 'valor' ? estado.valor : estado.limite, prazo: estado.parcelas, modo: estado.modo });
+    $('aviso-proposta').hidden = true;
+    btn.textContent = 'Abrindo a proposta...';
+    evento('cta-parceiro', { valor: valorCampo(), prazo: estado.parcelas, modo: estado.modo });
     var corpo = { parcels: estado.parcelas, tableUUID: P.tableUUID };
     if (estado.modo === 'valor') corpo.desiredValue = estado.valor; else corpo.limitValue = estado.limite;
     var uuid = null;
@@ -309,19 +361,19 @@
     } catch (e) { /* tratado abaixo: sem simulação do parceiro não há pré-preenchimento */ }
     if (!uuid) {
       // não manda a pessoa para o parceiro achando que a proposta foi preenchida: avisa e deixa escolher
-      var valorTxt = estado.modo === 'valor' ? P.brl(estado.valor) + ' no Pix' : 'limite de ' + P.brl(estado.limite);
+      var valorTxt = estado.modo === 'valor' ? P.brl(estado.valor) + ' na conta' : 'limite de ' + P.brl(estado.limite);
       $('txt-aviso-proposta').textContent = 'Não conseguimos pré-preencher a proposta agora. Você pode tentar de novo ou continuar no parceiro e informar lá ' +
-        valorTxt + ' em ' + estado.parcelas + 'x.';
+        valorTxt + ' em ' + estado.parcelas + 'x. ';
       $('link-parceiro').href = CHECKOUT;
-      $('aviso-proposta').classList.remove('hidden');
-      evento('cta-pix-sem-preenchimento', { prazo: estado.parcelas, modo: estado.modo });
+      $('aviso-proposta').hidden = false;
+      evento('cta-parceiro-sem-preenchimento', { prazo: estado.parcelas, modo: estado.modo });
       btn.disabled = false;
       btn.textContent = rotulo;
       return;
     }
     var destino = CHECKOUT + encodeURIComponent(uuid);
     // dá tempo de o evento do Umami sair antes de trocar de página
-    await new Promise(function (r) { setTimeout(r, 350); });
+    await new Promise(function (resolve) { setTimeout(resolve, 350); });
     window.location.href = destino;
     setTimeout(function () { btn.disabled = false; btn.textContent = rotulo; }, 3000);
   }
@@ -331,7 +383,7 @@
     var barra = $('barra-resumo');
     if (!barra || !('IntersectionObserver' in window)) return;
     var vendo = { simulador: false, resultado: false };
-    function atualizar() { barra.classList.toggle('hidden', !(vendo.simulador && !vendo.resultado)); }
+    function atualizar() { barra.hidden = !(vendo.simulador && !vendo.resultado); }
     var obs = new IntersectionObserver(function (itens) {
       itens.forEach(function (i) { vendo[i.target.id === 'simulador' ? 'simulador' : 'resultado'] = i.isIntersecting; });
       atualizar();
@@ -365,16 +417,46 @@
       var v = lerNumero(e.target.value);
       if (v > 0) { definirCampo(v); interagiu(); }
       desenhar();
-      e.target.value = BRL_NUM.format(estado.modo === 'valor' ? estado.valor : estado.limite);  // mostra o valor já ajustado à faixa
+      e.target.value = BRL_NUM.format(valorCampo());  // mostra o valor já ajustado à faixa
     });
     $('campo-valor').addEventListener('keydown', function (e) { if (e.key === 'Enter') e.target.blur(); });
     $('range-parcelas').addEventListener('input', function (e) { estado.parcelas = Number(e.target.value); interagiu(); desenhar(); });
-    $('cta-pix').addEventListener('click', abrirProposta);
+    $('campo-prop').addEventListener('input', function (e) { estado.prop = e.target.value.replace(/[^\d.,]/g, '').slice(0, 12); desenhar(); });
+    $('campo-prop').addEventListener('blur', function () { desenhar(); });
+    $('campo-prop').addEventListener('keydown', function (e) { if (e.key === 'Enter') e.target.blur(); });
     $('btn-copiar').addEventListener('click', copiarLink);
     iniciarBarraResumo();
     var pc = window.matchMedia && window.matchMedia('(pointer: fine) and (min-width: 900px)').matches;
-    $('aviso-celular').classList.toggle('hidden', !pc);
+    $('aviso-celular').hidden = !pc;
+
+    var dlg = $('dlg-confirma');
+    function devolverFoco() { try { $('btn-cta').focus({ preventScroll: true }); } catch (e) { /* ignora */ } }
+    function fechar() { if (typeof dlg.close === 'function') dlg.close(); else { dlg.removeAttribute('open'); devolverFoco(); } }
+    $('btn-cta').addEventListener('click', function () {
+      if ($('btn-cta').disabled) return;
+      evento('abriu-confirmacao', { valor: valorCampo(), prazo: estado.parcelas, modo: estado.modo });
+      $('aviso-proposta').hidden = true;
+      if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+    });
+    dlg.addEventListener('close', devolverFoco);
+    $('btn-voltar').addEventListener('click', fechar);
+    $('btn-parceiro').addEventListener('click', irParaParceiro);
+    // Só o clique fora da caixa fecha (o preenchimento interno do diálogo também é o próprio elemento: conferimos pelas coordenadas).
+    dlg.addEventListener('click', function (e) {
+      if (e.target !== dlg) return;
+      var r = dlg.getBoundingClientRect();
+      var fora = e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+      if (fora) fechar();
+    });
+    // Voltar do parceiro com o botão do navegador: a página pode vir do cache com o botão travado em "Abrindo...".
+    window.addEventListener('pageshow', function (e) {
+      if (!e.persisted) return;
+      $('btn-parceiro').disabled = false;
+      $('btn-parceiro').textContent = 'Continuar para o parceiro →';
+      fechar();
+    });
     desenhar();
+    guardarSimulacao();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();

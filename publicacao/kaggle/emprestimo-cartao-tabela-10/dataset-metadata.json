@@ -1,0 +1,24 @@
+{
+  "title": "Empréstimo com crédito do cartão (Tabela 10)",
+  "id": "rodolfodelfino/pix-no-carto-parcela-iof-e-cet-tabela-10",
+  "subtitle": "Custo de 2x a 12x para cada R$ 1.000 recebidos, conferido toda semana",
+  "description": "Condições do empréstimo pessoal com crédito do cartão (o limite do cartão de crédito é a fonte do dinheiro, entregue por Pix) segundo a Tabela 10 do parceiro (correspondente bancário), de 2 a 12 parcelas, para cada R$ 1.000 recebidos: fator total, parcela, total na fatura, IOF, juros ao mês, juros equivalentes ao ano e CET ao ano. Valor recebido de R$ 300 a R$ 5.000. Os números são conferidos toda semana contra a API do próprio parceiro.\n\nLicença CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/deed.pt-br): você pode copiar, distribuir e adaptar, citando Datalab Global (https://emprestimo.datalabglobal.com/dados-abertos).\nComo citar: Datalab Global (https://emprestimo.datalabglobal.com/dados-abertos). Atualizado toda semana.",
+  "licenses": [
+    {
+      "name": "CC-BY-4.0"
+    }
+  ],
+  "keywords": [
+    "finance",
+    "brazil",
+    "credit card",
+    "interest rates",
+    "installments"
+  ],
+  "resources": [
+    {
+      "path": "emprestimo-cartao-tabela-10.csv",
+      "description": "parcelas; juros_am_pct; juros_aa_equivalente_pct; cet_aa_pct; fator_total; parcela_por_r1000; total_por_r1000; iof_por_r1000"
+    }
+  ]
+}

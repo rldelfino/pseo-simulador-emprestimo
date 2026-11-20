@@ -2,7 +2,7 @@
 import copy
 
 import calculo
-import verificar_tabela_pix as v
+import verificar_tabela_emprestimo as v
 
 
 def resposta_do_parceiro(corpo, mudar=None):
@@ -18,7 +18,7 @@ def resposta_do_parceiro(corpo, mudar=None):
 def preparar(monkeypatch, limites=None, mudar=None):
     monkeypatch.setattr(v, "post", lambda corpo: resposta_do_parceiro(corpo, mudar))
     monkeypatch.setattr(v, "get", lambda url: limites or {"maxNetAmount": 5000, "maxParcels": 12})
-    monkeypatch.setattr("sys.argv", ["verificar_tabela_pix.py"])
+    monkeypatch.setattr("sys.argv", ["verificar_tabela_emprestimo.py"])
 
 
 def test_tudo_igual_sai_com_zero(monkeypatch, capsys):

@@ -1,6 +1,6 @@
-"""Gera o site estático do simulador de empréstimo via cartão de crédito ("Pix no cartão").
+"""Gera o site estático do simulador do Empréstimo pessoal com crédito do cartão (o limite do cartão é a fonte do dinheiro, entregue por Pix).
 
-Saída em paginas_seo/ (publicada no Cloudflare Pages). O CSS vem do Tailwind (npm run build:css).
+Saída em paginas_seo/ (publicada no Cloudflare Pages, sem build). O CSS é escrito à mão em src/estilo.css e copiado para paginas_seo/styles.css.
 Uso: python gerador_emprestimo.py [pasta_de_saida]
 
 Regras do projeto: poucas páginas, cada uma com conteúdo próprio (nada de grade de páginas quase idênticas);
@@ -35,15 +35,17 @@ RAZAO_SOCIAL = "Satori Soluções Comerciais LTDA"
 CNPJ = "63.998.502/0001-73"
 EMAIL = "contato@datalabglobal.com"
 PAGINAS_VALOR_INDEXAVEIS = False
+# Ambiente de contratação do parceiro (sem o código da simulação). Só no link de reserva da tela de confirmação; o botão principal pede antes a simulação ao parceiro.
+CHECKOUT = "https://checkoutonline.digital/?l=" + calculo.TABELA["table_uuid"] + "&u=ucHWD4k1tat4&lp=gyroo&wl=gyroo&s="
 
 # Data de atualização de cada página: só muda quando o conteúdo muda (ver _datas_das_paginas). O arquivo fica no repositório
 # e o robô semanal o commita junto com as páginas.
 MANIFESTO_PADRAO = os.path.join(AQUI, "dados", "datas_paginas.json")
 DATA_SENTINELA = datetime.date(2000, 1, 1)
 
-HOME_TITLE = "Pix no cartão de crédito: simule parcela, IOF e CET"
-HOME_DESC = ("Simule o Pix no cartão de crédito (R$ 300 a R$ 5.000, em 2x a 12x) e veja parcela, total na fatura, IOF e CET antes de contratar. "
-             "Crédito caro: confira o custo.")
+HOME_TITLE = "Empréstimo pessoal com crédito do cartão: parcela e IOF"
+HOME_DESC = ("Simule o empréstimo pessoal com crédito do cartão: receba R$ 300 a R$ 5.000 por Pix e pague em 2x a 12x na fatura. "
+             "Veja parcela, IOF e CET.")
 
 # Páginas indexáveis (entram no sitemap): home + as de conteudo.PAGINAS.
 PAGINAS_INDEXAVEIS = ["/"] + ["/" + pg["slug"] for pg in conteudo.PAGINAS]
@@ -79,49 +81,58 @@ HEADERS = """/*
 /menu.js
   Cache-Control: public, max-age=31536000, immutable
 
-/logo-header.webp
-  Cache-Control: public, max-age=86400, must-revalidate
-
 /og-image.png
   Cache-Control: public, max-age=86400, must-revalidate
 
-/logo-full.png
+/favicon.ico
   Cache-Control: public, max-age=86400, must-revalidate
 
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
 """
 
-CALCULO_JS = """/* GERADO por gerador_emprestimo.py a partir de dados/pix-tabela-esperada.json. Não edite à mão.
+CALCULO_JS = """/* GERADO por gerador_emprestimo.py a partir de dados/emprestimo-cartao-tabela-esperada.json. Não edite à mão.
    Mesma conta de calculo.py (os testes comparam os dois). */
 (function (root) {
   'use strict';
   var T = @@TABELA@@;
-  var PIX_MIN = @@PIX_MIN@@;
-  var PIX_MAX = T.pix_max;
+  var VALOR_MIN = @@VALOR_MIN@@;
+  var VALOR_MAX = T.valor_max;
   // Taxas médias de juros do Banco Central (referência, não oferta): aa = ao ano, am = ao mês equivalente (juros compostos).
   var REF = @@REFERENCIAS@@;
 
   function simular(modo, valor, limite, parcelas) {
     var fator = T.fator_base + T.fator_por_parcela * parcelas;
-    var pix = modo === 'valor' ? valor : Math.min(limite / (1 + fator), PIX_MAX);
-    var total = pix * (1 + fator);
+    var receber = modo === 'valor' ? valor : Math.min(limite / (1 + fator), VALOR_MAX);
+    var total = receber * (1 + fator);
     var cet = T.cet[String(parcelas)];
     return {
-      pix: pix,
+      receber: receber,
       total: total,
       parcela: total / parcelas,
-      iof: pix * (T.iof_fixo + T.iof_por_parcela * parcelas),
+      iof: receber * (T.iof_fixo + T.iof_por_parcela * parcelas),
       jurosMes: cet.monthly,
       cetAno: cet.annual
     };
   }
 
+  // Juros ao mês (em %) de um empréstimo em que você recebe "receber" e paga n parcelas iguais de "parcela". Mesma conta de calculo.taxa_implicita.
+  function taxaImplicita(receber, parcela, n) {
+    if (receber <= 0 || parcela * n <= receber) return null;
+    var lo = 0, hi = 5;
+    for (var k = 0; k < 200; k++) {
+      var i = (lo + hi) / 2;
+      var vp = i > 0 ? parcela * (1 - Math.pow(1 + i, -n)) / i : parcela * n;
+      if (vp > receber) lo = i; else hi = i;
+    }
+    return (lo + hi) / 2 * 100;
+  }
+
   function brl(v) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v); }
   function pct(v) { return v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%'; }
 
-  var api = { simular: simular, brl: brl, pct: pct, PIX_MIN: PIX_MIN, PIX_MAX: PIX_MAX, tableUUID: T.table_uuid, tabela: T, referencias: REF };
-  root.DatalabPix = api;
+  var api = { simular: simular, taxaImplicita: taxaImplicita, brl: brl, pct: pct, VALOR_MIN: VALOR_MIN, VALOR_MAX: VALOR_MAX, tableUUID: T.table_uuid, tabela: T, referencias: REF };
+  root.DatalabEmprestimo = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);
 """
@@ -137,18 +148,20 @@ NOT_FOUND = """<!doctype html>
 <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<main class="mx-auto max-w-xl px-4 py-24 text-center">
-  <h1 class="text-3xl font-extrabold">Página não encontrada</h1>
-  <p class="mt-3 text-slate-300">O endereço não existe mais ou foi digitado errado.</p>
-  <p class="mt-6"><a class="inline-flex min-h-11 items-center underline" href="/">Voltar ao simulador do Pix no cartão</a></p>
+<main class="wrap">
+<section class="hero">
+  <h1>Página não encontrada</h1>
+  <p>O endereço não existe mais ou foi digitado errado.</p>
+  <p class="fine"><a class="btn" href="/">Voltar ao simulador do empréstimo com crédito do cartão</a></p>
+</section>
 </main>
 </body>
 </html>
 """
 
-LLMS = """# Pix no cartão de crédito (Datalab Global)
+LLMS = """# Empréstimo pessoal com crédito do cartão (Datalab Global)
 
-> Simulador gratuito do Pix no cartão de crédito: você recebe um Pix de R$ 300 a R$ 5.000 e paga em 2x a 12x na fatura. Mostra parcela, total na fatura, IOF e CET antes de qualquer contratação. É crédito caro.
+> Simulador gratuito do empréstimo pessoal com crédito do cartão: o limite do cartão de crédito é a fonte do dinheiro, que você recebe por Pix (de R$ 300 a R$ 5.000) e paga em 2x a 12x na fatura. Mostra parcela, total na fatura, IOF e CET antes de qualquer contratação. É crédito caro.
 
 - Responsável: @@RAZAO@@, CNPJ @@CNPJ@@
 - Atualizado em @@ATUALIZADO@@
@@ -170,7 +183,7 @@ def _preencher(texto, valores):
 
 
 def referencias_bcb():
-    """Última taxa média do BCB de cada série, para o simulador comparar com os juros do Pix. Sem dado, lista vazia (o bloco some)."""
+    """Última taxa média do BCB de cada série, para o simulador comparar com os juros do empréstimo. Sem dado, lista vazia (o bloco some)."""
     linhas = taxas_referencia.ler()
     saida = []
     for sr in taxas_referencia.SERIES:
@@ -184,7 +197,7 @@ def referencias_bcb():
 def gerar_calculo_js():
     tabela = json.dumps(calculo.TABELA, ensure_ascii=False, sort_keys=True)
     refs = json.dumps(referencias_bcb(), ensure_ascii=False, sort_keys=True)
-    return _preencher(CALCULO_JS, {"TABELA": tabela, "PIX_MIN": str(calculo.PIX_MIN), "REFERENCIAS": refs})
+    return _preencher(CALCULO_JS, {"TABELA": tabela, "VALOR_MIN": str(calculo.VALOR_MIN), "REFERENCIAS": refs})
 
 
 def _resumo(dados):
@@ -217,19 +230,15 @@ def home_scripts():
 
 
 def versao_css():
-    """Resumo do styles.css compilado. O arquivo tem cache de 1 ano e imutável; a versão no endereço (?v=) faz o navegador buscar o novo
-    quando o CSS muda. Fluxo: gerar -> npm run build:css -> gerar de novo (a segunda rodada só atualiza esta versão)."""
-    caminho = os.path.join(AQUI, "paginas_seo", "styles.css")
-    if not os.path.exists(caminho):
-        return "0"
-    with open(caminho, "rb") as f:
-        return hashlib.sha256(f.read()).hexdigest()[:10]
+    """Resumo do src/estilo.css (copiado para styles.css). O arquivo tem cache de 1 ano e imutável; a versão no endereço (?v=) faz o navegador buscar o novo quando o CSS muda."""
+    with open(os.path.join(AQUI, "src", "estilo.css"), "rb") as f:
+        return _resumo(f.read())
 
 
 def versao_icones():
-    """Resumo do logo e dos ícones. Sem a versão na URL, quem já visitou continuaria vendo o logo/ícone antigo pelo cache (o logo mudou de verde para roxo)."""
+    """Resumo dos ícones. Sem a versão na URL, quem já visitou continuaria vendo o ícone antigo pelo cache."""
     h = hashlib.sha256()
-    for nome in ("logo-full.png", "favicon.ico", "favicon-32.png", "apple-touch-icon.png"):
+    for nome in ("favicon.ico", "favicon-32.png", "apple-touch-icon.png"):
         with open(os.path.join(AQUI, "paginas_seo", nome), "rb") as f:
             h.update(f.read())
     return h.hexdigest()[:10]
@@ -250,12 +259,12 @@ def _ld(dados):
 
 
 # Navegação: poucos links no cabeçalho, tudo no menu do celular e no rodapé (em colunas).
-DESTAQUES = ["como-funciona", "custo-cet-iof", "e-seguro-golpes", "taxas-de-referencia"]
-ENTENDA = ["como-funciona", "e-seguro-golpes", "custo-cet-iof", "pix-no-cartao-ou-outro-credito", "quando-nao-vale-a-pena"]
+DESTAQUES = ["como-funciona", "custo-cet-iof", "taxas-de-referencia"]
+ENTENDA = ["como-funciona", "e-seguro-golpes", "custo-cet-iof", conteudo.SLUG_COMPARAR, "quando-nao-vale-a-pena"]
 TRANSPARENCIA = ["taxas-de-referencia", "metodologia", "dados-abertos", "atualizacoes", "sobre"]
 LEGAL = ["privacidade", "termos"]
 ROTULOS = {"atualizacoes": "Atualizações", "dados-abertos": "Dados abertos", "privacidade": "Privacidade", "termos": "Termos de uso",
-           "pix-no-cartao-ou-outro-credito": "Comparar com outros créditos", "taxas-de-referencia": "Taxas do Banco Central",
+           conteudo.SLUG_COMPARAR: "Comparar com outros créditos", "taxas-de-referencia": "Taxas do Banco Central",
            "custo-cet-iof": "CET e IOF", "e-seguro-golpes": "É seguro? Golpes", "quando-nao-vale-a-pena": "Quando não vale a pena"}
 
 
@@ -268,16 +277,16 @@ def _rotulo(slug):
 
 
 def _nav_desktop():
-    return "".join('<a class="hover:text-white" href="/' + s + '">' + (_pg(s).get("menu") or _rotulo(s)) + "</a>" for s in DESTAQUES)
+    return '<a href="/#simulador">Simular</a>' + "".join('<a href="/' + x + '">' + _rotulo(x) + "</a>" for x in DESTAQUES)
 
 
 def _nav_celular():
-    links = ENTENDA + [s for s in TRANSPARENCIA if s not in ENTENDA]
-    return "".join('<a class="flex min-h-11 items-center rounded-lg px-3 hover:bg-white/5" href="/' + s + '">' + _rotulo(s) + "</a>" for s in links)
+    links = ENTENDA + [x for x in TRANSPARENCIA if x not in ENTENDA]
+    return '<a href="/#simulador">Simular</a>' + "".join('<a href="/' + x + '">' + _rotulo(x) + "</a>" for x in links)
 
 
 def _lista_rodape(slugs, extra=""):
-    return "".join('<li><a class="inline-flex min-h-11 items-center hover:text-white md:min-h-8" href="/' + s + '">' + _rotulo(s) + "</a></li>" for s in slugs) + extra
+    return "".join('<li><a href="/' + x + '">' + _rotulo(x) + "</a></li>" for x in slugs) + extra
 
 
 # Os outros simuladores da Datalab Global (outros produtos, outros subdomínios). O texto do link descreve o destino.
@@ -292,17 +301,11 @@ OUTROS_SIMULADORES = [
 
 
 def _lista_outros():
-    return "".join('<li><a class="inline-flex min-h-11 items-center hover:text-white md:min-h-8" href="' + url + '">' + texto + "</a></li>"
-                   for url, texto in OUTROS_SIMULADORES)
+    return "".join('<li><a href="' + url + '">' + texto + "</a></li>" for url, texto in OUTROS_SIMULADORES)
 
 
 def _faq_html():
-    saida = ""
-    for pergunta, resposta in conteudo.FAQ:
-        saida += ('<details class="faq rounded-2xl border border-white/10 bg-slate-900/40 p-5"><summary class="flex min-h-11 cursor-pointer items-center justify-between gap-4 font-semibold text-white">'
-                  + pergunta + '<span class="mais text-xl text-slate-400" aria-hidden="true">+</span></summary><p class="mt-3 text-sm leading-relaxed text-slate-300">'
-                  + resposta + "</p></details>")
-    return saida
+    return "".join("<details><summary>" + q + "</summary><p>" + r + "</p></details>" for q, r in conteudo.FAQ)
 
 
 def _cartoes_html():
@@ -310,9 +313,7 @@ def _cartoes_html():
     for pg in conteudo.PAGINAS:
         if not pg.get("menu"):
             continue
-        saida += ('<a href="/' + pg["slug"] + '" class="glass-panel block rounded-2xl p-6 hover:border-violet-400/40"><span class="font-serif text-lg font-bold text-white">'
-                  + pg["menu"] + '</span><span class="mt-2 block text-sm leading-relaxed text-slate-400">' + pg["desc"]
-                  + '</span><span class="mt-4 block text-xs font-bold uppercase tracking-widest text-violet-400">Ler &rarr;</span></a>')
+        saida += '<a class="card" href="/' + pg["slug"] + '"><h4>' + pg["menu"] + "</h4>" + pg["desc"] + '<span class="go">Ler →</span></a>'
     return saida
 
 
@@ -331,7 +332,7 @@ def _organizacao():
 def _breadcrumb(pg, canonical):
     """Trilha Início > página, para as páginas internas."""
     return {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "Pix no cartão", "item": DOMINIO + "/"},
+        {"@type": "ListItem", "position": 1, "name": conteudo.NOME, "item": DOMINIO + "/"},
         {"@type": "ListItem", "position": 2, "name": pg["h1"], "item": canonical}]}
 
 
@@ -342,7 +343,7 @@ def _datasets(hoje):
         d = {"@context": "https://schema.org", "@type": "Dataset", "name": c["titulo"], "description": c["descricao"],
              "url": DOMINIO + "/dados-abertos", "inLanguage": "pt-BR", "isAccessibleForFree": True, "license": c["licenca"]["url"],
              "creator": {"@type": "Organization", "name": "Datalab Global", "url": HUB + "/"}, "publisher": {"@id": DOMINIO + "/#organizacao"},
-             "dateModified": hoje.isoformat(), "keywords": ["crédito", "juros", "Brasil", "Pix no cartão" if c is dados_abertos.PIX else "Banco Central"],
+             "dateModified": hoje.isoformat(), "keywords": ["crédito", "juros", "Brasil", "empréstimo com crédito do cartão" if c is dados_abertos.EMPRESTIMO else "Banco Central"],
              "sameAs": [c["kaggle"], c["huggingface"]], "isBasedOn": c["fonte"]["path"],
              "variableMeasured": [{"@type": "PropertyValue", "name": n, "description": desc} for n, _t, desc in c["colunas"]],
              "distribution": [{"@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": DOMINIO + "/dados/" + c["nome"] + ".csv"},
@@ -354,15 +355,37 @@ def _datasets(hoje):
     return saida
 
 
+def _valores_padrao():
+    """Números da simulação inicial (a mesma que o JS desenha ao abrir a página): R$ 1.000 em 12x. Ficam escritos no HTML para quem lê sem JavaScript e para os buscadores."""
+    r = calculo.simular("valor", 1000, 0, 12)
+    custo = r["total"] - r["receber"]
+    return {
+        "D_VALOR": "1.000", "D_VALOR_N": "1000",
+        "D_PARCELA": conteudo.brl(r["parcela"]), "D_SUB": "12 parcelas · você recebe " + conteudo.brl(r["receber"]), "D_TOTAL": conteudo.brl(r["total"]),
+        "D_RECEBER": conteudo.brl(r["receber"]), "D_IOF": conteudo.brl(r["iof"]),
+        "D_RESUMO": "Você recebe " + conteudo.brl(r["receber"]) + " e paga " + conteudo.brl(r["total"]) + " na fatura: " + conteudo.brl(custo) + " a mais, com juros e IOF.",
+        "D_PCT_CUSTO": str(round(custo / r["total"] * 100)), "D_ROSCA_P": "%.2f" % (r["receber"] / r["total"] * 289.03),
+        "D_L_VALOR": conteudo.brl(r["receber"]), "D_L_CUSTO": conteudo.brl(custo),
+        "D_NOTA_LIMITE": "O total na fatura (" + conteudo.brl(r["total"]) + ") fica comprometido no limite até as parcelas serem pagas.",
+        "D_JUROS": conteudo.pct(r["jurosMes"]), "D_CET": conteudo.pct(r["cetAno"]), "D_REAL": conteudo.brl(r["total"] / r["receber"]),
+        "D_DLG_RESUMO": "Você recebe " + conteudo.brl(r["receber"]) + " por Pix e paga " + conteudo.brl(r["total"]) + " na fatura (12x de " + conteudo.brl(r["parcela"]) + "): "
+                        + conteudo.brl(custo) + " a mais, com juros e IOF.",
+    }
+
+
 def _pagina_home(valores, hoje):
     faq = {"@context": "https://schema.org", "@type": "FAQPage",
            "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": _sem_tags(r)}} for q, r in conteudo.FAQ]}
     site = {"@context": "https://schema.org", "@graph": [
         _organizacao(),
-        {"@type": "WebSite", "@id": DOMINIO + "/#site", "url": DOMINIO + "/", "name": "Pix no cartão — Datalab Global", "inLanguage": "pt-BR",
+        {"@type": "WebSite", "@id": DOMINIO + "/#site", "url": DOMINIO + "/", "name": conteudo.NOME + " — Datalab Global", "inLanguage": "pt-BR",
          "publisher": {"@id": DOMINIO + "/#organizacao"}},
+        {"@type": "WebApplication", "@id": DOMINIO + "/#app", "url": DOMINIO + "/", "name": "Simulador de " + conteudo.NOME.lower(), "description": HOME_DESC, "inLanguage": "pt-BR",
+         "applicationCategory": "FinanceApplication", "operatingSystem": "Any", "browserRequirements": "Requires JavaScript", "isAccessibleForFree": True,
+         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "BRL"}, "publisher": {"@id": DOMINIO + "/#organizacao"}},
     ]}
-    main = _preencher(layout.HOME_MAIN, dict(valores, ROTULO=layout.ROTULO, CARTOES=_cartoes_html(), FAQ=_faq_html(), COMPARA=conteudo.frase_home()))
+    main = _preencher(layout.HOME_MAIN, dict(valores, CARTOES=_cartoes_html(), FAQ=_faq_html(), COMPARA=conteudo.frase_home(), CUSTO_HOME=conteudo.custo_home(),
+                                             O_QUE_E=conteudo.O_QUE_E, SLUG_COMPARAR=conteudo.SLUG_COMPARAR, CHECKOUT=CHECKOUT, **_valores_padrao()))
     return _preencher(layout.LAYOUT, dict(valores, TITLE=HOME_TITLE, DESC=HOME_DESC, CANONICAL=DOMINIO + "/", ROBOTS="index,follow,max-image-preview:large",
                                           OGTYPE="website", JSONLD=_ld(site) + _ld(faq), MAIN=main, SCRIPTS=home_scripts()))
 
@@ -442,6 +465,19 @@ def _datas_das_paginas(feitas, hoje, manifesto):
     return datas, novo
 
 
+def redirecionamentos():
+    """_redirects do Cloudflare Pages: os endereços antigos (nome errado do produto) levam aos novos, com 301.
+    Páginas: conteudo.REDIRECIONAMENTOS_SLUG. Arquivos de dados abertos: nome antigo -> nome novo (Kaggle, Hugging Face e dados.gov.br podem ter o link antigo)."""
+    linhas = ["# 301: endereços antigos (o produto se chamava \"Pix no cartão\") para os novos. Gerado por gerador_emprestimo.py."]
+    for antigo, novo in conteudo.REDIRECIONAMENTOS_SLUG.items():
+        linhas.append(antigo + " " + novo + " 301")
+        linhas.append(antigo + ".html " + novo + " 301")
+    for ext in (".csv", ".json"):
+        linhas.append("/dados/pix-no-cartao-tabela-10" + ext + " /dados/" + dados_abertos.EMPRESTIMO["nome"] + ext + " 301")
+    linhas.append("/dados/datapackage-pix-no-cartao-tabela-10.json /dados/datapackage-" + dados_abertos.EMPRESTIMO["nome"] + ".json 301")
+    return "\n".join(linhas) + "\n"
+
+
 def gerar_site(saida=SAIDA_PADRAO, hoje=None, manifesto=None):
     """manifesto: arquivo com as datas das páginas. Sem ele (e fora da pasta padrão, como nos testes) todas as páginas levam a data de hoje."""
     hoje = hoje or datetime.date.today()
@@ -449,8 +485,15 @@ def gerar_site(saida=SAIDA_PADRAO, hoje=None, manifesto=None):
         manifesto = MANIFESTO_PADRAO
     atualizado = hoje.strftime("%d/%m/%Y")
     os.makedirs(saida, exist_ok=True)
+    if os.path.abspath(saida) != os.path.abspath(SAIDA_PADRAO):  # fora da pasta padrão (testes): leva fontes e ícones, que não são gerados
+        os.makedirs(os.path.join(saida, "fonts"), exist_ok=True)
+        for nome in os.listdir(os.path.join(SAIDA_PADRAO, "fonts")):
+            shutil.copyfile(os.path.join(SAIDA_PADRAO, "fonts", nome), os.path.join(saida, "fonts", nome))
+        for nome in ("favicon.ico", "favicon-32.png", "favicon-192.png", "apple-touch-icon.png", "og-image.png"):
+            shutil.copyfile(os.path.join(SAIDA_PADRAO, nome), os.path.join(saida, nome))
+    shutil.copyfile(os.path.join(AQUI, "src", "estilo.css"), os.path.join(saida, "styles.css"))
     valores = {
-        "DOMINIO": DOMINIO, "HUB": HUB, "UMAMI_ID": UMAMI_ID, "RAZAO": RAZAO_SOCIAL, "CNPJ": CNPJ, "EMAIL": EMAIL,
+        "DOMINIO": DOMINIO, "HUB": HUB, "UMAMI_ID": UMAMI_ID, "RAZAO": RAZAO_SOCIAL, "CNPJ": CNPJ, "EMAIL": EMAIL, "LOGO": layout.LOGO,
         "ATUALIZADO": atualizado, "CSSV": versao_css(), "ICONV": versao_icones(), "OGV": versao_og_image(), "NAV": _nav_desktop(), "NAVMOBILE": _nav_celular(),
         "FOOT_ENTENDA": _lista_rodape(ENTENDA), "FOOT_LEGAL": _lista_rodape(LEGAL), "FOOT_OUTROS": _lista_outros(),
         "FOOT_TRANSP": _lista_rodape(TRANSPARENCIA, '<li><a class="inline-flex min-h-11 items-center hover:text-white md:min-h-8" href="/feed.xml">Feed Atom</a></li>'),
@@ -484,6 +527,7 @@ def gerar_site(saida=SAIDA_PADRAO, hoje=None, manifesto=None):
     escrever(".well-known/security.txt", "Contact: mailto:" + EMAIL + "\nExpires: " + (hoje + datetime.timedelta(days=365)).isoformat() +
              "T00:00:00.000Z\nPreferred-Languages: pt, en\nCanonical: " + DOMINIO + "/.well-known/security.txt\n")
     escrever("_headers", _preencher(HEADERS, {"CSP": CSP}))
+    escrever("_redirects", redirecionamentos())
     escrever("robots.txt", "User-agent: *\nAllow: /\n\nSitemap: " + DOMINIO + "/sitemap.xml\n")
     linhas = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for caminho in PAGINAS_INDEXAVEIS:

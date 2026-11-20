@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-"""Confere se a conta do simulador "Pix no cartão" ainda bate com a Tabela 10 do parceiro.
+"""Confere se a conta do simulador "Empréstimo pessoal com crédito do cartão" ainda bate com a Tabela 10 do parceiro.
 
 O simulador (calculo.py e paginas_seo/calculo.js) calcula parcela, IOF, juros e CET localmente; se o parceiro mudar a
 tabela, a página passaria a mostrar números errados sem ninguém perceber. Este script pergunta à API do parceiro o
 resultado de R$ 1.000 em cada prazo (2x a 12x) e os limites (valor máximo e parcelas), e compara com o esperado
-(dados/pix-tabela-esperada.json, a mesma fonte usada por calculo.py e calculo.js — uma fonte só).
+(dados/emprestimo-cartao-tabela-esperada.json, a mesma fonte usada por calculo.py e calculo.js — uma fonte só).
 
 Sai com código 1 se algo mudou (o GitHub Actions marca a execução como falha e manda e-mail ao dono do repositório).
 Só biblioteca padrão do Python.
 
-Uso:  python verificar_tabela_pix.py [caminho/pix-tabela-esperada.json]
+Uso:  python verificar_tabela_emprestimo.py [caminho/emprestimo-cartao-tabela-esperada.json]
 """
 import json
 import os
@@ -36,13 +36,13 @@ def get(url):
 
 
 def main():
-    caminho = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "dados", "pix-tabela-esperada.json")
+    caminho = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "dados", "emprestimo-cartao-tabela-esperada.json")
     esp = json.load(open(caminho, encoding="utf-8"))
     problemas = []
 
     lim = get(f"{API}/limits?tableUUID={esp['table_uuid']}")
-    if lim.get("maxNetAmount") != esp["pix_max"]:
-        problemas.append(f"valor máximo mudou: {esp['pix_max']} -> {lim.get('maxNetAmount')}")
+    if lim.get("maxNetAmount") != esp["valor_max"]:
+        problemas.append(f"valor máximo mudou: {esp['valor_max']} -> {lim.get('maxNetAmount')}")
     max_parcelas = max(int(k) for k in esp["cet"])
     if int(lim.get("maxParcels") or 0) != max_parcelas:
         problemas.append(f"parcelas máximas mudaram: {max_parcelas} -> {lim.get('maxParcels')}")
@@ -67,7 +67,7 @@ def main():
             problemas.append(f"{n}x — tabela mudou de nome: {esp['table_name']} -> {r['tableName']}")
 
     if problemas:
-        print("A TABELA DO PIX NO CARTÃO MUDOU — atualize dados/pix-tabela-esperada.json e rode gerador_emprestimo.py:")
+        print("A TABELA DO EMPRÉSTIMO COM CRÉDITO DO CARTÃO MUDOU — atualize dados/emprestimo-cartao-tabela-esperada.json e rode gerador_emprestimo.py:")
         for p in problemas:
             print(" -", p)
         return 1

@@ -1,15 +1,20 @@
-"""Conteúdo das páginas (Fase 3). Cada página tem texto próprio; nada de páginas quase iguais.
+"""Conteúdo das páginas. Cada página tem texto próprio; nada de páginas quase iguais.
 
-Regras: nenhum número que não venha da Tabela 10 (calculo.py) ou de uma fonte citada; nenhum banco citado nem ranking;
+Nome do produto: "Empréstimo pessoal com crédito do cartão". É um empréstimo pessoal em que o limite do cartão de crédito é a fonte do dinheiro, entregue por Pix.
+Nunca é "Pix no cartão", "Pix com cartão" nem "crédito por Pix": esses nomes induzem a erro e só aparecem (uma vez, na FAQ) para corrigir quem os procura.
+
+Regras: nenhum número que não venha da Tabela 10 (calculo.py) ou de uma fonte citada; nenhum banco nem o nome do parceiro citados, nem ranking;
 sem prometer aprovação. Os números dos textos são calculados aqui a partir de calculo.simular, para não divergirem do simulador.
+Sem f-string aninhada (o CI roda Python 3.10).
 """
 import calculo
 import dados_abertos as da
 import taxas_referencia as tr
 
 GITHUB = "https://github.com/rldelfino/pseo-simulador-emprestimo"
+NOME = "Empréstimo pessoal com crédito do cartão"
 
-# ---------- helpers de formatação (sem f-string aninhada: o CI roda Python 3.10) ----------
+# ---------- helpers de formatação ----------
 
 
 def brl(v):
@@ -17,78 +22,86 @@ def brl(v):
     return "R$ " + s.replace(",", "#").replace(".", ",").replace("#", ".")
 
 
+def brl0(v):
+    return "R$ " + format(round(v), ",d").replace(",", ".")
+
+
 def pct(v):
     s = format(round(v, 2), ",.2f")
     return s.replace(",", "#").replace(".", ",").replace("#", ".") + "%"
 
 
-# ---------- blocos de HTML ----------
-C_H2 = "mt-10 text-2xl font-bold text-white first:mt-0"
-C_H3 = "mt-6 text-lg font-bold text-white"
-C_P = "mt-3 leading-relaxed text-slate-300 break-words"
-C_UL = "mt-3 list-disc space-y-2 pl-6 leading-relaxed text-slate-300 break-words"
-C_OL = "mt-3 list-decimal space-y-2 pl-6 leading-relaxed text-slate-300 break-words"
-C_A = "text-violet-300 underline hover:text-white"
-C_AVISO = "mt-6 rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm leading-relaxed text-amber-100 break-words"
-C_TAB = "w-full min-w-[34rem] border-collapse text-left text-sm"
-C_TH = "border-b border-white/15 px-3 py-3 text-[11px] font-bold uppercase tracking-widest text-violet-400"
-C_TD = "border-b border-white/10 px-3 py-3 text-slate-300"
+# ---------- blocos de HTML (o estilo vem de src/estilo.css; sem atributo style) ----------
 
 
 def h2(t):
-    return '<h2 class="' + C_H2 + '">' + t + "</h2>\n"
+    return "<h2>" + t + "</h2>\n"
 
 
 def h3(t):
-    return '<h3 class="' + C_H3 + '">' + t + "</h3>\n"
+    return "<h3>" + t + "</h3>\n"
 
 
 def p(t):
-    return '<p class="' + C_P + '">' + t + "</p>\n"
+    return "<p>" + t + "</p>\n"
 
 
-def ul(itens):
-    return '<ul class="' + C_UL + '">' + "".join("<li>" + i + "</li>" for i in itens) + "</ul>\n"
+def ul(itens, classe=""):
+    return "<ul" + (' class="' + classe + '"' if classe else "") + ">" + "".join("<li>" + i + "</li>" for i in itens) + "</ul>\n"
 
 
 def ol(itens):
-    return '<ol class="' + C_OL + '">' + "".join("<li>" + i + "</li>" for i in itens) + "</ol>\n"
+    return "<ol>" + "".join("<li>" + i + "</li>" for i in itens) + "</ol>\n"
 
 
-def aviso(t):
-    return '<div class="' + C_AVISO + '">' + t + "</div>\n"
+def aviso(t, ok=False):
+    return '<div class="aviso' + (" ok" if ok else "") + '">' + t + "</div>\n"
 
 
 def a(href, texto):
-    return '<a class="' + C_A + '" href="' + href + '">' + texto + "</a>"
+    return '<a href="' + href + '">' + texto + "</a>"
 
 
 def tabela(cabecalho, linhas, legenda):
-    h = "".join('<th scope="col" class="' + C_TH + '">' + c + "</th>" for c in cabecalho)
-    corpo = ""
-    for linha in linhas:
-        corpo += "<tr>" + "".join('<td class="' + C_TD + ' num">' + c + "</td>" for c in linha) + "</tr>"
-    return ('<div class="mt-4 overflow-x-auto rounded-2xl border border-white/10 bg-slate-950/50"><table class="' + C_TAB + '">'
-            '<caption class="px-3 py-2 text-left text-xs text-slate-400">' + legenda + "</caption>"
-            "<thead><tr>" + h + "</tr></thead><tbody>" + corpo + "</tbody></table></div>\n")
+    topo = "".join('<th scope="col">' + c + "</th>" for c in cabecalho)
+    # data-l: rótulo da coluna, usado no celular (o CSS empilha cada linha em um cartão; sem rolagem lateral)
+    corpo = "".join("<tr>" + "".join('<td data-l="' + cabecalho[i] + '">' + c + "</td>" for i, c in enumerate(l)) + "</tr>" for l in linhas)
+    return '<div class="tw"><table><caption>' + legenda + "</caption><thead><tr>" + topo + "</tr></thead><tbody>" + corpo + "</tbody></table></div>\n"
 
 
-def _r(n, pix=1000):
-    return calculo.simular("valor", pix, 0, n)
+def _r(n, valor=1000):
+    return calculo.simular("valor", valor, 0, n)
+
+
+# ---------- o que é (texto-base, repetido com variações nas páginas) ----------
+O_QUE_E = ("É um empréstimo pessoal em que o limite do seu cartão de crédito é a fonte do dinheiro: você escolhe um valor, recebe por Pix na sua conta e "
+           "paga em parcelas na fatura do cartão, com juros e IOF.")
+
+
+def custo_home():
+    """Frase da home sobre juros e CET, com os números calculados da Tabela 10 (nunca digitados à mão)."""
+    r2, r12 = _r(2), _r(12)
+    return ("Os juros vão de " + pct(r2["jurosMes"]) + " ao mês (2x) a " + pct(r12["jurosMes"]) + " ao mês (12x). O CET, que inclui o IOF e é contado ao ano, vai de "
+            + pct(r2["cetAno"]) + " a " + pct(r12["cetAno"]) + ". Por isso o simulador mostra quanto você paga a mais antes do botão.")
 
 
 # ---------- perguntas frequentes da home (também viram FAQPage) ----------
 FAQ = [
+    ("O que é o empréstimo pessoal com crédito do cartão?",
+     O_QUE_E + " Não é compra parcelada nem um saque comum: é um contrato de empréstimo, com juros, IOF e CET informados antes de você aceitar."),
+    ("O que acontece com o limite do cartão?",
+     "O total que vai para as parcelas (o valor que você recebe mais juros e IOF) é lançado no limite do cartão: é por isso que o modo “Usar meu limite” "
+     "calcula quanto você consegue receber a partir do limite que tem. Enquanto as parcelas não forem pagas, esse valor fica comprometido; como e quando o seu "
+     "banco libera o limite conforme você paga é regra do emissor do cartão, então confirme com ele."),
     ("Quem pode solicitar?",
      "Segundo o parceiro, pessoa maior de 18 anos, com cartão de crédito ativo e com limite disponível, e conta bancária em seu nome. "
      "Essas condições são do parceiro e podem mudar."),
-    ("Preciso ter limite disponível no cartão?",
-     "Sim. É no cartão que o valor é parcelado: ele precisa estar ativo e com limite no momento da contratação."),
     ("Qual o valor mínimo e o máximo, e quantas parcelas?",
      "De R$ 300 a R$ 5.000, em 2 a 12 parcelas na fatura, sempre respeitando o limite do cartão."),
-    ("Pix parcelado, Pix no cartão e saque do limite são a mesma coisa?",
-     "\"Pix parcelado\" é o nome popular do Pix no cartão. Na prática, é um empréstimo no cartão de crédito: você usa o limite do cartão para receber dinheiro por Pix "
-     "(o que muita gente chama de saque do limite) e paga em parcelas na fatura, com juros e IOF."),
+    ("Já vi isso chamado de “Pix no cartão”, “Pix parcelado” ou “saque do limite”. É a mesma coisa?",
+     "Esses nomes aparecem em anúncios, mas induzem a erro. Não é um Pix pago com cartão nem um crédito por Pix, e “Pix parcelado” costuma ser outra coisa: "
+     "parcelar uma compra paga por Pix. Aqui você recebe dinheiro de um empréstimo, e o Pix é só o jeito de ele chegar à sua conta. "
+     "“Saque do limite” descreve o efeito, mas há contrato de empréstimo, com juros e IOF."),
     ("Como recebo o dinheiro?",
      "Por Pix, em uma chave em seu próprio nome. O parceiro não aceita chave de outra pessoa."),
     ("Como pago?",
@@ -110,22 +123,25 @@ FAQ = [
 def corpo_como_funciona(ctx):
     r2, r12 = _r(2), _r(12)
     return (
-        p("O Pix no cartão, também chamado de Pix parcelado, é um empréstimo no cartão de crédito: você recebe um valor por Pix e devolve em parcelas lançadas na fatura do seu cartão, "
-          "com juros e IOF. Na prática, é uma forma de sacar o limite do cartão em dinheiro. Esta página explica o caminho do pedido ao dinheiro na conta, com o que o próprio parceiro informa na tela de contratação.")
+        p(O_QUE_E + " Esta página explica o caminho do pedido ao dinheiro na conta, com o que o próprio parceiro informa na tela de contratação.")
         + h2("Em resumo")
         + ul([
             "Você escolhe um valor entre R$ 300 e R$ 5.000 e um prazo de 2 a 12 parcelas.",
             "O parceiro analisa o seu crédito. Aprovando, o valor cai por Pix em uma chave em seu nome.",
-            "Você paga as parcelas na fatura do cartão, junto com o resto da fatura.",
+            "O total (valor mais juros e IOF) é lançado no limite do seu cartão e dividido nas faturas, junto com o resto da fatura.",
             "É um crédito caro: para receber " + brl(1000) + ", você paga entre " + brl(r2["total"]) + " (2x) e " + brl(r12["total"]) + " (12x).",
         ])
+        + h2("O que acontece com o limite do cartão")
+        + p("O limite do cartão é a fonte do dinheiro. O total das parcelas é lançado nele, e por isso o simulador tem o modo “Usar meu limite”: você informa quanto tem "
+            "disponível e ele calcula quanto consegue receber (o valor recebido é menor que o limite, porque os juros e o IOF também ocupam espaço). "
+            "A forma como o seu banco libera o limite conforme você paga as parcelas é regra do emissor do cartão: confirme com ele antes de contratar.")
         + h2("Passo a passo")
         + ol([
             "<strong>Simule aqui.</strong> Escolha o valor que quer receber (ou o limite que tem no cartão) e o número de parcelas. O custo aparece na hora, antes de qualquer botão.",
-            "<strong>Clique em Ver minha proposta.</strong> Este site envia ao parceiro só o valor e o prazo da simulação, sem nenhum dado seu, e abre a tela de contratação no ambiente do parceiro.",
+            "<strong>Clique em Ver minha proposta.</strong> Uma tela de confirmação resume o que vai acontecer. Ao continuar, este site envia ao parceiro só o valor e o prazo da simulação, sem nenhum dado seu, e abre a tela de contratação no ambiente do parceiro.",
             "<strong>Identifique-se no ambiente do parceiro.</strong> A primeira tela pede CPF, data de nascimento e o documento que você vai usar (RG ou CNH), com a data de emissão. Esses dados vão para o parceiro, não para este site.",
             "<strong>Assine o contrato (CCB).</strong> O parceiro avisa que é preciso estar com o documento original em mãos: não aceita foto, cópia ou versão digital.",
-            "<strong>Informe a chave Pix.</strong> Depois da aprovação, o valor só pode ser enviado para uma chave em seu próprio nome.",
+            "<strong>Informe a chave Pix.</strong> Depois da aprovação, o valor só pode ser enviado para uma chave em seu próprio nome: o Pix é só o meio de o dinheiro chegar.",
             "<strong>Receba e pague na fatura.</strong> As parcelas aparecem nas próximas faturas do cartão.",
         ])
         + p("A tela de contratação do parceiro tem 6 passos. Descrevemos acima o que o parceiro informa logo na primeira tela; não temos como "
@@ -138,7 +154,7 @@ def corpo_como_funciona(ctx):
             "Cartão de crédito em seu nome, com limite disponível.",
             "Documento com foto (RG ou CNH), original.",
             "Dados do seu endereço atual.",
-            "Uma chave Pix em seu nome.",
+            "Uma chave Pix em seu nome, só para receber o dinheiro.",
         ])
         + aviso("<strong>Antes de clicar:</strong> veja quanto isso custa em " + a("/custo-cet-iof", "CET e IOF: quanto custa de verdade")
                 + " e se " + a("/quando-nao-vale-a-pena", "esta é uma boa ideia para o seu caso") + ".")
@@ -148,18 +164,18 @@ def corpo_como_funciona(ctx):
 def corpo_seguro(ctx):
     return (
         p("Golpes de crédito são comuns, e uma proposta de dinheiro rápido é o cenário preferido de quem aplica golpe. Esta página mostra "
-          "o que checar antes de contratar qualquer crédito, e o que é específico do Pix no cartão.")
+          "o que checar antes de contratar qualquer crédito, e o que é específico do empréstimo com crédito do cartão.")
         + h2("O que é verificável aqui")
         + ul([
             "<strong>Quem é o responsável por este site:</strong> Satori Soluções Comerciais LTDA, CNPJ " + ctx["cnpj"] + " (marca Datalab Global). Você pode consultar o CNPJ no site da Receita Federal.",
             "<strong>Este site não pede dado pessoal.</strong> Você só informa valor e prazo. CPF, documento e dados do cartão são pedidos pelo parceiro, em outra tela.",
             "<strong>Contrato formal:</strong> a operação é formalizada por Cédula de Crédito Bancário (CCB, Lei nº 10.931/2004), com as condições registradas.",
             "<strong>Quem opera:</strong> um correspondente bancário, que atua por conta de uma instituição financeira e segue as normas do Banco Central e do CMN. Não verificamos, por você, o cadastro do parceiro: se quiser conferir, pergunte à instituição financeira responsável e peça o nome dela no contrato.",
-            "<strong>Endereço da contratação:</strong> o botão do simulador leva ao ambiente do parceiro (domínio checkoutonline.digital, com a marca Gyroo na tela). Confira o endereço na barra do navegador.",
+            "<strong>Endereço da contratação:</strong> o botão do simulador leva ao ambiente do parceiro, que tem endereço próprio, diferente deste site, e mostra o nome da empresa na tela. Antes de digitar qualquer dado, confira o endereço na barra do navegador e compare com o que a tela de confirmação anunciou.",
         ])
         + h2("Sinais de golpe")
         + ul([
-            "Pedem pagamento adiantado (taxa, seguro, depósito de garantia) para liberar o dinheiro. No Pix no cartão, você paga só as parcelas, na fatura.",
+            "Pedem pagamento adiantado (taxa, seguro, depósito de garantia) para liberar o dinheiro. Neste empréstimo, você paga só as parcelas, na fatura.",
             "Mandam um link por WhatsApp, SMS ou e-mail e pedem que você digite dados do cartão ali. Comece sempre pelo site oficial e confira o endereço.",
             "Pedem a senha do cartão, códigos de verificação que chegam por SMS ou acesso remoto ao seu celular. Nenhuma instituição legítima precisa disso.",
             "Pedem que o Pix seja feito para a chave de outra pessoa. O parceiro só aceita chave em seu próprio nome.",
@@ -168,7 +184,7 @@ def corpo_seguro(ctx):
         ])
         + h2("Antes de assinar, confira na tela")
         + ul([
-            "O valor que vai cair na sua conta e o total que vai para a fatura.",
+            "O valor que vai cair na sua conta e o total que vai para a fatura (e para o limite do cartão).",
             "O número e o valor das parcelas, o IOF, a taxa de juros e o custo efetivo total (CET).",
             "Se os números batem com a sua simulação. Se estiverem muito diferentes, não continue.",
         ])
@@ -192,7 +208,7 @@ def corpo_custo(ctx):
     extra2, extra12 = r2["total"] - 1000, r12["total"] - 1000
     dif = extra12 - extra2
     return (
-        p("Quando você recebe " + brl(1000) + " por Pix e parcela na fatura, o que você paga a mais se chama custo. Ele aparece em duas formas: "
+        p("Quando você recebe " + brl(1000) + " e parcela na fatura do cartão, o que você paga a mais se chama custo. Ele aparece em duas formas: "
           "o valor em reais e o CET, uma taxa que reúne tudo. Entender a diferença evita sustos.")
         + h2("O que é CET")
         + p("CET é o Custo Efetivo Total: soma os juros, os tributos (como o IOF) e outras despesas do contrato e expressa tudo em uma taxa, normalmente ao ano. "
@@ -202,7 +218,7 @@ def corpo_custo(ctx):
             "você não paga uma segunda vez. Na Tabela 10, o IOF vai de " + brl(r2["iof"]) + " (2x) a " + brl(r12["iof"]) + " (12x) para cada " + brl(1000) + " recebidos.")
         + h2("Quanto custa, prazo a prazo")
         + tabela(["Parcelas", "Parcela", "Total na fatura", "Custo a mais", "IOF (incluso)", "Juros ao mês", "CET ao ano"], linhas,
-                 "Para receber " + brl(1000) + " por Pix. Fonte: Tabela 10 do parceiro, conferida toda semana. Página atualizada em " + ctx["atualizado"] + ".")
+                 "Para receber " + brl(1000) + " na conta. Fonte: Tabela 10 do parceiro, conferida toda semana. Página atualizada em " + ctx["atualizado"] + ".")
         + h2("O que a tabela mostra")
         + ul([
             "<strong>O custo total quase não muda com o prazo.</strong> Para receber " + brl(1000) + ", você paga " + brl(extra2) + " a mais em 2x e " + brl(extra12)
@@ -217,7 +233,7 @@ def corpo_custo(ctx):
                 "você devolve cerca de R$ " + format(round(r12["total"] / 10, 2), ".2f").replace(".", ",") + " em 12x.")
         + h2("Como usar isso")
         + p("Simule com o seu valor na " + a("/#simulador", "calculadora") + ", compare o total com o de outras opções de crédito (veja "
-            + a("/pix-no-cartao-ou-outro-credito", "como comparar com outros créditos") + ") e leia " + a("/quando-nao-vale-a-pena", "quando não vale a pena") + ".")
+            + a("/emprestimo-com-cartao-ou-outro-credito", "como comparar com outros créditos") + ") e leia " + a("/quando-nao-vale-a-pena", "quando não vale a pena") + ".")
     )
 
 
@@ -226,7 +242,7 @@ def _ultimas_taxas():
     return [(sr, tr.ultima(sr["codigo"], linhas)) for sr in tr.SERIES], linhas
 
 
-def _pix_juros_ano(n=12):
+def _juros_ano(n=12):
     return tr.ano_equivalente(calculo.simular("valor", 1000, 0, n)["jurosMes"])
 
 
@@ -244,15 +260,15 @@ def frase_home():
     pessoal = next(u for sr, u in ultimas if sr["chave"] == "pessoal-nao-consignado")
     cheque = next(u for sr, u in ultimas if sr["chave"] == "cheque-especial")
     return ("Para comparar: em " + ref + ", a média do Banco Central foi de " + pct(pessoal["taxa_aa"]) + " ao ano no crédito pessoal não consignado e de "
-            + pct(cheque["taxa_aa"]) + " no cheque especial. O Pix no cartão em 12x tem juros equivalentes a " + pct(_pix_juros_ano(12)) + " ao ano. "
-            '<a class="text-violet-300 underline" href="/taxas-de-referencia">Veja as taxas de referência</a>.')
+            + pct(cheque["taxa_aa"]) + " no cheque especial. Este empréstimo em 12x tem juros equivalentes a " + pct(_juros_ano(12)) + " ao ano. "
+            + a("/taxas-de-referencia", "Veja as taxas de referência") + ".")
 
 
-def _relacao(pix, ref):
-    dif = (pix - ref) / ref
+def _relacao(valor, ref):
+    dif = (valor - ref) / ref
     if abs(dif) < 0.03:
         return "praticamente igual à"
-    return "acima da" if pix > ref else "abaixo da"
+    return "acima da" if valor > ref else "abaixo da"
 
 
 def corpo_taxas(ctx):
@@ -272,20 +288,20 @@ def corpo_taxas(ctx):
             v = next((r["taxa_aa"] for r in tr.serie(sr["codigo"], linhas) if r["mes"] == m), None)
             linha.append(pct(v) if v is not None else "sem dado")
         hist.append(linha)
-    pix_linhas = []
+    nossas = []
     for n in (2, 3, 6, 12):
         r = _r(n)
-        pix_linhas.append([str(n) + "x", pct(r["jurosMes"]), pct(tr.ano_equivalente(r["jurosMes"])), pct(r["cetAno"])])
-    pix12 = _pix_juros_ano(12)
+        nossas.append([str(n) + "x", pct(r["jurosMes"]), pct(tr.ano_equivalente(r["jurosMes"])), pct(r["cetAno"])])
+    j12 = _juros_ano(12)
     cmp12 = []
     for sr, u in ultimas:
-        cmp12.append(_relacao(pix12, u["taxa_aa"]) + " média de " + sr["nome"].lower() + " (" + pct(u["taxa_aa"]) + ")")
-    mais_baratas = [sr["nome"].lower() for sr, u in ultimas if u["taxa_aa"] < pix12 * 0.97]
+        cmp12.append(_relacao(j12, u["taxa_aa"]) + " média de " + sr["nome"].lower() + " (" + pct(u["taxa_aa"]) + ")")
+    mais_baratas = [sr["nome"].lower() for sr, u in ultimas if u["taxa_aa"] < j12 * 0.97]
     if mais_baratas:
-        conclusao = ("Na média do mercado, " + " e ".join(mais_baratas) + " tem juros menores que o Pix no cartão em 12x. "
+        conclusao = ("Na média do mercado, " + " e ".join(mais_baratas) + " tem juros menores que este empréstimo em 12x. "
                      "Isso não garante que você consiga essa taxa, mas é um motivo para pedir o CET dessas alternativas antes de decidir.")
     else:
-        conclusao = "Na média do mercado, nenhuma das três modalidades acima tem juros claramente menores que o Pix no cartão em 12x."
+        conclusao = "Na média do mercado, nenhuma das três modalidades acima tem juros claramente menores que este empréstimo em 12x."
     return (
         p("Para saber se um crédito é caro, é preciso um ponto de comparação. Esta página reúne as taxas médias de juros divulgadas pelo Banco Central "
           "para três créditos usados por pessoas físicas, com o mês de referência e o link de cada série. São dados de referência: não são oferta de nenhuma instituição.")
@@ -302,15 +318,15 @@ def corpo_taxas(ctx):
         ])
         + h2("Últimos 13 meses")
         + tabela(["Mês"] + [sr["nome"] for sr in tr.SERIES], hist, "Juros ao ano, em %. Mesmas séries da tabela acima.")
-        + h2("E o Pix no cartão?")
-        + tabela(["Prazo", "Juros ao mês (Tabela 10)", "Equivale a, ao ano", "CET ao ano"], pix_linhas,
-                 "Pix no cartão, Tabela 10 do parceiro. A coluna &quot;ao ano&quot; é a taxa mensal acumulada por 12 meses (juros compostos); como partimos da taxa mensal já arredondada, pode diferir em centésimos do valor que o parceiro mostra.")
-        + p("Em 12x, o Pix no cartão tem juros equivalentes a " + pct(pix12) + " ao ano: " + "; ".join(cmp12) + ". " + conclusao)
+        + h2("E o empréstimo com crédito do cartão?")
+        + tabela(["Prazo", "Juros ao mês (Tabela 10)", "Equivale a, ao ano", "CET ao ano"], nossas,
+                 "Empréstimo com crédito do cartão, Tabela 10 do parceiro. A coluna &quot;ao ano&quot; é a taxa mensal acumulada por 12 meses (juros compostos); como partimos da taxa mensal já arredondada, pode diferir em centésimos do valor que o parceiro mostra.")
+        + p("Em 12x, o empréstimo com crédito do cartão tem juros equivalentes a " + pct(j12) + " ao ano: " + "; ".join(cmp12) + ". " + conclusao)
         + p("Em prazos curtos a conta anualizada fica enorme (" + pct(tr.ano_equivalente(_r(2)["jurosMes"])) + " ao ano em 2x) porque a taxa mensal é alta; "
             "o que pesa de verdade é quanto você paga a mais em reais, como mostra " + a("/custo-cet-iof", "CET e IOF") + ".")
-        + aviso("<strong>Como ler essa comparação:</strong> as taxas do Banco Central são médias de mercado, e o Pix no cartão tem taxa tabelada. "
+        + aviso("<strong>Como ler essa comparação:</strong> as taxas do Banco Central são médias de mercado, e este empréstimo tem taxa tabelada. "
                 "Sua taxa em outro crédito depende da sua análise de crédito. Cheque especial e rotativo resolvem situações diferentes, como explica "
-                + a("/pix-no-cartao-ou-outro-credito", "a página de comparação") + ". Antes de decidir, peça o CET por escrito.")
+                + a("/emprestimo-com-cartao-ou-outro-credito", "a página de comparação") + ". Antes de decidir, peça o CET por escrito.")
         + h2("Como mantemos esta página atualizada")
         + p("Um robô consulta as três séries do SGS toda segunda-feira e grava os últimos 24 meses. Se o Banco Central estiver fora do ar ou mudar o formato da resposta, "
             "o robô não apaga o que já temos e o mês de referência acima mostra até quando os dados vão. Veja a " + a("/metodologia", "Metodologia") + ".")
@@ -320,12 +336,13 @@ def corpo_taxas(ctx):
 def corpo_comparar(ctx):
     r12 = _r(12)
     return (
-        p("Pix no cartão, empréstimo pessoal, cheque especial e rotativo do cartão resolvem a mesma urgência (falta de dinheiro agora), "
+        p("O empréstimo com crédito do cartão, o empréstimo pessoal comum, o cheque especial e o rotativo do cartão resolvem a mesma urgência (falta de dinheiro agora), "
           "mas funcionam de formas diferentes. Esta página dá um método para comparar, sem indicar banco nem produto específico.")
         + h2("As quatro opções, lado a lado")
         + tabela(
-            ["", "Pix no cartão", "Empréstimo pessoal", "Cheque especial", "Rotativo do cartão"],
+            ["", "Empréstimo com crédito do cartão", "Empréstimo pessoal", "Cheque especial", "Rotativo do cartão"],
             [
+                ["De onde vem o dinheiro", "Do limite do cartão de crédito", "Da instituição, sem usar o limite do cartão", "Do limite da conta corrente", "Não vem dinheiro: é uma dívida da fatura"],
                 ["Como o dinheiro chega", "Pix, em chave em seu nome", "Em geral, crédito na conta", "Usa o limite da conta corrente", "Não chega dinheiro: é uma dívida da fatura"],
                 ["Como você paga", "Parcelas na fatura do cartão", "Parcelas fixas, em geral debitadas ou em boleto", "Quitar o saldo usado, com juros por dia", "Pagando o restante da fatura, com juros"],
                 ["Prazo", "2 a 12 parcelas", "Definido no contrato", "Sem prazo fixo: dura enquanto o saldo estiver negativo", "Sem prazo fixo: dura enquanto a fatura não for quitada"],
@@ -340,10 +357,10 @@ def corpo_comparar(ctx):
             "<strong>Veja o que acontece se você atrasar.</strong> Multa, juros de mora e o efeito sobre a fatura do cartão.",
             "<strong>Veja quanto tempo você precisa do dinheiro.</strong> Para poucos dias, cheque especial e rotativo têm lógica diferente de um crédito com prazo.",
         ])
-        + h2("O que é específico do Pix no cartão")
+        + h2("O que é específico do empréstimo com crédito do cartão")
         + ul([
             "O custo é conhecido antes: você vê o total e o CET. Para " + brl(1000) + " em 12x, o total é " + brl(r12["total"]) + ".",
-            "As parcelas entram na fatura e disputam espaço com as suas compras do mês. Se a fatura não for paga por inteiro, o saldo pode ficar sujeito aos juros do cartão.",
+            "As parcelas entram na fatura e disputam espaço com as suas compras do mês, e o total fica comprometido no limite do cartão. Se a fatura não for paga por inteiro, o saldo pode ficar sujeito aos juros do cartão.",
             "O valor é limitado a R$ 5.000 e depende de análise de crédito.",
         ])
         + aviso(_aviso_taxas_medias())
@@ -355,11 +372,11 @@ def corpo_quando_nao(ctx):
     r500_3 = _r(3, 500)
     r1000_12 = _r(12)
     return (
-        p("Crédito caro serve para poucas situações. Esta página lista as ocasiões em que o Pix no cartão costuma ser má ideia, e as poucas em que pode fazer sentido. "
+        p("Crédito caro serve para poucas situações. Esta página lista as ocasiões em que o empréstimo com crédito do cartão costuma ser má ideia, e as poucas em que pode fazer sentido. "
           "Não é recomendação financeira: é um roteiro de perguntas para você responder antes de clicar.")
         + h2("Quando NÃO vale a pena")
         + ul([
-            "<strong>Quando existe crédito mais barato ao seu alcance.</strong> Compare o total e o CET (veja " + a("/pix-no-cartao-ou-outro-credito", "como comparar") + ").",
+            "<strong>Quando existe crédito mais barato ao seu alcance.</strong> Compare o total e o CET (veja " + a("/emprestimo-com-cartao-ou-outro-credito", "como comparar") + ").",
             "<strong>Quando você não tem certeza de que vai pagar a fatura inteira.</strong> As parcelas somam com as compras do mês. Fatura não paga por inteiro pode gerar juros do cartão por cima.",
             "<strong>Quando a necessidade é de longo prazo.</strong> Para receber " + brl(1000) + " em 12x, você paga " + brl(r1000_12["total"]) + ". Se o problema é recorrente, o crédito só adia e aumenta o buraco.",
             "<strong>Para quitar uma dívida que já tem juros menores.</strong> Trocar uma dívida mais barata por esta piora a situação.",
@@ -391,11 +408,13 @@ def corpo_metodologia(ctx):
         + h2("A conta")
         + ul([
             "<strong>Fator</strong> = 0,5479 + 0,003 x número de parcelas.",
-            "<strong>Total na fatura</strong> = valor no Pix x (1 + fator).",
+            "<strong>Total na fatura</strong> = valor recebido x (1 + fator).",
             "<strong>Parcela</strong> = total na fatura / número de parcelas.",
-            "<strong>IOF</strong> = valor no Pix x (0,0038 + 0,00246 x número de parcelas). Já está dentro do total.",
-            "<strong>Juros ao mês e CET ao ano</strong>: tabelados pelo parceiro, de 34,64% ao mês e 3.621,21% ao ano em 2x até 7,49% ao mês e 148,97% ao ano em 12x.",
-            "<strong>Modo &quot;usar meu limite&quot;:</strong> valor no Pix = limite / (1 + fator), com teto de R$ 5.000.",
+            "<strong>IOF</strong> = valor recebido x (0,0038 + 0,00246 x número de parcelas). Já está dentro do total.",
+            "<strong>Juros ao mês e CET ao ano</strong>: tabelados pelo parceiro, de " + pct(_r(2)["jurosMes"]) + " ao mês e " + pct(_r(2)["cetAno"]) + " ao ano em 2x até "
+            + pct(r12["jurosMes"]) + " ao mês e " + pct(r12["cetAno"]) + " ao ano em 12x.",
+            "<strong>Modo &quot;usar meu limite&quot;:</strong> valor recebido = limite / (1 + fator), com teto de R$ 5.000.",
+            "<strong>Taxa de uma proposta que você já tem:</strong> é a taxa mensal que faz as parcelas iguais valerem, hoje, o valor que você recebe (juros compostos, sem tarifas). A comparação põe a proposta e a Tabela 10 na mesma conta; por isso o número da Tabela 10 aparece um pouco acima do que o parceiro tabela (ele usa outro método). Serve só para comparar.",
         ])
         + p("Exemplo conferido: " + brl(1000) + " em 12x dá parcela de " + brl(r12["parcela"]) + ", total de " + brl(r12["total"]) + " e IOF de " + brl(r12["iof"]) + ".")
         + h2("De onde vêm os dados")
@@ -411,6 +430,7 @@ def corpo_metodologia(ctx):
         + ul([
             "A aprovação do crédito, que é decisão do parceiro, e o valor final que ele oferecer para você.",
             "Mudanças feitas pelo parceiro entre uma conferência e outra. A data de atualização está no rodapé de cada página.",
+            "Como o emissor do seu cartão libera o limite conforme você paga as parcelas: é regra dele.",
             "Condições de outros créditos: este site não compara bancos nem instituições.",
         ])
         + h2("Taxas de referência do Banco Central")
@@ -418,22 +438,22 @@ def corpo_metodologia(ctx):
             "todas de pessoas físicas, mensais e em percentual ao ano. Os códigos foram conferidos no catálogo de dados abertos do Banco Central. "
             "Um robô as atualiza toda segunda-feira. Detalhes e números em " + a("/taxas-de-referencia", "Taxas de referência") + ". Os dados estão em " + a("/dados-abertos", "Dados abertos") + ".")
         + h2("Medição de uso")
-        + p("Usamos o Umami, que não usa cookies. Ele registra visitas e dois eventos: quando você mexe na simulação e quando clica em Ver minha proposta, "
+        + p("Usamos o Umami, que não usa cookies. Ele registra visitas e alguns eventos (quando você mexe na simulação, abre a tela de confirmação, continua para o parceiro ou copia o link), "
             "com valor e prazo. Não registramos CPF, telefone nem dados pessoais. Detalhes em " + a("/privacidade", "Privacidade") + ".")
     )
 
 
 def corpo_sobre(ctx):
     return (
-        p("Datalab Global é uma marca de " + ctx["razao"] + ", CNPJ " + ctx["cnpj"] + ". Este simulador existe para mostrar o custo real do Pix no cartão antes de você decidir.")
+        p("Datalab Global é uma marca de " + ctx["razao"] + ", CNPJ " + ctx["cnpj"] + ". Este simulador existe para mostrar o custo real do empréstimo pessoal com crédito do cartão antes de você decidir.")
         + h2("Quem realiza a operação")
-        + p("A operação é de um parceiro, correspondente bancário. O ambiente de contratação é dele (a tela exibe a marca Gyroo), e a análise e a aprovação de crédito também. "
+        + p("A operação é de um parceiro, correspondente bancário. O ambiente de contratação é dele, e a análise e a aprovação de crédito também. "
             "A Datalab Global não concede crédito e não é banco.")
         + h2("Como a Datalab Global ganha dinheiro")
         + p("A Datalab Global pode receber comissão do parceiro pelas contratações feitas a partir deste site. Isso não muda o valor que você paga, e o simulador mostra o custo antes do botão, "
             "inclusive quando a melhor decisão é não contratar.")
         + h2("Por que este simulador existe")
-        + p("O Pix no cartão costuma ser anunciado pela facilidade: o dinheiro cai rápido e a parcela cabe na fatura. O que quase nunca aparece é o total. "
+        + p("Esse tipo de empréstimo costuma ser anunciado pela facilidade: o dinheiro cai rápido e a parcela cabe na fatura. O que quase nunca aparece é o total. "
             "Montamos este simulador para inverter a ordem: primeiro o custo em reais e o CET, depois o botão. Quando uma alternativa mais barata existe, "
             "dizemos isso nos guias, mesmo que a pessoa deixe de contratar.")
         + h2("O que fazemos e o que não fazemos")
@@ -445,29 +465,30 @@ def corpo_sobre(ctx):
             "Não garantimos aprovação: ela depende da análise de crédito do parceiro.",
         ])
         + h2("Contato")
-        + p("E-mail: <a class=\"" + C_A + "\" href=\"mailto:" + ctx["email"] + "\">" + ctx["email"] + "</a>. Se você encontrar um número errado ou uma informação desatualizada, escreva: corrigimos e registramos em "
+        + p("E-mail: " + a("mailto:" + ctx["email"], ctx["email"]) + ". Se você encontrar um número errado ou uma informação desatualizada, escreva: corrigimos e registramos em "
             + a("/atualizacoes", "Atualizações") + ".")
     )
 
 
 def corpo_atualizacoes(ctx):
-    itens = "".join(
-        '<li class="mt-4"><span class="font-bold text-white">' + d + "</span> — " + t + "</li>" for d, t in ctx["atualizacoes"])
+    itens = "".join("<li><b>" + d + "</b> — " + t + "</li>" for d, t in ctx["atualizacoes"])
     return (
         p("Registro das mudanças relevantes: conferências da tabela do parceiro, correções e novas páginas. A mais recente aparece primeiro.")
-        + '<ul class="mt-6 list-none pl-0 leading-relaxed text-slate-300">' + itens + "</ul>\n"
+        + '<ul class="hist">' + itens + "</ul>\n"
     )
 
 
 ATUALIZACOES = [
+    ("20/11/2026", "Correção do nome: o produto passou a se chamar Empréstimo pessoal com crédito do cartão, porque é um empréstimo pessoal em que o limite do cartão é a fonte do dinheiro, entregue por Pix. O nome antigo induzia a erro. A página de comparação mudou de endereço (o antigo continua funcionando e leva ao novo) e os arquivos de dados abertos também (os endereços antigos redirecionam). Os eventos de medição foram renomeados. A conta e os números não mudaram."),
+    ("20/11/2026", "Novo visual do simulador, igual ao dos outros simuladores da Datalab Global: cartões por campo, painel de resultado, faixa com três números, campo para comparar a taxa de uma proposta que você já tem, tela de confirmação antes de abrir o parceiro, logo redesenhado e rodapé com os demais simuladores."),
     ("17/11/2026", "Os dois conjuntos de dados abertos também estão no Hugging Face, com a mesma licença (link na página Dados abertos)."),
     ("16/11/2026", "Revisão geral do site, com correções: a home chamava os juros ao mês de CET (agora diz juros ao mês e CET ao ano); o modo usar meu limite passou a aceitar limites a partir de R$ 300 e mostra quanto falta para o mínimo; se não conseguirmos pré-preencher a proposta no parceiro, avisamos antes de abrir a tela dele; no celular, uma barra fixa mostra parcela e total enquanto você mexe nos controles; o campo de valor aceita milhar e vírgula; o menu fecha ao tocar fora; títulos mais curtos e acessibilidade das abas e dos controles deslizantes."),
     ("15/11/2026", "Visual em roxo, com logo e ícones novos, e botões e links do celular com 44 px de altura."),
     ("14/11/2026", "Novo visual, na mesma família dos outros simuladores da Datalab Global: títulos em Playfair Display, texto em Inter (fontes servidas pelo próprio site), gráfico da composição do total e barras com o custo a mais por prazo. A conta e os números não mudaram."),
     ("14/11/2026", "Simulador no ar em emprestimo.datalabglobal.com. Os dois conjuntos de dados abertos também estão no Kaggle, com a mesma licença."),
     ("14/11/2026", "Correção: removemos a citação da Resolução CMN nº 3.954/2011, que foi revogada (o texto consolidado do Banco Central aponta a Resolução BCB nº 277/2022). Os textos agora falam em normas do Banco Central e do CMN sobre correspondentes."),
-    ("14/11/2026", "Dados abertos (Tabela 10 do Pix no cartão em CC BY 4.0 e séries do Banco Central em ODbL 1.0), feed Atom e aviso ao Bing por IndexNow."),
-    ("14/11/2026", "Taxas médias do Banco Central (crédito pessoal não consignado, cheque especial e cartão rotativo) com mês de referência e link de cada série, e comparação com o Pix no cartão."),
+    ("14/11/2026", "Dados abertos (Tabela 10 em CC BY 4.0 e séries do Banco Central em ODbL 1.0), feed Atom e aviso ao Bing por IndexNow."),
+    ("14/11/2026", "Taxas médias do Banco Central (crédito pessoal não consignado, cheque especial e cartão rotativo) com mês de referência e link de cada série, e comparação com este empréstimo."),
     ("14/11/2026", "Guias com conteúdo próprio (como funciona, golpes, CET e IOF, comparação, quando não vale a pena), metodologia, página Sobre, privacidade e termos."),
     ("13/11/2026", "Conta do simulador conferida com a API do parceiro: R$ 1.000 em 2x a 12x, mesma Tabela 10, limites de R$ 300 a R$ 5.000 e 12 parcelas. Nenhuma diferença."),
     ("13/11/2026", "Simulador extraído do hub da Datalab Global para este projeto independente, com medição de uso sem cookies."),
@@ -476,7 +497,6 @@ ATUALIZACOES = [
 
 def _secoes(secoes):
     return "".join(h2(t) + "".join(p(x) for x in ps) for t, ps in secoes)
-
 
 
 def corpo_dados_abertos(ctx):
@@ -507,11 +527,12 @@ def corpo_dados_abertos(ctx):
         + p("Cite como: " + da.CITACAO + ", com a data de acesso. Para o conjunto do Banco Central, cite também o Banco Central do Brasil como fonte original.")
         + h2("Por que a licença do conjunto do Banco Central é diferente")
         + p("O Banco Central publica essas séries sob a licença ODbL, que exige que bases derivadas mantenham a mesma licença. Por isso esse conjunto não é CC BY. "
-            "A tabela do Pix no cartão é nossa compilação das condições do parceiro e segue a CC BY 4.0.")
+            "A tabela do empréstimo com crédito do cartão é nossa compilação das condições do parceiro e segue a CC BY 4.0.")
         + h2("Limites")
         + ul([
             "As taxas do Banco Central são médias de mercado das operações novas, não ofertas. A taxa que você receber pode ser maior ou menor.",
             "A Tabela 10 é do parceiro e pode mudar; a conferência com a API dele é semanal (veja " + a("/metodologia", "Metodologia") + ").",
+            "Os endereços antigos dos arquivos (com o nome anterior do produto) redirecionam para os novos. Os cadastros no Kaggle e no Hugging Face foram criados com o nome antigo e podem demorar a mostrar o novo título.",
             "Para acompanhar as atualizações, use o " + a("/feed.xml", "feed Atom") + " ou a página " + a("/atualizacoes", "Atualizações") + ".",
         ])
     )
@@ -527,10 +548,10 @@ def corpo_privacidade(ctx):
              ["Nenhum dado pessoal é pedido neste site. Você informa apenas valor e prazo, que ficam no seu navegador. "
               "Se você escrever para " + ctx["email"] + ", guardamos o seu e-mail e o conteúdo da mensagem para responder."]),
             ("2. Medição de uso",
-             ["Usamos o Umami, que não usa cookies e não identifica você. Ele conta visitas e dois eventos: quando você usa a simulação e quando clica em Ver minha proposta, com valor e prazo. "
+             ["Usamos o Umami, que não usa cookies e não identifica você. Ele conta visitas e eventos (quando você usa a simulação, abre a tela de confirmação, continua para o parceiro ou copia o link), com valor e prazo. "
               "A hospedagem (Cloudflare) pode tratar o endereço IP para entregar o site e proteger contra ataques."]),
             ("3. Ao pedir a proposta",
-             ["Ao clicar em Ver minha proposta, este site envia ao parceiro só o valor e o prazo simulados e abre o ambiente de contratação dele. "
+             ["Ao continuar para o parceiro, este site envia a ele só o valor e o prazo simulados e abre o ambiente de contratação dele. "
               "A partir daí, os dados que você digitar (CPF, documento, dados do cartão) são tratados pelo parceiro, conforme a política dele, e não passam por este site."]),
             ("4. Bases legais",
              ["Tratamos dados com base no legítimo interesse (segurança e melhoria do site), no cumprimento de obrigações legais e, quando for o caso, no seu consentimento."]),
@@ -552,7 +573,7 @@ def corpo_termos(ctx):
         p("Estes Termos regulam o uso deste site. Ao usar o site, você concorda com as condições abaixo. Última atualização: " + ctx["atualizado"] + ".")
         + _secoes([
             ("1. O que é este site",
-             ["Um simulador do Pix no cartão de crédito, mantido por " + ctx["razao"] + " (marca Datalab Global). Ele mostra estimativas e leva você ao ambiente de um parceiro, que é quem faz a operação."]),
+             ["Um simulador do empréstimo pessoal com crédito do cartão, mantido por " + ctx["razao"] + " (marca Datalab Global). Ele mostra estimativas e leva você ao ambiente de um parceiro, que é quem faz a operação."]),
             ("2. A simulação não é proposta de crédito",
              ["Os números seguem a Tabela 10 do parceiro, conferida toda semana, mas são informativos. Não são oferta, promessa de crédito nem recomendação financeira. "
               "A aprovação, o valor e as condições finais dependem da análise de crédito do parceiro."]),
@@ -570,53 +591,57 @@ def corpo_termos(ctx):
     )
 
 
-# slug, título (title), h1, descrição, corpo, mostra no menu
+# Slug que mudou (precisa de redirecionamento 301 no _redirects, feito pelo gerador): o antigo continha o nome errado do produto.
+SLUG_COMPARAR = "emprestimo-com-cartao-ou-outro-credito"
+REDIRECIONAMENTOS_SLUG = {"/pix-no-cartao-ou-outro-credito": "/" + SLUG_COMPARAR}
+
+# slug, título (title, até 60 caracteres), h1, descrição, corpo, rótulo no menu
 PAGINAS = [
-    dict(slug="como-funciona", menu="Como funciona", title="Como funciona o Pix no cartão de crédito, passo a passo",
-         h1="Como funciona o Pix no cartão de crédito, passo a passo",
-         desc="Do pedido ao Pix na conta: o que o parceiro pede, o que é a CCB, por que o celular e o que ter em mãos. Entenda antes de contratar.",
+    dict(slug="como-funciona", menu="Como funciona", title="Como funciona o empréstimo pessoal com crédito do cartão",
+         h1="Como funciona o empréstimo pessoal com crédito do cartão",
+         desc="O limite do cartão é a fonte do dinheiro: o valor cai por Pix e você paga na fatura. Veja o passo a passo, a CCB, o limite e o que ter em mãos.",
          corpo=corpo_como_funciona),
-    dict(slug="e-seguro-golpes", menu="É seguro?", title="Pix no cartão é seguro? Como evitar golpes de crédito",
-         h1="Pix no cartão é seguro? Como evitar golpes de crédito",
+    dict(slug="e-seguro-golpes", menu="É seguro?", title="Empréstimo com crédito do cartão é seguro? Evite golpes",
+         h1="Empréstimo pessoal com crédito do cartão é seguro? Como evitar golpes",
          desc="O que dá para verificar (CNPJ, CCB, correspondente bancário), os sinais de golpe de crédito e o que fazer se cair em um.",
          corpo=corpo_seguro),
-    dict(slug="custo-cet-iof", menu="CET e IOF", title="CET e IOF no Pix no cartão: quanto custa de verdade",
-         h1="CET e IOF no Pix no cartão: quanto custa de verdade",
+    dict(slug="custo-cet-iof", menu="CET e IOF", title="CET e IOF do empréstimo com crédito do cartão: o custo real",
+         h1="CET e IOF do empréstimo com crédito do cartão: quanto custa de verdade",
          desc="Tabela com parcela, total, IOF, juros e CET de 2x a 12x para R$ 1.000. Veja por que o prazo muda a parcela, mas quase não muda o custo.",
          corpo=corpo_custo),
-    dict(slug="pix-no-cartao-ou-outro-credito", menu="Comparar créditos",
-         title="Pix no cartão ou outro crédito: como comparar o custo",
-         h1="Pix no cartão, empréstimo pessoal, cheque especial ou rotativo: como comparar",
-         desc="Método para comparar quatro tipos de crédito pelo total pago e pelo CET, sem indicar banco: o que muda em prazo, pagamento e custo.",
+    dict(slug=SLUG_COMPARAR, menu="Comparar créditos",
+         title="Empréstimo com cartão ou outro crédito: como comparar",
+         h1="Empréstimo com crédito do cartão, pessoal, cheque especial ou rotativo: como comparar",
+         desc="Método para comparar quatro tipos de crédito pelo total pago e pelo CET, sem indicar banco: o que muda em origem do dinheiro, prazo, pagamento e custo.",
          corpo=corpo_comparar),
     dict(slug="taxas-de-referencia", menu="Taxas do BC", title="Taxas do Banco Central: cheque especial, pessoal e rotativo",
          h1="Taxas médias do Banco Central: cheque especial, crédito pessoal e rotativo",
-         desc="Taxas médias de juros de três créditos para pessoa física, com mês de referência e link de cada série, comparadas ao Pix no cartão.",
+         desc="Taxas médias de juros de três créditos para pessoa física, com mês de referência e link de cada série, comparadas ao empréstimo com crédito do cartão.",
          corpo=corpo_taxas),
-    dict(slug="quando-nao-vale-a-pena", menu="Quando não vale", title="Quando o Pix no cartão não vale a pena (e quando pode valer)",
-         h1="Quando o Pix no cartão não vale a pena (e quando pode valer)",
+    dict(slug="quando-nao-vale-a-pena", menu="Quando não vale", title="Quando o empréstimo com crédito do cartão não vale a pena",
+         h1="Quando o empréstimo com crédito do cartão não vale a pena (e quando pode valer)",
          desc="Sete situações em que este crédito caro costuma ser má ideia, as poucas em que pode fazer sentido e perguntas para decidir.",
          corpo=corpo_quando_nao),
-    dict(slug="metodologia", menu="Metodologia", title="Metodologia: como calculamos o Pix no cartão",
-         h1="Metodologia: como calculamos o Pix no cartão",
+    dict(slug="metodologia", menu="Metodologia", title="Metodologia: como calculamos o empréstimo com cartão",
+         h1="Metodologia: como calculamos o empréstimo pessoal com crédito do cartão",
          desc="A conta (fator, parcela, IOF, CET), a fonte (Tabela 10 do parceiro), a conferência semanal pela API e o que o simulador não cobre.",
          corpo=corpo_metodologia),
     dict(slug="sobre", menu="Sobre", title="Sobre a Datalab Global e este simulador",
          h1="Sobre a Datalab Global e este simulador",
          desc="Quem mantém o simulador, quem realiza a operação (correspondente bancário), como a Datalab Global ganha com comissão e como falar com a gente.",
          corpo=corpo_sobre),
-    dict(slug="dados-abertos", menu=None, title="Dados abertos: Pix no cartão e taxas do BC (CSV e JSON)",
-         h1="Dados abertos: Pix no cartão e taxas do Banco Central",
-         desc="Baixe em CSV e JSON a Tabela 10 do Pix no cartão (CC BY 4.0) e as taxas médias do Banco Central (ODbL 1.0), com colunas, licença e como citar.",
+    dict(slug="dados-abertos", menu=None, title="Dados abertos: empréstimo com cartão e taxas do BC",
+         h1="Dados abertos: empréstimo com crédito do cartão e taxas do Banco Central",
+         desc="Baixe em CSV e JSON a Tabela 10 do empréstimo com crédito do cartão (CC BY 4.0) e as taxas médias do Banco Central (ODbL 1.0), com colunas, licença e como citar.",
          corpo=corpo_dados_abertos),
-    dict(slug="atualizacoes", menu=None, title="Atualizações do simulador do Pix no cartão",
-         h1="Atualizações do simulador do Pix no cartão",
-         desc="Registro de conferências da tabela do parceiro, correções, melhorias de uso e novas páginas do simulador do Pix no cartão de crédito.",
+    dict(slug="atualizacoes", menu=None, title="Atualizações do simulador de empréstimo com cartão",
+         h1="Atualizações do simulador de empréstimo pessoal com crédito do cartão",
+         desc="Registro de conferências da tabela do parceiro, correções, melhorias de uso e novas páginas do simulador do empréstimo pessoal com crédito do cartão.",
          corpo=corpo_atualizacoes, min_palavras=60),
     dict(slug="privacidade", menu=None, title="Política de Privacidade", h1="Política de Privacidade",
          desc="Como este site trata dados: nenhum dado pessoal pedido, medição sem cookies e o que o parceiro faz com seus dados na contratação.",
          corpo=corpo_privacidade, guia=False),
     dict(slug="termos", menu=None, title="Termos de Uso", h1="Termos de Uso",
-         desc="Regras de uso do simulador do Pix no cartão: a simulação não é proposta de crédito, remuneração por comissão e limites de responsabilidade.",
+         desc="Regras de uso do simulador do empréstimo com crédito do cartão: a simulação não é proposta de crédito, remuneração por comissão e limites de responsabilidade.",
          corpo=corpo_termos, guia=False),
 ]

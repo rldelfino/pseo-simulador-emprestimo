@@ -1,7 +1,7 @@
 """Dados abertos do simulador: gera os arquivos em paginas_seo/dados/ a partir das mesmas fontes do site.
 
 Dois conjuntos, cada um com a licença que a fonte permite:
-1. pix-no-cartao-tabela-10: a conta e as taxas da Tabela 10 do parceiro. Licença CC BY 4.0.
+1. emprestimo-cartao-tabela-10: a conta e as taxas da Tabela 10 do parceiro. Licença CC BY 4.0.
 2. taxas-referencia-bcb: as séries do Banco Central (SGS 20742, 20741, 22022). O BCB publica essas séries sob ODbL 1.0 (conferido no catálogo de
    dados abertos em 14/11/2026), que exige que bases derivadas sigam a mesma licença. Por isso este conjunto é ODbL 1.0, não CC BY.
 """
@@ -19,22 +19,23 @@ CITACAO = "Datalab Global (https://emprestimo.datalabglobal.com/dados-abertos)"
 CC_BY = {"id": "CC-BY-4.0", "titulo": "CC BY 4.0", "url": "https://creativecommons.org/licenses/by/4.0/deed.pt-br"}
 ODBL = {"id": "ODbL-1.0", "titulo": "ODbL 1.0", "url": "https://opendatacommons.org/licenses/odbl/1-0/"}
 
-PIX = dict(
-    nome="pix-no-cartao-tabela-10",
+# kaggle e huggingface: os endereços abaixo foram criados com o nome antigo ("Pix no cartão") e continuam valendo; só o dono pode renomear nos sites (o nome dos arquivos já é o novo).
+EMPRESTIMO = dict(
+    nome="emprestimo-cartao-tabela-10",
     kaggle="https://www.kaggle.com/datasets/rodolfodelfino/pix-no-carto-parcela-iof-e-cet-tabela-10",
     huggingface="https://huggingface.co/datasets/datalabglobal/pix-no-cartao-tabela-10",
-    titulo="Pix no cartão de crédito: Tabela 10 do parceiro (parcela, IOF, juros e CET)",
-    descricao=("Condições do Pix no cartão de crédito segundo a Tabela 10 do parceiro (correspondente bancário), de 2 a 12 parcelas, para cada R$ 1.000 recebidos por Pix: "
-               "fator total, parcela, total na fatura, IOF, juros ao mês, juros equivalentes ao ano e CET ao ano. Valor do Pix de R$ 300 a R$ 5.000. "
+    titulo="Empréstimo pessoal com crédito do cartão: Tabela 10 do parceiro (parcela, IOF, juros e CET)",
+    descricao=("Condições do empréstimo pessoal com crédito do cartão (o limite do cartão de crédito é a fonte do dinheiro, entregue por Pix) segundo a Tabela 10 do parceiro (correspondente bancário), de 2 a 12 parcelas, para cada R$ 1.000 recebidos: "
+               "fator total, parcela, total na fatura, IOF, juros ao mês, juros equivalentes ao ano e CET ao ano. Valor recebido de R$ 300 a R$ 5.000. "
                "Os números são conferidos toda semana contra a API do próprio parceiro."),
     licenca=CC_BY,
-    fonte=dict(title="Parceiro do Pix no cartão (correspondente bancário) — Tabela 10, conferida pela API de simulação", path=DOMINIO + "/metodologia"),
+    fonte=dict(title="Parceiro do empréstimo com crédito do cartão (correspondente bancário) — Tabela 10, conferida pela API de simulação", path=DOMINIO + "/metodologia"),
     colunas=[
         ("parcelas", "integer", "Número de parcelas na fatura (2 a 12)"),
         ("juros_am_pct", "number", "Juros ao mês, % (tabelado pelo parceiro)"),
         ("juros_aa_equivalente_pct", "number", "Juros ao ano equivalentes (juros compostos sobre a taxa mensal), %"),
         ("cet_aa_pct", "number", "Custo efetivo total ao ano, % (tabelado pelo parceiro)"),
-        ("fator_total", "number", "Fator da Tabela 10: 0,5479 + 0,003 x parcelas. Total na fatura = valor no Pix x (1 + fator)"),
+        ("fator_total", "number", "Fator da Tabela 10: 0,5479 + 0,003 x parcelas. Total na fatura = valor recebido x (1 + fator)"),
         ("parcela_por_r1000", "number", "Valor de cada parcela, em R$, para receber R$ 1.000"),
         ("total_por_r1000", "number", "Total na fatura, em R$, para receber R$ 1.000"),
         ("iof_por_r1000", "number", "IOF (já incluso no total), em R$, para receber R$ 1.000"),
@@ -61,10 +62,10 @@ BCB = dict(
     ],
 )
 
-CONJUNTOS = [PIX, BCB]
+CONJUNTOS = [EMPRESTIMO, BCB]
 
 
-def linhas_pix():
+def linhas_tabela10():
     t = calculo.TABELA
     saida = []
     for n in calculo.PARCELAS:
@@ -93,7 +94,7 @@ def linhas_bcb():
     return saida
 
 
-LINHAS = {PIX["nome"]: linhas_pix, BCB["nome"]: linhas_bcb}
+LINHAS = {EMPRESTIMO["nome"]: linhas_tabela10, BCB["nome"]: linhas_bcb}
 
 
 def csv_texto(conjunto, linhas):
@@ -137,7 +138,7 @@ def texto_licenca(conjunto):
 
 
 def readme(linhas_por_nome):
-    partes = ["# Dados abertos: Pix no cartão (Datalab Global)\n",
+    partes = ["# Dados abertos: empréstimo pessoal com crédito do cartão (Datalab Global)\n",
               "Gerado automaticamente pelo simulador em " + DOMINIO + ". Cada conjunto tem a licença que a sua fonte permite.\n"]
     for c in CONJUNTOS:
         partes.append("\n## " + c["titulo"] + "\n\n" + c["descricao"] + "\n\n- Arquivos: `" + c["nome"] + ".csv`, `" + c["nome"] + ".json`, `datapackage-" + c["nome"] + ".json`")
