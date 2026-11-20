@@ -1,4 +1,4 @@
-"""Taxas médias de juros do Banco Central usadas só como REFERÊNCIA para comparar o Pix no cartão com outros créditos.
+"""Taxas médias de juros do Banco Central usadas só como REFERÊNCIA para comparar o empréstimo com crédito do cartão com outros créditos.
 
 Fonte: BCB/SGS, séries "Taxa média de juros das operações de crédito com recursos livres - Pessoas físicas - ...".
 Conferido em 14/11/2026 no catálogo oficial (dadosabertos.bcb.gov.br): unidade "Percentual ao ano", periodicidade mensal,

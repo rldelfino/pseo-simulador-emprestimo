@@ -1,0 +1,6 @@
+# 301: endereços antigos (o produto se chamava "Pix no cartão") para os novos. Gerado por gerador_emprestimo.py.
+/pix-no-cartao-ou-outro-credito /emprestimo-com-cartao-ou-outro-credito 301
+/pix-no-cartao-ou-outro-credito.html /emprestimo-com-cartao-ou-outro-credito 301
+/dados/pix-no-cartao-tabela-10.csv /dados/emprestimo-cartao-tabela-10.csv 301
+/dados/pix-no-cartao-tabela-10.json /dados/emprestimo-cartao-tabela-10.json 301
+/dados/datapackage-pix-no-cartao-tabela-10.json /dados/datapackage-emprestimo-cartao-tabela-10.json 301

@@ -20,12 +20,8 @@ jobs:
         with:
           node-version: '20'
       - run: pip install -r requirements-dev.txt
-      - run: npm ci
-      - name: Gerar o site e compilar o CSS
-        run: |
-          python gerador_emprestimo.py
-          npm run build:css
-          python gerador_emprestimo.py  # de novo: só atualiza a versão (?v=) do styles.css
+      - name: Gerar o site
+        run: python gerador_emprestimo.py
       - name: Datas das páginas em dia (o gerador não pode mudar o arquivo versionado)
         # Se falhar: rode o gerador, confira e commite dados/datas_paginas.json (conteúdo mudou sem o arquivo de datas, ou a geração diverge entre sistemas).
         run: git diff --exit-code -- dados/datas_paginas.json
