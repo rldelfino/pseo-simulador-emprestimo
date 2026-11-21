@@ -92,7 +92,7 @@ def test_erro_http_do_indexnow_nao_derruba(site, capsys):
 # ---------- dados abertos ----------
 
 def test_tabela_10_aberta_bate_com_a_conta(site):
-    linhas = list(__import__("csv").DictReader(io.StringIO(ler(site, "dados/pix-no-cartao-tabela-10.csv"))))
+    linhas = list(__import__("csv").DictReader(io.StringIO(ler(site, "dados/emprestimo-cartao-tabela-10.csv"))))
     assert [int(l["parcelas"]) for l in linhas] == calculo.PARCELAS
     d12 = next(l for l in linhas if l["parcelas"] == "12")
     assert (d12["parcela_por_r1000"], d12["total_por_r1000"], d12["iof_por_r1000"], d12["cet_aa_pct"]) == ("131.99", "1583.90", "33.32", "148.97")
@@ -113,14 +113,14 @@ def test_series_do_bcb_abertas_batem_com_o_csv_interno(site):
 
 
 def test_licencas_cada_conjunto_com_a_da_sua_fonte(site):
-    pix = json.loads(ler(site, "dados/datapackage-pix-no-cartao-tabela-10.json"))
+    dp = json.loads(ler(site, "dados/datapackage-emprestimo-cartao-tabela-10.json"))
     bcb = json.loads(ler(site, "dados/datapackage-taxas-referencia-bcb.json"))
-    assert pix["licenses"][0]["name"] == "CC-BY-4.0"
+    assert dp["licenses"][0]["name"] == "CC-BY-4.0"
     assert bcb["licenses"][0]["name"] == "ODbL-1.0"  # o BCB publica sob ODbL: base derivada segue a mesma licença
     assert "Banco Central" in da.texto_licenca(da.BCB) and "ODbL 1.0" in da.texto_licenca(da.BCB)
-    assert "CC BY 4.0" in da.texto_licenca(da.PIX)
+    assert "CC BY 4.0" in da.texto_licenca(da.EMPRESTIMO)
     assert "CC BY" not in da.texto_licenca(da.BCB).replace("não é CC BY", "")
-    for pacote in (pix, bcb):
+    for pacote in (dp, bcb):
         assert pacote["resources"][0]["schema"]["fields"] and pacote["sources"]
     assert bcb["temporal"]["end"] == max(r["mes"] for r in tr.ler())
 
@@ -169,20 +169,20 @@ def test_feed_anunciado_no_head_e_no_llms(site):
 def test_pacote_de_publicacao_sem_segredos(site, tmp_path):
     saida = tmp_path / "publicacao"
     resumo = publicacao.gerar(str(site / "dados"), str(saida))
-    assert resumo == {"pix-no-cartao-tabela-10": 11, "taxas-referencia-bcb": len(tr.ler())}
-    for nome, lic in (("pix-no-cartao-tabela-10", "CC-BY-4.0"), ("taxas-referencia-bcb", "ODbL-1.0")):
+    assert resumo == {"emprestimo-cartao-tabela-10": 11, "taxas-referencia-bcb": len(tr.ler())}
+    for nome, lic in (("emprestimo-cartao-tabela-10", "CC-BY-4.0"), ("taxas-referencia-bcb", "ODbL-1.0")):
         meta = json.loads((saida / "kaggle" / nome / "dataset-metadata.json").read_text(encoding="utf-8"))
         assert meta["licenses"] == [{"name": lic}] and meta["id"].startswith("rodolfodelfino/")
         assert (saida / "kaggle" / nome / (nome + ".csv")).exists() and (saida / "huggingface" / nome / (nome + ".csv")).exists()
         card = (saida / "huggingface" / nome / "README.md").read_text(encoding="utf-8")
         assert card.startswith("---\nlicense: " + ("cc-by-4.0" if lic == "CC-BY-4.0" else "odbl"))
-    for nome in ("pix-no-cartao-tabela-10", "taxas-referencia-bcb"):
+    for nome in ("emprestimo-cartao-tabela-10", "taxas-referencia-bcb"):
         meta = json.loads((saida / "kaggle" / nome / "dataset-metadata.json").read_text(encoding="utf-8"))
         # limites do Kaggle confirmados na criação real dos datasets (14/11/2026): título 6 a 50 e subtítulo até 80 caracteres
         assert 6 <= len(meta["title"]) <= 50, meta["title"]
         assert len(meta["subtitle"]) <= 80, meta["subtitle"]
     gov = (saida / "dados-gov-br" / "cadastro.md").read_text(encoding="utf-8")
-    assert "/dados/pix-no-cartao-tabela-10.csv" in gov and "/dados/taxas-referencia-bcb.csv" in gov
+    assert "/dados/emprestimo-cartao-tabela-10.csv" in gov and "/dados/taxas-referencia-bcb.csv" in gov
     todos = "".join(open(os.path.join(r, f), encoding="utf-8", errors="ignore").read() for r, _d, fs in os.walk(saida) for f in fs if f.endswith((".json", ".md")))
     assert not re.search(r"(?i)(api[_-]?key|token|secret|password)\s*[:=]\s*\S{8,}", todos)
     assert "KAGGLE_KEY" in (saida / "LEIA-ME.md").read_text(encoding="utf-8")  # só o nome da variável, nunca o valor
@@ -190,15 +190,15 @@ def test_pacote_de_publicacao_sem_segredos(site, tmp_path):
 
 def test_textos_quebram_linha_para_enderecos_longos_no_celular():
     # regressão: o endereço longo da licença estourava a largura em 375 px
-    for classe in (conteudo.C_P, conteudo.C_UL, conteudo.C_OL, conteudo.C_AVISO):
-        assert "break-words" in classe
+    css = open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src", "estilo.css"), encoding="utf-8").read()
+    assert ".prose{" in css and "overflow-wrap:anywhere" in css.split(".prose{", 1)[1].split("}", 1)[0]
 
 
 def test_cabecalho_yaml_do_readme_do_hugging_face_e_valido(site, tmp_path):
-    """O Hugging Face recusou o README (15/11/2026): 'pretty_name: Pix no cartão: parcela...' tem dois-pontos sem aspas, o que quebra o YAML."""
+    """O Hugging Face recusou o README (15/11/2026): 'pretty_name: Empréstimo com crédito do cartão: parcela...' tem dois-pontos sem aspas, o que quebra o YAML."""
     saida = tmp_path / "publicacao"
     publicacao.gerar(str(site / "dados"), str(saida))
-    for nome in ("pix-no-cartao-tabela-10", "taxas-referencia-bcb"):
+    for nome in ("emprestimo-cartao-tabela-10", "taxas-referencia-bcb"):
         card = (saida / "huggingface" / nome / "README.md").read_text(encoding="utf-8")
         topo = card.split("\n---\n", 1)[0].splitlines()[1:]
         for linha in topo:

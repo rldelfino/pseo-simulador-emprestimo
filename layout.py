@@ -1,9 +1,12 @@
-"""HTML do layout (cabeçalho, rodapé), da home e dos blocos dos guias.
+"""HTML do layout (cabeçalho, rodapé), da home e dos blocos dos guias. Os marcadores @@NOME@@ são trocados pelo gerador.
 
-Mesma família visual dos outros simuladores da Datalab Global: fundo navy com brilho, títulos em Playfair Display,
-texto em Inter, destaque esmeralda, painéis de vidro. Sem atributo style nem script inline (a CSP não permite).
-Os marcadores @@NOME@@ são trocados pelo gerador.
+Mesmo template dos simuladores irmãos (Home Equity, Auto Equity, Condomínio): tema escuro, vidro, cartões por campo, painel de resultado, faixa de
+3 números, campo "já tem uma proposta?" e tela de confirmação antes do parceiro. Destaque roxo (violet). CSS à mão em src/estilo.css (sem build).
+Sem atributo style nem script inline (a CSP não permite). Os desenhos de barras são SVG com atributos; a lógica fica em src/simulador.js.
 """
+
+# Logo desenhado à mão em SVG: um cartão inclinado (faixa e chip) e uma moeda que sai dele. É o dinheiro saindo do limite do cartão.
+LOGO = """<span class="tile"><svg viewBox="0 0 44 44" width="32" height="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g transform="rotate(-11 20 25)"><rect x="4" y="15" width="29" height="19.5" rx="4.2" stroke-width="2"/><path d="M4.4 21.2h28.2" stroke-width="2.6" opacity=".55"/><rect x="8.3" y="25.2" width="6.4" height="4.7" rx="1.3" stroke-width="1.5"/><path d="M20 28.2h3.4M25.5 28.2h2.2" stroke-width="1.7" opacity=".7"/></g><circle cx="33.4" cy="12.2" r="7.6" stroke-width="2" fill="#0b1020"/><path d="M33.4 7.6v1.2M33.4 15.6v1.2M35.7 10.3c-.4-.9-1.3-1.4-2.4-1.4-1.3 0-2.3.7-2.3 1.8 0 2.4 4.9 1.2 4.9 3.8 0 1.1-1.1 1.9-2.5 1.9-1.2 0-2.1-.5-2.6-1.4" stroke-width="1.5"/></svg></span>"""
 
 LAYOUT = """<!doctype html>
 <html lang="pt-BR">
@@ -32,60 +35,44 @@ LAYOUT = """<!doctype html>
 <link rel="preload" href="/fonts/playfair-display-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/styles.css?v=@@CSSV@@">
-<link rel="alternate" type="application/atom+xml" title="Pix no cartão — Datalab Global" href="/feed.xml">
+<link rel="alternate" type="application/atom+xml" title="Empréstimo pessoal com crédito do cartão — Datalab Global" href="/feed.xml">
 @@JSONLD@@<script defer src="https://cloud.umami.is/script.js" data-website-id="@@UMAMI_ID@@"></script>
 </head>
 <body>
-<a href="#conteudo" class="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-[60] focus:rounded focus:bg-white focus:px-3 focus:py-2 focus:text-slate-900">Ir para o conteúdo</a>
-<header class="sticky top-0 z-50 border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
-  <div class="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-2 sm:gap-4">
-    <a href="/" class="flex min-h-11 shrink-0 items-center" aria-label="Pix no cartão — Datalab Global, página inicial">
-      <img src="/logo-full.png?v=@@ICONV@@" alt="Datalab Global" width="139" height="48" class="h-9 w-auto drop-shadow-[0_0_15px_rgba(167,139,250,0.25)] sm:h-12">
-    </a>
-    <nav aria-label="Principal" class="hidden items-center gap-6 text-sm text-slate-300 lg:flex">@@NAV@@</nav>
-    <div class="flex items-center gap-2 sm:gap-3">
-      <a href="/#simulador" class="inline-flex min-h-11 items-center rounded-full bg-violet-400 px-4 text-xs font-bold text-slate-950 shadow-lg shadow-violet-500/25 hover:bg-violet-300 sm:px-5 sm:text-sm">Simular<span class="hidden sm:inline"> agora</span> &rarr;</a>
-      <details class="relative lg:hidden">
-        <summary class="inline-flex min-h-11 items-center rounded-lg border border-white/10 px-4 text-xs text-slate-200 sm:text-sm">Menu</summary>
-        <nav aria-label="Menu" class="absolute right-0 mt-2 flex w-64 flex-col gap-1 rounded-2xl border border-white/10 bg-slate-900 p-3 text-sm text-slate-200 shadow-2xl">@@NAVMOBILE@@</nav>
-      </details>
-    </div>
+<a href="#conteudo" class="skip">Ir para o conteúdo</a>
+<header class="top">
+  <div class="wrap">
+    <a href="/" class="brand" aria-label="Datalab Global — Empréstimo pessoal com crédito do cartão, página inicial">@@LOGO@@<span class="wm"><b>Datalab</b><i>GLOBAL</i></span><span class="prod">Empréstimo com crédito do cartão</span></a>
+    <nav class="m" aria-label="Principal">@@NAV@@</nav>
+    <div class="free"><span class="dot"></span>Simulação gratuita</div>
+    <details class="menu">
+      <summary>Menu</summary>
+      <nav aria-label="Menu">@@NAVMOBILE@@</nav>
+    </details>
   </div>
 </header>
 
-<main id="conteudo" class="mx-auto max-w-6xl px-4 pb-8">
+<main id="conteudo" class="wrap">
 @@MAIN@@
 </main>
 
-<footer class="mt-16 border-t border-white/5 bg-slate-950/60">
-  <div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 md:grid-cols-5">
-    <div>
-      <img src="/logo-full.png?v=@@ICONV@@" alt="Datalab Global" width="139" height="48" class="h-12 w-auto" loading="lazy">
-      <p class="mt-4 text-sm leading-relaxed text-slate-400">Simulador do Pix no cartão de crédito. O custo aparece antes de qualquer botão.</p>
-      <p class="mt-3 text-xs leading-relaxed text-slate-400">A Datalab Global pode receber comissão do parceiro pelas contratações feitas a partir deste site. Não somos banco e não concedemos crédito.</p>
+<footer class="rod">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a href="/" class="brand" aria-label="Datalab Global — Empréstimo pessoal com crédito do cartão">@@LOGO@@<span class="wm"><b>Datalab</b><i>GLOBAL</i></span></a>
+        <p>Simulador do empréstimo pessoal com crédito do cartão. O custo aparece antes de qualquer botão.</p>
+        <p>A Datalab Global pode receber comissão do parceiro pelas contratações feitas a partir deste site. Não somos banco e não concedemos crédito.</p>
+      </div>
+      <nav aria-label="Entenda"><h2>Entenda</h2><ul>@@FOOT_ENTENDA@@</ul></nav>
+      <nav aria-label="Transparência"><h2>Transparência</h2><ul>@@FOOT_TRANSP@@</ul></nav>
+      <nav aria-label="Legal e mais"><h2>Legal e mais</h2><ul>@@FOOT_LEGAL@@</ul></nav>
+      <nav aria-label="Outros simuladores da Datalab Global"><h2>Outros simuladores</h2><ul>@@FOOT_OUTROS@@</ul></nav>
     </div>
-    <nav aria-label="Entenda">
-      <p class="text-xs font-bold uppercase tracking-widest text-violet-400">Entenda</p>
-      <ul class="mt-2 text-sm text-slate-300 md:mt-4">@@FOOT_ENTENDA@@</ul>
-    </nav>
-    <nav aria-label="Transparência">
-      <p class="text-xs font-bold uppercase tracking-widest text-violet-400">Transparência</p>
-      <ul class="mt-2 text-sm text-slate-300 md:mt-4">@@FOOT_TRANSP@@</ul>
-    </nav>
-    <nav aria-label="Legal e mais">
-      <p class="text-xs font-bold uppercase tracking-widest text-violet-400">Legal e mais</p>
-      <ul class="mt-2 text-sm text-slate-300 md:mt-4">@@FOOT_LEGAL@@</ul>
-    </nav>
-    <nav aria-label="Outros simuladores da Datalab Global">
-      <p class="text-xs font-bold uppercase tracking-widest text-violet-400">Outros simuladores</p>
-      <ul class="mt-2 text-sm text-slate-300 md:mt-4">@@FOOT_OUTROS@@</ul>
-    </nav>
-  </div>
-  <div class="border-t border-white/5">
-    <div class="mx-auto max-w-6xl px-4 py-6 text-xs leading-relaxed text-slate-400">
+    <div class="base">
       <p>Atualizado em @@ATUALIZADO@@. Condições da Tabela 10 do parceiro, conferidas automaticamente toda semana.</p>
-      <p class="mt-1">Datalab Global é marca de @@RAZAO@@, CNPJ @@CNPJ@@. Contato: <a class="underline hover:text-slate-300" href="mailto:@@EMAIL@@">@@EMAIL@@</a>.</p>
-      <p class="mt-1">A simulação não é proposta de crédito. Crédito sujeito a análise e aprovação do parceiro, sem garantia de aprovação.</p>
+      <p>Datalab Global é marca de @@RAZAO@@, CNPJ @@CNPJ@@. Contato: <a href="mailto:@@EMAIL@@">@@EMAIL@@</a>.</p>
+      <p>A simulação não é proposta de crédito. Crédito sujeito a análise e aprovação do parceiro, sem garantia de aprovação.</p>
     </div>
   </div>
 </footer>
@@ -93,216 +80,220 @@ LAYOUT = """<!doctype html>
 </html>
 """
 
-ROTULO = "text-[11px] font-bold uppercase tracking-widest text-slate-400"
-
-HOME_MAIN = """  <section class="pt-10 text-center sm:pt-14">
-    <a href="#simulador" class="mx-auto inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-full border border-white/10 bg-slate-900/60 px-5 py-2 text-xs">
-      <span class="font-semibold text-white">Pix no cartão</span>
-      <span class="hidden h-3 w-px bg-white/20 sm:block"></span>
-      <span class="uppercase tracking-widest text-slate-400">Crédito no cartão</span>
-      <span class="hidden h-3 w-px bg-white/20 sm:block"></span>
-      <span class="uppercase tracking-widest text-violet-400">Ver o custo &rarr;</span>
-    </a>
-    <h1 class="mx-auto mt-6 max-w-4xl text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">Pix no cartão de crédito: veja o custo real antes de contratar</h1>
-    <p class="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg">Receba de <strong class="text-white">R$ 300 a R$ 5.000</strong> por Pix e pague em <strong class="text-white">2x a 12x</strong> na fatura do cartão (o chamado Pix parcelado, um empréstimo no cartão de crédito). É crédito caro: o custo aparece primeiro, antes de qualquer botão.</p>
-    <p class="mt-5 text-[11px] uppercase tracking-widest text-slate-400">Tabela 10 do parceiro, conferida toda semana. Atualizado em @@ATUALIZADO@@</p>
+HOME_MAIN = """  <section class="hero">
+    <h1>Empréstimo pessoal com <em>crédito do cartão</em></h1>
+    <p>Use o limite do cartão de crédito como fonte do dinheiro: receba de <strong>R$ 300 a R$ 5.000</strong> por Pix e pague em <strong>2x a 12x</strong> na fatura. O custo aparece primeiro, antes de qualquer botão.</p>
+    <div class="fine">Grátis · sem cadastro · estimativa, não proposta · atualizado em @@ATUALIZADO@@</div>
   </section>
 
-  <section id="simulador" aria-labelledby="titulo-simulador" class="glass-panel mt-10 rounded-[2rem] p-5 sm:p-10">
-    <div class="border-b border-white/10 pb-4">
-      <h2 id="titulo-simulador" class="text-sm font-bold uppercase tracking-widest text-white sm:text-base">1. Simulação</h2>
-      <p class="mt-1 text-xs text-slate-400">Escolha o valor e o prazo. O resultado muda na hora, com todos os custos.</p>
-    </div>
-    <div class="mt-8 grid gap-6 lg:grid-cols-2">
-      <div class="flex flex-col gap-4">
-        <div role="tablist" class="grid grid-cols-2 gap-1 rounded-2xl border border-white/10 bg-slate-950/60 p-1.5">
-          <button id="btn-modo-valor" type="button" role="tab" aria-selected="true" aria-controls="painel-simulacao" class="rounded-xl px-2 py-3 text-sm font-bold text-slate-400 aria-selected:bg-gradient-to-br aria-selected:from-violet-600 aria-selected:to-violet-800 aria-selected:text-white">Quero um valor<span class="block text-xs font-normal opacity-80">quanto cai na conta</span></button>
-          <button id="btn-modo-limite" type="button" role="tab" aria-selected="false" tabindex="-1" aria-controls="painel-simulacao" class="rounded-xl px-2 py-3 text-sm font-bold text-slate-400 aria-selected:bg-gradient-to-br aria-selected:from-violet-600 aria-selected:to-violet-800 aria-selected:text-white">Usar meu limite<span class="block text-xs font-normal opacity-80">quanto tenho no cartão</span></button>
+  <div class="grid" id="simulador">
+    <section class="panel" aria-labelledby="t-cenario">
+      <h2 id="t-cenario">Seu cenário</h2>
+      <div role="tablist" class="segt" aria-label="Como você quer simular">
+        <button id="btn-modo-valor" type="button" role="tab" aria-selected="true" aria-controls="painel-simulacao">Quero um valor<small>quanto cai na conta</small></button>
+        <button id="btn-modo-limite" type="button" role="tab" aria-selected="false" tabindex="-1" aria-controls="painel-simulacao">Usar meu limite<small>quanto tenho no cartão</small></button>
+      </div>
+      <div id="painel-simulacao" role="tabpanel" aria-labelledby="btn-modo-valor" class="pnl">
+        <div class="f">
+          <label id="rotulo-valor" for="campo-valor">Valor que você quer receber <span id="sub-valor">cai na conta, por Pix</span></label>
+          <div class="inp"><span class="pre">R$</span><input id="campo-valor" type="text" inputmode="decimal" autocomplete="off" value="@@D_VALOR@@" class="num"></div>
+          <input id="range-valor" data-p="15" aria-labelledby="rotulo-valor" type="range" min="300" max="5000" step="50" value="@@D_VALOR_N@@">
+          <div class="slabel"><span id="min-valor">R$ 300,00</span><span id="max-valor">R$ 5.000,00</span></div>
         </div>
-
-        <div id="painel-simulacao" role="tabpanel" aria-labelledby="btn-modo-valor" class="flex flex-col gap-4">
-
-        <div class="tile rounded-2xl p-5">
-          <div class="flex items-center justify-between gap-3">
-            <label id="rotulo-valor" for="campo-valor" class="@@ROTULO@@">Valor que você quer no Pix</label>
-            <div class="flex items-baseline gap-1"><span class="text-lg font-semibold text-slate-300">R$</span>
-              <input id="campo-valor" type="text" inputmode="decimal" autocomplete="off" value="1.000" class="num min-h-11 w-32 bg-transparent text-right text-3xl font-semibold text-white">
-            </div>
-          </div>
-          <input id="range-valor" aria-labelledby="rotulo-valor" type="range" min="300" max="5000" step="50" value="1000" class="mt-5">
-          <div class="mt-2 flex justify-between text-xs text-slate-400"><span id="min-valor">R$ 300,00</span><span id="max-valor">R$ 5.000,00</span></div>
-        </div>
-
-        <div class="tile rounded-2xl p-5">
-          <div class="flex items-center justify-between">
-            <label for="range-parcelas" class="@@ROTULO@@">Parcelas na fatura</label>
-            <span id="txt-parcelas" class="num text-3xl font-semibold text-white">12x</span>
-          </div>
-          <input id="range-parcelas" type="range" min="2" max="12" step="1" value="12" class="mt-5">
-          <div class="mt-2 flex justify-between text-xs text-slate-400"><span>2x</span><span>12x</span></div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div class="tile rounded-2xl p-5"><p class="@@ROTULO@@">Juros ao mês</p><p id="r-juros" class="num mt-2 text-xl font-semibold text-white"></p></div>
-          <div class="tile rounded-2xl p-5"><p class="@@ROTULO@@">CET ao ano</p><p id="r-cet" class="num mt-2 text-xl font-semibold text-white"></p></div>
-        </div>
-        <div class="tile rounded-2xl p-5">
-          <p class="@@ROTULO@@">Composição do total na fatura</p>
-          <div class="mt-4 flex flex-wrap items-center gap-6">
-            <div id="donut" class="h-[120px] w-[120px] shrink-0" role="img" aria-label="Composição do total na fatura"></div>
-            <ul class="space-y-2 text-sm text-slate-300">
-              <li class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full bg-violet-500"></span>Valor no seu Pix <strong id="leg-pix" class="num text-white"></strong></li>
-              <li class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>Juros e IOF <strong id="leg-custo" class="num text-white"></strong></li>
-            </ul>
-          </div>
-        </div>
+        <div class="f">
+          <label for="range-parcelas">Parcelas na fatura <span>de 2x a 12x</span></label>
+          <div class="inp"><strong id="txt-parcelas" class="nv num">12x</strong></div>
+          <input id="range-parcelas" data-p="100" type="range" min="2" max="12" step="1" value="12">
+          <div class="slabel"><span>2x</span><span>12x</span></div>
         </div>
       </div>
+      <details class="outra" id="det-prop">
+        <summary>Já tem uma proposta? Compare a taxa dela</summary>
+        <div class="oi">
+          <label for="campo-prop">Parcela da proposta <span>R$ por mês</span></label>
+          <div class="inp"><span class="pre">R$</span><input id="campo-prop" type="text" inputmode="decimal" autocomplete="off" placeholder="ex.: 150,00" class="num" aria-describedby="msg-prop"><em>/mês</em></div>
+          <div class="hint" id="msg-prop">Usa o valor que você recebe e o número de parcelas escolhidos acima. Informe a parcela que aparece na proposta e veja quanto ela cobra de juros ao mês.</div>
+        </div>
+      </details>
+      <div class="note limnote"><b>E o limite do cartão?</b> <span id="nota-limite">@@D_NOTA_LIMITE@@</span> <a href="#o-que-e">Entenda</a></div>
+    </section>
 
-      <div id="resultado" aria-live="polite" class="flex flex-col gap-6 rounded-3xl border border-white/10 bg-slate-950/90 p-6 sm:p-8">
-        <p class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-violet-400"><span class="h-2 w-2 rounded-full bg-violet-400 shadow-[0_0_10px_#a78bfa]"></span>Resultado da simulação</p>
+    <section class="panel resp" id="resultado" aria-labelledby="t-resultado" aria-live="polite">
+      <h2 class="kicker kres" id="t-resultado">Resultado da simulação</h2>
+      <div class="res">
         <div>
-          <p class="@@ROTULO@@">Você recebe via Pix</p>
-          <p id="r-pix" class="num mt-2 text-4xl font-semibold text-white sm:text-5xl">R$ 1.000,00</p>
+          <div class="kicker" id="r-kicker">Parcela na fatura</div>
+          <div class="big num"><span id="r-parcela">@@D_PARCELA@@</span> <small>/mês</small></div>
+          <div class="dim" id="r-sub">@@D_SUB@@</div>
+          <hr class="sep">
+          <div class="dim lab">Total na fatura</div>
+          <div class="mid num" id="r-total">@@D_TOTAL@@</div>
+          <div class="dim"><a href="/metodologia">Como calculamos</a></div>
         </div>
-        <div>
-          <p class="@@ROTULO@@">E paga na fatura do cartão</p>
-          <p id="r-parcelas" class="num mt-2 text-2xl text-slate-200">12 parcelas</p>
+        <div class="ctx sis">
+          <div class="t">Você recebe por Pix</div>
+          <div class="v num" id="r-receber">@@D_RECEBER@@</div>
+          <div class="t">IOF (já incluso)</div>
+          <div class="v num" id="r-iof">@@D_IOF@@</div>
         </div>
-        <dl class="grid grid-cols-2 gap-4 border-t border-white/10 pt-5">
-          <div><dt class="@@ROTULO@@">Total na fatura</dt><dd id="r-total" class="num mt-2 text-xl font-semibold text-violet-300"></dd></div>
-          <div><dt class="@@ROTULO@@">IOF (já incluso)</dt><dd id="r-iof" class="num mt-2 text-xl font-semibold text-white"></dd></div>
-        </dl>
-        <div class="rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-100">
-          <p id="r-custo-texto" class="font-semibold leading-relaxed"></p>
+      </div>
+      <div class="callout"><p id="r-resumo">@@D_RESUMO@@</p></div>
+      <div class="rosca">
+        <svg viewBox="0 0 120 120" width="120" height="120" role="img" id="donut" aria-label="Do total na fatura, @@D_PCT_CUSTO@@% é juros e IOF">
+          <circle cx="60" cy="60" r="46" fill="none" stroke="#e3a96b" stroke-width="14"/>
+          <circle id="rosca-valor" cx="60" cy="60" r="46" fill="none" stroke="#a78bfa" stroke-width="14" stroke-dasharray="@@D_ROSCA_P@@ 289.03" transform="rotate(-90 60 60)"/>
+          <text x="60" y="61" text-anchor="middle" class="rc-n" id="rosca-pct">@@D_PCT_CUSTO@@%</text>
+          <text x="60" y="77" text-anchor="middle" class="rc-t">em juros e IOF</text>
+        </svg>
+        <div class="rc-l">
+          <div class="kicker">Para onde vai o total</div>
+          <div class="lg"><span><s></s>Valor que você recebe</span><b class="num" id="leg-valor">@@D_L_VALOR@@</b></div>
+          <div class="lg"><span><s class="jr"></s>Juros e IOF</span><b class="num" id="leg-custo">@@D_L_CUSTO@@</b></div>
         </div>
-        <div id="referencia" aria-live="off" class="hidden rounded-2xl border border-white/10 bg-slate-900/50 p-4">
-          <p class="@@ROTULO@@">E o mercado? Juros ao mês</p>
-          <ul id="ref-lista" class="mt-3 space-y-2 text-sm"></ul>
-          <p id="ref-veredito" class="mt-3 text-sm font-semibold leading-relaxed text-white"></p>
-          <p id="ref-nota" class="mt-2 text-xs leading-relaxed text-slate-400"></p>
-          <a class="mt-1 inline-flex min-h-11 items-center text-xs font-semibold text-violet-300 underline hover:text-white" href="/taxas-de-referencia">Ver as taxas do Banco Central e a fonte &rarr;</a>
+      </div>
+      <div class="rodape-res">
+        <p id="aviso-minimo" class="hint warn" hidden>Com esse limite, o valor ficaria abaixo do mínimo de R$ 300.</p>
+        <div class="cta">
+          <div><strong>Faça sua proposta</strong><span class="s">Com um parceiro de crédito · pedido real, 6 passos</span></div>
+          <button type="button" class="btn" id="btn-cta">Ver minha proposta →</button>
         </div>
-        <p id="aviso-minimo" class="hidden text-sm text-amber-300">Com esse limite, o Pix ficaria abaixo do mínimo de R$ 300. Aumente o limite ou diminua as parcelas.</p>
-        <div id="aviso-proposta" class="hidden rounded-2xl border border-amber-400/40 bg-amber-400/10 p-4 text-sm text-amber-100">
-          <p id="txt-aviso-proposta"></p>
-          <a id="link-parceiro" href="#" rel="noopener" class="mt-3 inline-flex min-h-11 items-center font-semibold text-violet-300 underline hover:text-white">Continuar mesmo assim &rarr;</a>
-        </div>
-        <p id="aviso-pedido" class="text-center text-xs leading-relaxed text-slate-300">No parceiro você faz o pedido real: 6 passos, com CPF e documento original (RG ou CNH). Clique só se quiser contratar.</p>
-        <button id="cta-pix" type="button" class="mt-auto w-full rounded-2xl bg-violet-400 px-5 py-4 text-base font-extrabold text-slate-950 shadow-lg shadow-violet-500/25 hover:bg-violet-300">Ver minha proposta &rarr;</button>
-        <button id="btn-copiar" type="button" class="inline-flex min-h-11 w-full items-center justify-center rounded-2xl border border-white/15 px-4 text-sm font-semibold text-violet-300 hover:border-violet-400/40 hover:text-white">Copiar o link desta simulação</button>
-        <p id="msg-copiado" role="status" class="hidden text-center text-xs text-violet-300"></p>
-        <p id="aviso-celular" class="hidden text-center text-xs text-slate-400">A contratação é feita pelo celular: na próxima tela do parceiro, aponte a câmera para o QR Code e a proposta abre já preenchida. Tenha em mãos o RG ou a CNH original.</p>
-        <p class="text-center text-xs text-slate-400">Você não digita dado pessoal aqui. A contratação acontece no ambiente do parceiro e depende de análise de crédito.</p>
+        <div class="fine2">Estimativa: a aprovação e o valor final dependem da análise do parceiro. O total é lançado no limite do seu cartão: <a href="#o-que-e">entenda abaixo</a>.</div>
+        <div class="copiar"><button type="button" id="btn-copiar">Copiar o link desta simulação</button><span id="msg-copiado" role="status"></span></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="kpis" aria-label="Três números para ler o custo">
+    <div class="kp"><span class="t">Juros ao mês</span><b class="num" id="r-juros">@@D_JUROS@@</b><small>Tabela 10 do parceiro</small></div>
+    <div class="kp"><span class="t">CET ao ano</span><b class="num" id="r-cet">@@D_CET@@</b><small>inclui o IOF, para comparar</small></div>
+    <div class="kp"><span class="t">Cada R$ 1 recebido custa</span><b class="num" id="k-real">@@D_REAL@@</b><small>na fatura, com juros e IOF</small></div>
+  </div>
+  <p class="hint kpn">Juros e CET da Tabela 10 do parceiro, conferida toda semana. Estimativa, não é oferta. <a href="/custo-cet-iof">Veja a tabela completa</a>.</p>
+
+  <section class="band" id="o-que-e" aria-labelledby="t-oqe">
+    <div class="split">
+      <div class="split-t">
+        <div class="kicker">O que é</div>
+        <h2 id="t-oqe">Um empréstimo pessoal que usa o limite do cartão</h2>
+        <p class="lead">@@O_QUE_E@@</p>
+        <p class="hint"><a href="/como-funciona">Veja o passo a passo completo</a></p>
+      </div>
+      <div class="lista3">
+        <div class="li3"><span class="n" aria-hidden="true">1</span><div><h4>Você pede um valor</h4><ul><li>De R$ 300 a R$ 5.000, por Pix, em uma chave em seu nome</li><li>O Pix é só o jeito de o dinheiro chegar à sua conta</li></ul></div></div>
+        <div class="li3"><span class="n" aria-hidden="true">2</span><div><h4>O total vai para o limite do cartão</h4><ul><li>Valor, juros e IOF ficam comprometidos no limite</li><li>É por isso que existe o modo “Usar meu limite”</li></ul></div></div>
+        <div class="li3"><span class="n" aria-hidden="true">3</span><div><h4>Você paga na fatura</h4><ul><li>De 2 a 12 parcelas, junto com o resto da fatura</li><li>Como o limite é liberado conforme você paga é regra do emissor do cartão</li></ul></div></div>
       </div>
     </div>
   </section>
 
-  <section aria-labelledby="titulo-dica" class="glass-panel-violet mt-8 rounded-[2rem] p-5 sm:p-10">
-    <div class="flex flex-wrap items-center gap-3">
-      <span class="rounded-md bg-violet-400 px-2 py-0.5 text-xs font-extrabold uppercase tracking-widest text-violet-950">Dica</span>
-      <h2 id="titulo-dica" class="text-sm font-bold uppercase tracking-widest text-white sm:text-base">O custo quase não muda com o prazo</h2>
-    </div>
-    <div class="mt-6 grid gap-8 lg:grid-cols-5">
-      <div class="min-w-0 lg:col-span-3">
-        <p class="@@ROTULO@@">Quanto você paga a mais, em reais, por prazo</p>
-        <div id="barras" class="mt-4 flex flex-col gap-1.5"></div>
+  <section class="blk" id="prazos" aria-labelledby="t-prazos">
+    <div class="kicker">Prazo</div>
+    <h2 id="t-prazos">O custo quase não muda com o prazo</h2>
+    <div class="split pzsplit">
+      <div class="panel">
+        <div class="kicker pzk">Quanto você paga a mais, em reais, por prazo</div>
+        <div id="barras" class="pzs"></div>
       </div>
-      <div class="text-sm leading-relaxed text-slate-300 lg:col-span-2 lg:border-l lg:border-white/10 lg:pl-8">
+      <div class="pztx">
         <p id="txt-barras"></p>
-        <p class="mt-4">Prazo maior deixa a prestação menor, mas o dinheiro fica emprestado por mais tempo. O que pesa de verdade é o valor em reais da barra.</p>
-        <p class="mt-4"><a class="inline-flex min-h-11 items-center font-semibold text-violet-300 underline hover:text-white" href="/custo-cet-iof">Entenda CET e IOF &rarr;</a></p>
-        <p><a class="inline-flex min-h-11 items-center font-semibold text-violet-300 underline hover:text-white" href="/pix-no-cartao-ou-outro-credito">Compare com outros créditos &rarr;</a></p>
+        <p>Prazo maior deixa a prestação menor, mas o dinheiro fica emprestado por mais tempo. O que pesa de verdade é o valor em reais da barra.</p>
+        <p class="hint"><a href="/custo-cet-iof">Entenda CET e IOF</a> · <a href="/@@SLUG_COMPARAR@@">Compare com outros créditos</a></p>
       </div>
     </div>
-    <details id="detalhe-prazos" class="mt-8 rounded-2xl border border-white/10 bg-slate-950/40 p-4">
-      <summary class="flex min-h-11 cursor-pointer items-center font-semibold text-white">Ver a tabela de todos os prazos (2x a 12x)</summary>
-      <div class="mt-3 overflow-x-auto">
-        <table class="w-full min-w-[34rem] border-collapse text-left text-sm">
-          <caption id="cap-prazos" class="pb-2 text-left text-xs text-slate-400"></caption>
-          <thead><tr>
-            <th scope="col" class="border-b border-white/15 px-3 py-2 text-[11px] font-bold uppercase tracking-widest text-violet-400">Prazo</th>
-            <th scope="col" class="border-b border-white/15 px-3 py-2 text-[11px] font-bold uppercase tracking-widest text-violet-400">Parcela</th>
-            <th scope="col" class="border-b border-white/15 px-3 py-2 text-[11px] font-bold uppercase tracking-widest text-violet-400">Total na fatura</th>
-            <th scope="col" class="border-b border-white/15 px-3 py-2 text-[11px] font-bold uppercase tracking-widest text-violet-400">Custo a mais</th>
-            <th scope="col" class="border-b border-white/15 px-3 py-2 text-[11px] font-bold uppercase tracking-widest text-violet-400">Juros ao mês</th>
-            <th scope="col" class="border-b border-white/15 px-3 py-2 text-[11px] font-bold uppercase tracking-widest text-violet-400">CET ao ano</th>
-          </tr></thead>
-          <tbody id="corpo-prazos"></tbody>
-        </table>
-      </div>
+    <details id="detalhe-prazos" class="amort">
+      <summary>Ver a tabela de todos os prazos (2x a 12x)</summary>
+      <div class="tw"><table class="tc">
+        <caption id="cap-prazos"></caption>
+        <thead><tr><th scope="col">Prazo</th><th scope="col">Parcela</th><th scope="col">Total na fatura</th><th scope="col">Custo a mais</th><th scope="col">Juros ao mês</th><th scope="col">CET ao ano</th></tr></thead>
+        <tbody id="corpo-prazos"></tbody>
+      </table></div>
     </details>
   </section>
 
-  <section class="mt-8 grid gap-6 sm:grid-cols-2">
-    <div class="glass-panel rounded-3xl p-6 sm:p-8">
-      <h2 class="text-xl font-bold text-white">Quanto custa, de verdade</h2>
-      <p class="mt-3 text-sm leading-relaxed text-slate-300">Os juros vão de 34,64% ao mês (2x) a 7,49% ao mês (12x). O CET, que inclui o IOF e é contado ao ano, vai de 3.621% a 148,97%. Por isso o simulador mostra quanto você paga a mais antes do botão. Se você consegue outra forma de crédito mais barata, ela costuma valer mais a pena. <a class="font-semibold text-violet-300 underline" href="/custo-cet-iof">Veja a tabela completa</a>.</p>
-      <p class="mt-3 text-sm leading-relaxed text-slate-300">@@COMPARA@@</p>
-    </div>
-    <div class="glass-panel rounded-3xl p-6 sm:p-8">
-      <h2 class="text-xl font-bold text-white">Quem oferece</h2>
-      <p class="mt-3 text-sm leading-relaxed text-slate-300">A oferta é de um correspondente bancário parceiro. O contrato é uma Cédula de Crédito Bancário (CCB), e a aprovação depende de análise de crédito: não há garantia de aprovação nem de valor. A Datalab Global pode receber comissão do parceiro. <a class="font-semibold text-violet-300 underline" href="/sobre">Saiba mais</a>.</p>
-    </div>
-  </section>
-
-  <section class="mt-14" aria-labelledby="guias">
-    <h2 id="guias" class="text-sm font-bold uppercase tracking-widest text-white sm:text-base">2. Entenda antes de decidir</h2>
-    <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">@@CARTOES@@</div>
-  </section>
-
-  <section class="mt-14" aria-labelledby="duvidas">
-    <h2 id="duvidas" class="text-sm font-bold uppercase tracking-widest text-white sm:text-base">3. Perguntas frequentes</h2>
-    <div class="mt-5 flex max-w-3xl flex-col gap-3">@@FAQ@@</div>
-  </section>
-
-  <section class="mt-14 rounded-[2rem] bg-gradient-to-br from-violet-600 to-violet-900 p-8 shadow-2xl shadow-violet-950/40 sm:p-12">
-    <div class="grid items-center gap-8 md:grid-cols-3">
-      <div class="md:col-span-2">
-        <span class="inline-block rounded-md bg-amber-400 px-2.5 py-1 text-xs font-extrabold uppercase tracking-widest text-amber-950">Antes de contratar</span>
-        <p class="font-serif mt-4 text-3xl font-bold leading-tight text-white sm:text-4xl">Compare o custo e só então peça a proposta.</p>
-        <p class="mt-4 text-violet-50/90">A contratação é feita no ambiente de um parceiro (correspondente bancário) e depende de análise de crédito. Sem garantia de aprovação.</p>
-      </div>
-      <div class="md:text-right">
-        <a href="#simulador" class="inline-block rounded-2xl bg-white px-6 py-4 text-sm font-extrabold uppercase tracking-wide text-violet-900 hover:bg-violet-50">Voltar ao simulador</a>
-      </div>
+  <section class="blk" aria-labelledby="t-mercado">
+    <div class="kicker">Mercado</div>
+    <h2 id="t-mercado">E as outras opções de crédito?</h2>
+    <p class="lead">@@COMPARA@@</p>
+    <div id="referencia" class="panel refp" hidden aria-live="off">
+      <div class="kicker">Juros ao mês, hoje</div>
+      <ul id="ref-lista" class="reflist"></ul>
+      <p id="ref-veredito" class="refv"></p>
+      <p id="ref-nota" class="hint"></p>
+      <p class="hint"><a href="/taxas-de-referencia">Ver as taxas do Banco Central e a fonte</a></p>
     </div>
   </section>
 
-  <div id="barra-resumo" class="hidden fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-slate-950/95 px-4 py-2 backdrop-blur lg:hidden">
-    <button id="btn-resumo" type="button" class="mx-auto flex min-h-11 w-full max-w-md items-center justify-between gap-3 text-left">
-      <span class="min-w-0">
-        <span id="resumo-parcela" class="num block truncate text-sm font-semibold text-white"></span>
-        <span id="resumo-total" class="num block truncate text-xs text-slate-400"></span>
-      </span>
-      <span class="shrink-0 rounded-full bg-violet-400 px-4 py-2 text-xs font-bold text-slate-950">Ver resultado &darr;</span>
+  <section class="blk dois" aria-label="Custo e quem oferece">
+    <div class="card"><h4>Quanto custa, de verdade</h4>
+      <p>@@CUSTO_HOME@@ Se você consegue outra forma de crédito mais barata, ela costuma valer mais a pena. <a href="/custo-cet-iof">Veja a tabela completa</a>.</p></div>
+    <div class="card"><h4>Quem oferece</h4>
+      <p>A oferta é de um correspondente bancário parceiro. O contrato é uma Cédula de Crédito Bancário (CCB), e a aprovação depende de análise de crédito: não há garantia de aprovação nem de valor. A Datalab Global pode receber comissão do parceiro. <a href="/sobre">Saiba mais</a>.</p></div>
+  </section>
+
+  <section class="blk" aria-labelledby="t-guias">
+    <div class="kicker">Guias</div>
+    <h2 id="t-guias">Entenda antes de decidir</h2>
+    <div class="cols3">@@CARTOES@@</div>
+  </section>
+
+  <section class="blk split faqs" aria-labelledby="t-faq">
+    <div class="split-t">
+      <div class="kicker">Dúvidas</div>
+      <h2 id="t-faq">Perguntas frequentes</h2>
+    </div>
+    <div class="faq">@@FAQ@@</div>
+  </section>
+
+  <aside class="fecho fechohome">
+    <p class="t">Compare o custo e só então peça a proposta.</p>
+    <p>A contratação é feita no ambiente de um parceiro (correspondente bancário) e depende de análise de crédito. Sem garantia de aprovação.</p>
+    <a class="btn" href="#simulador">Voltar ao simulador</a>
+  </aside>
+
+  <div id="barra-resumo" class="barra-res" hidden>
+    <button id="btn-resumo" type="button">
+      <span class="bt"><span id="resumo-parcela" class="num"></span><span id="resumo-total" class="num sub"></span></span>
+      <span class="go">Ver resultado ↓</span>
     </button>
   </div>
+
+  <dialog id="dlg-confirma" aria-labelledby="dlg-titulo">
+    <h3 id="dlg-titulo">Antes de continuar</h3>
+    <p>Você vai pedir um <b>empréstimo pessoal com crédito do cartão</b> a um <b>parceiro de crédito</b>, que analisa o seu pedido. A página dele mostra o nome da empresa.</p>
+    <ul>
+      <li id="dlg-resumo">@@D_DLG_RESUMO@@</li>
+      <li>O total é lançado no limite do seu cartão e parcelado na fatura.</li>
+      <li>É um pedido real: 6 passos, com CPF e documento original (RG ou CNH).</li>
+      <li>A aprovação e o valor final dependem da análise do parceiro. Simular aqui não é aprovação e você não é obrigado a contratar.</li>
+      <li id="aviso-celular" hidden>No computador, a tela do parceiro mostra um QR Code: aponte a câmera do celular para continuar por lá. Tenha o RG ou a CNH original em mãos.</li>
+    </ul>
+    <div id="aviso-proposta" class="hint warn" hidden>
+      <span id="txt-aviso-proposta"></span>
+      <a id="link-parceiro" href="@@CHECKOUT@@" rel="noopener sponsored">Continuar mesmo assim →</a>
+    </div>
+    <p class="dim">Este site envia ao parceiro só o valor e o prazo. Veja a <a href="/privacidade">política de privacidade</a> e <a href="/metodologia">como calculamos</a>.</p>
+    <div class="row"><button type="button" class="btn" id="btn-parceiro">Continuar para o parceiro →</button><button type="button" class="ghost" id="btn-voltar">Voltar e ajustar</button></div>
+  </dialog>
 """
 
-GUIA_CABECALHO = """<nav aria-label="Você está em" class="pt-8 text-center">
-  <a href="/" class="inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-full border border-white/10 bg-slate-900/60 min-h-11 px-5 py-2 text-xs">
-    <span class="font-semibold text-white">Pix no cartão</span>
-    <span class="hidden h-3 w-px bg-white/20 sm:block"></span>
-    <span class="uppercase tracking-widest text-violet-400">@@ROTULO_PAGINA@@</span>
-  </a>
-</nav>
-<article class="mx-auto max-w-3xl pb-4">
-  <h1 class="mt-6 text-center text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">@@H1@@</h1>
-  <p class="mt-4 text-center text-[11px] uppercase tracking-widest text-slate-400">Atualizado em @@ATUALIZADO@@ &middot; @@RAZAO@@</p>
-  <div class="glass-panel mt-10 rounded-[2rem] p-6 sm:p-10">
+GUIA_CABECALHO = """<div class="volta"><a class="btn-volta" href="/#simulador" data-volta>← Voltar à simulação</a></div>
+<nav class="crumb" aria-label="Você está em"><a href="/">Empréstimo com crédito do cartão <span>@@ROTULO_PAGINA@@</span></a></nav>
+<article class="guia">
+  <h1>@@H1@@</h1>
+  <p class="meta">Atualizado em @@ATUALIZADO@@ · @@RAZAO@@</p>
+  <div class="prose">
 """
 
 GUIA_MEIO = """  </div>
 """
 
-GUIA_FECHO = """  <aside class="glass-panel-violet mt-10 rounded-[2rem] p-6 sm:p-8">
-    <p class="font-serif text-2xl font-bold text-white">Simule com o seu valor</p>
-    <p class="mt-2 text-sm text-slate-300">Veja parcela, total na fatura, IOF e CET antes de decidir.</p>
-    <p class="mt-5"><a href="/#simulador" class="inline-block rounded-2xl bg-violet-400 px-6 py-3 text-sm font-extrabold text-slate-950 hover:bg-violet-300">Abrir o simulador &rarr;</a></p>
+GUIA_FECHO = """  <aside class="fecho">
+    <p class="t">Simule com o seu valor</p>
+    <p>Veja parcela, total na fatura, IOF e CET antes de decidir.</p>
+    <a class="btn" href="/#simulador" data-volta>Voltar à simulação →</a>
   </aside>
-  <section class="mt-10" aria-labelledby="veja-tambem">
-    <h2 id="veja-tambem" class="text-sm font-bold uppercase tracking-widest text-white">Veja também</h2>
-    <ul class="mt-4 grid gap-3 sm:grid-cols-3">@@RELACIONADOS@@</ul>
+  <section class="rel" aria-labelledby="veja-tambem">
+    <h2 id="veja-tambem">Veja também</h2>
+    <ul>@@RELACIONADOS@@</ul>
   </section>
 """

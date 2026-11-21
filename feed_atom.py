@@ -51,7 +51,7 @@ def gerar(hoje=None):
     itens = entradas()
     atualizado = max(e["data"] for e in itens)  # a data da última entrada, não a de hoje: gerar o site de novo não atualiza o feed
     linhas = ['<?xml version="1.0" encoding="utf-8"?>', '<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="pt-BR">',
-              "  <title>Pix no cartão — Datalab Global</title>",
+              "  <title>Empréstimo pessoal com crédito do cartão — Datalab Global</title>",
               "  <subtitle>Atualizações do simulador e taxas médias do Banco Central</subtitle>",
               '  <link href="' + DOMINIO + '/feed.xml" rel="self" type="application/atom+xml"/>',
               '  <link href="' + DOMINIO + '/" rel="alternate" type="text/html"/>',

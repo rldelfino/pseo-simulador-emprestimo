@@ -29,17 +29,6 @@ jobs:
       - name: Regerar as páginas
         run: python gerador_emprestimo.py
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - run: npm ci
-
-      - name: Compilar o CSS estático
-        run: npm run build:css
-
-      - name: Regerar as páginas com a versão nova do CSS (?v=)
-        run: python gerador_emprestimo.py
 
       - name: Testes (nada é publicado se o pytest sair diferente de 0)
         run: python -m pytest -q
@@ -74,7 +63,7 @@ jobs:
           if [ -z "$KAGGLE_API_TOKEN" ]; then echo "Sem token do Kaggle: passo ignorado"; exit 0; fi
           pip install "kaggle>=1.8.0" six
           falhou=0
-          for pasta in pix-no-cartao-tabela-10 taxas-referencia-bcb; do
+          for pasta in emprestimo-cartao-tabela-10 taxas-referencia-bcb; do
             kaggle datasets version -p "publicacao/kaggle/$pasta" -m "atualização semanal" || { echo "Não consegui atualizar $pasta no Kaggle"; falhou=1; }
           done
           exit $falhou

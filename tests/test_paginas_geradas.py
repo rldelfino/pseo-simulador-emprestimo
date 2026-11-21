@@ -36,7 +36,9 @@ def test_umami_sem_cookies_e_id_certo(site):
     assert 'data-website-id="ba3c0b88-59e8-47dd-866d-0b05e5e7dae9"' in html
     assert "https://cloud.umami.is/script.js" in html
     js = ler(site, "simulador.js")
-    assert "'cta-pix'" in js and "'usou-simulador-pix'" in js
+    for ev in ("usou-simulador-emprestimo", "abriu-confirmacao", "cta-parceiro", "cta-parceiro-sem-preenchimento", "copiou-link", "usou-proposta-propria"):
+        assert "'" + ev + "'" in js, ev
+    assert "-pix" not in js  # eventos antigos (usou-simulador-pix, cta-pix) foram renomeados
     assert "adsbygoogle" not in html
 
 
@@ -138,10 +140,13 @@ def test_dados_abertos_traz_dataset_dos_dois_conjuntos(site):
     assert any("temporalCoverage" in d for d in datasets)
 
 
-def test_termos_de_busca_do_pix_parcelado_aparecem_onde_o_assunto_ja_e_esse(site):
+def test_home_explica_o_que_e_e_corrige_os_nomes_antigos(site):
     home = ler(site, "index.html")
-    assert "Pix parcelado" in home and "empréstimo no cartão" in home
-    assert "saque do limite" in ler(site, "index.html") or "saque do limite" in ler(site, "como-funciona.html")
+    assert "empréstimo pessoal em que o limite do seu cartão de crédito é a fonte do dinheiro" in home
+    assert "O que acontece com o limite do cartão?" in home
+    # os nomes que circulam em anúncios aparecem só na FAQ que os corrige
+    assert "Já vi isso chamado de “Pix no cartão”, “Pix parcelado” ou “saque do limite”" in home
+    assert "Não é um Pix pago com cartão nem um crédito por Pix" in home
 
 
 def test_js_com_versao_no_endereco_tem_cache_imutavel():

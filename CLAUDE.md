@@ -1,51 +1,62 @@
-# Simulador de empréstimo ("Pix no cartão") — Datalab Global
+# Simulador do "Empréstimo pessoal com crédito do cartão" — Datalab Global
 
 Idioma: português do Brasil. Estilo: curto, sem jargão, números reais, dizer o que NÃO foi verificado.
+
+## Nome do produto (corrigido em 20/11/2026)
+- **Empréstimo pessoal com crédito do cartão**: um empréstimo pessoal em que o limite do cartão de crédito é a fonte do dinheiro, entregue por Pix. O total (valor + juros + IOF) é lançado no limite do cartão e parcelado na fatura (2 a 12x).
+- NUNCA "Pix no cartão", "Pix com cartão" nem "crédito por Pix" (induzem a erro). "Pix" só descreve como o dinheiro chega (chave Pix em nome da pessoa). Os nomes errados aparecem uma única vez, entre aspas, na FAQ da home que os corrige (há teste que barra em qualquer outro lugar).
+- O que NÃO foi confirmado: como o emissor libera o limite conforme as parcelas são pagas (regra do emissor; o texto diz para confirmar com o banco).
 
 ## Regras fixas
 - **Graphify primeiro, sempre, sem o dono pedir.** Antes de ler arquivo/grep: `graphify update .` e `graphify query "..."`. Se pular, avisar na hora.
 - Sem gastar dinheiro. Sem postar nem mandar mensagem a pessoas. Cadastro em diretórios/dados abertos é permitido (dono dispensou o gov.br).
 - LGPD: nada de CPF/telefone em log, teste ou arquivo. Fluxo do parceiro só com dados de teste do dono.
+- Mensagem agnóstica sobre o parceiro: "um parceiro de crédito"/"correspondente bancário", sem citar o nome dele nem de bancos (no código fica só o endereço do checkout). Sem ranking nem "Banco A × Banco B". A divulgação de comissão da Datalab Global (rodapé, Sobre, Termos) continua: é decisão de transparência deste produto, ao contrário do 006.
 - Medição: Umami (sem cookies), Website ID `ba3c0b88-59e8-47dd-866d-0b05e5e7dae9` (COMPARTILHADO com imobiliário e veículos; no Umami filtrar por Hostname). Dados abertos CC BY 4.0. Sem AdSense.
-- Nada de "Banco A × Banco B" nem ranking que induza a pedir um banco.
 - Sem segredo em arquivo/GitHub (token do Kaggle = segredo `KAGGLE_API_TOKEN` do repo). Sem identificar modelo de IA em commits/PRs (só as linhas de atribuição que o sistema mandar).
 - Merge só com `pytest` saindo 0 (não usar `pytest | tail`). Python 3.10 (sem f-string aninhado). Fluxo de alteração: branch → PR → merge (Windows mostra avisos LF/CRLF, normais).
-- **Paleta: roxo/púrpura** (violet do Tailwind). Verde é do imobiliário e azul dos veículos: não usar aqui.
+- CSP: sem `style=` nem script inline. Barras/rosca são SVG com atributos; o preenchimento dos sliders usa `data-p` (0 a 100) definido por JS e uma regra de CSS por valor.
+- **Paleta: roxo/púrpura** (violet; `--ac:#a78bfa`). Verde é do imobiliário, azul dos veículos, azul-petróleo do Home Equity: não usar aqui.
 - Máximo ~30 páginas indexáveis, cada uma com conteúdo próprio. Sem grade de páginas quase iguais.
-- Não baixar arquivo sem permissão do dono. Não mandar evento de teste ao Umami (contamina os números; em testes de navegador bloquear `umami` e `api.triagem.digital`).
+- Não baixar arquivo sem permissão do dono. Não mandar evento de teste ao Umami (nos testes o Umami é substituído por um stub e a API do parceiro é simulada).
 - Pedir indexação (Google/Bing) só para URL nova ou desconhecida; repetir não adianta.
 
 ## Comandos
-- Build: `python gerador_emprestimo.py` → `npm run build:css` → `python gerador_emprestimo.py` (o hash `?v=` do CSS/JS é calculado na geração).
-- Testes: `python -m pytest -q` (109). Pacote de publicação: `python publicacao.py`. Imagem de compartilhamento: `python gerar_og_image.py` (molde `src/og-image.html`, precisa do Playwright, fora do CI).
-- Fontes: `layout.py` (HTML), `conteudo.py` (textos, títulos ≤ 60 caracteres), `src/simulador.js`, `src/menu.js`, `gerador_emprestimo.py`. Saída: `paginas_seo/` (Cloudflare Pages, sem build). `gh` portátil: `C:\Users\rldel\tools\gh\app\bin` (logado como rldelfino).
-- Robô semanal `.github/workflows/atualiza_taxas.yml` (seg 08:00 UTC): taxas BCB, rebuild, testes, IndexNow, commit de `dados paginas_seo publicacao` e, por último, Kaggle (Python 3.12, `continue-on-error`). CI (`ci.yml`) roda build, pytest e `git diff --exit-code dados/datas_paginas.json`.
+- Gerar: `python gerador_emprestimo.py` (saída em `paginas_seo/`, Cloudflare Pages sem build). O CSS é escrito à mão em `src/estilo.css` e copiado para `styles.css` (sem Tailwind/npm desde 20/11/2026). O hash `?v=` de CSS/JS é calculado na geração.
+- Testes: `python -m pytest -q` (129). No navegador, fora do CI (Playwright): `python testar_navegador.py [--externos]` (Chromium + WebKit, computador e celular; servidor local aplica `_headers` e `_redirects`; Umami e API do parceiro simulados) e `python testar_aleatorio.py` (sessões aleatórias contra `calculo.py`).
+- Ícones, logo e imagem de compartilhamento: `python gerar_icones.py` (Playwright + Pillow; logo em SVG no `LOGO` de `layout.py`, molde `src/og-image.html`). Pacote de publicação: `python publicacao.py`.
+- Fontes: `layout.py` (HTML), `conteudo.py` (textos, títulos ≤ 60 caracteres), `src/simulador.js`, `src/menu.js`, `src/estilo.css`, `gerador_emprestimo.py`. `gh` portátil: `C:\Users\rldel\tools\gh\app\bin` (logado como rldelfino).
+- Robô semanal `.github/workflows/atualiza_taxas.yml` (seg 08:00 UTC): taxas BCB, rebuild, testes, IndexNow, commit de `dados paginas_seo publicacao` e, por último, Kaggle (Python 3.12, `continue-on-error`). CI (`ci.yml`) roda build, pytest e `git diff --exit-code dados/datas_paginas.json`. `verificar-tabela-emprestimo.yml` confere a Tabela 10 com a API do parceiro.
+- **IndexNow depois do deploy** (quem mescla roda, da `main` atualizada): `python indexnow.py` (envia todas as URLs do sitemap, incluindo a página nova `/emprestimo-com-cartao-ou-outro-credito`).
 
 ## Origem
-`origem-hub/` é cópia (13/11/2026) do código que nasceu no harness (`Documents/Datalab/harness/projects/datalab-global-hub`); o dono não mexe mais lá. Referência: `origem-hub/pixcartao/components/calculo.ts`, `proposta.ts`, `tools/`.
+`origem-hub/` é cópia (13/11/2026) do código que nasceu no harness (`Documents/Datalab/harness/projects/datalab-global-hub`); o dono não mexe mais lá. Referência: `origem-hub/pixcartao/components/calculo.ts`, `proposta.ts`, `tools/` (nomes antigos, só histórico).
 
 ## Fatos do produto
-- API: `POST https://api.triagem.digital/proposals/simulator` `{parcels, tableUUID, desiredValue | limitValue}`; Tabela 10, `tableUUID` `0IHX41YEUXXD`; Pix de R$ 300 a R$ 5.000, 2 a 12 parcelas.
-- Conta: fator = 0,5479 + 0,003·n; parcela = valor·(1+fator)/n; IOF = valor·(0,0038 + 0,00246·n). Modo limite: valor = limite/(1+fator), teto R$ 5.000; limite mínimo R$ 300 (aviso do que falta).
-- Checkout (Gyroo): no desktop só QR Code; 6 passos; exige RG/CNH original; pedido REAL (Gyroo só registra a proposta no fim do cadastro). Botão "Ver minha proposta" sem preenchimento do parceiro: avisa e deixa tentar de novo/continuar.
-- Site: https://emprestimo.datalabglobal.com, 13 páginas no sitemap. Dados abertos: Kaggle (rodolfodelfino) e Hugging Face (`datalabglobal/pix-no-cartao-tabela-10`, `datalabglobal/taxas-referencia-bcb`).
-- Resultado do simulador: `calculo.js` (gerado) leva `referencias` = últimas médias do BCB (juros ao mês vs juros do Pix, nunca CET vs juros); URL compartilhável `/?modo=valor|limite&valor=|limite=&parcelas=` (só número, canonical = home); eventos Umami: `usou-simulador-pix`, `cta-pix`, `cta-pix-sem-preenchimento`, `copiou-link`.
+- API: `POST https://api.triagem.digital/proposals/simulator` `{parcels, tableUUID, desiredValue | limitValue}`; Tabela 10, `tableUUID` `0IHX41YEUXXD`; valor recebido de R$ 300 a R$ 5.000, 2 a 12 parcelas. Fonte única dos números: `dados/emprestimo-cartao-tabela-esperada.json` (`valor_max`, fatores, CET).
+- Conta: fator = 0,5479 + 0,003·n; parcela = valor·(1+fator)/n; IOF = valor·(0,0038 + 0,00246·n). Modo limite: valor = limite/(1+fator), teto R$ 5.000; limite mínimo R$ 300 (aviso do que falta). `calculo.simular` devolve `receber`, `total`, `parcela`, `iof`, `jurosMes`, `cetAno`.
+- "Já tem uma proposta?": `calculo.taxa_implicita` = `DatalabEmprestimo.taxaImplicita` (juros ao mês de n parcelas iguais que valem o valor recebido; sem tarifas). Pela mesma conta a Tabela 10 dá de 0,4 a 0,5 ponto a mais que o "juros ao mês" tabelado pelo parceiro (método diferente, NÃO reproduzido; teste fixa a faixa 0,3–0,7). A tela compara proposta e Tabela 10 pela mesma conta e cita o número do parceiro.
+- Checkout (parceiro): no desktop só QR Code; 6 passos; exige RG/CNH original; pedido REAL. Fluxo no site: "Ver minha proposta" abre a tela de confirmação (`<dialog>`), "Continuar para o parceiro" pede a simulação à API e abre o checkout pré-preenchido na mesma aba; se a API falhar, avisa e oferece "Continuar mesmo assim" (checkout sem código).
+- Site: https://emprestimo.datalabglobal.com, 13 páginas no sitemap. Dados abertos: arquivos `emprestimo-cartao-tabela-10.*` e `taxas-referencia-bcb.*` em `/dados/`; Kaggle (rodolfodelfino) e Hugging Face (`datalabglobal/pix-no-cartao-tabela-10`, `datalabglobal/taxas-referencia-bcb`) foram criados com o nome antigo: os endereços continuam, só o dono renomeia.
+- Redirecionamentos 301 (`paginas_seo/_redirects`, gerado): `/pix-no-cartao-ou-outro-credito` (e `.html`) → `/emprestimo-com-cartao-ou-outro-credito`; arquivos `/dados/*pix-no-cartao-tabela-10*` → `/dados/*emprestimo-cartao-tabela-10*`.
+- Resultado do simulador: `calculo.js` (gerado) leva `referencias` = últimas médias do BCB (juros ao mês vs juros do empréstimo, nunca CET vs juros); URL compartilhável `/?modo=valor|limite&valor=|limite=&parcelas=[&prop=]` (só número, canonical = home); a última simulação fica em `sessionStorage` (`emp-sim`) para o botão "Voltar à simulação" das páginas internas.
+- **Eventos Umami (renomeados em 20/11/2026)**: `usou-simulador-emprestimo` (era `usou-simulador-pix`), `abriu-confirmacao` (novo), `cta-parceiro` (era `cta-pix`; agora só ao confirmar), `cta-parceiro-sem-preenchimento` (era `cta-pix-sem-preenchimento`), `copiou-link`, `usou-proposta-propria` (novo). Os nomes antigos continuam no histórico do Umami; somar manualmente.
 - Data por página: `dados/datas_paginas.json` (hash + data). Gerador renderiza com data fixa e sem `?v=`; só leva "hoje" se o hash mudou. Vale para "Atualizado em", `lastmod`, `dateModified`, `llms.txt`; feed usa a data da última entrada. Se o CI falhar nesse arquivo: rodar o gerador e commitar.
-- Rodapé: coluna "Outros simuladores" (`OUTROS_SIMULADORES` em `gerador_emprestimo.py`). simulador, veiculos e hub linkam o empréstimo direto (hub passou a linkar direto em 17/11, `_redirects` do hub mantido).
-- Segurança/acessibilidade (auditoria 17/11): CSP com `object-src 'none'`, COOP, texto pequeno em `slate-400` (slate-500 reprova contraste), alvos de toque 44 px, lista do BCB com `aria-live="off"`.
+- Rodapé: coluna "Outros simuladores" (`OUTROS_SIMULADORES` em `gerador_emprestimo.py`): imobiliário, veículos, Home Equity, Auto Equity, Condomínio e o hub.
+- Segurança/acessibilidade: CSP com `object-src 'none'`, COOP, HSTS, XFO DENY, nosniff; cores de texto herdadas do template do 006 (contraste não medido de novo aqui); alvos de toque 44 px; lista do BCB com `aria-live="off"`.
+- Arquivo de verificação do Yandex Webmaster: `paginas_seo/yandex_90c15c3be650b0ed.html` (conteúdo exato; o gerador não mexe nele e o `.gitignore` não o barra).
+- `REFERENCIAS-EXTERNAS.md`: onde o nome antigo ainda aparece nos repositórios irmãos (a sessão principal faz esses PRs).
 
-## Estado (17/11/2026)
-- No ar, testado e mesclado: PRs 10 a 22 (empréstimo), 30 (veiculos), 34 (imobiliário), 3 (hub). pytest 105 verdes, CI verde.
-- Google: home e `/custo-cet-iof` rastreadas, NÃO indexadas ("rastreada, não indexada", comum em subdomínio novo); `/taxas-de-referencia` e `/dados-abertos` tiveram indexação pedida em 17/11 (eram desconhecidas). Sitemap enviado e lido (13). Outras 9 páginas não inspecionadas.
-- Bing: só a home indexada; as outras 12 estavam "Discovered but not crawled", indexação pedida em 17/11 (cota 95/dia) + IndexNow 200. Sitemap lido (13).
-- NÃO verificado: iPhone físico; passos 2–6 do checkout; Umami só do empréstimo (ID compartilhado); robô semanal rodando com o código novo.
-
-- SEO (19/11): JSON-LD com `logo` na Organization, BreadcrumbList nas páginas internas e Dataset (2 conjuntos) em `/dados-abertos`; termos "Pix parcelado", "empréstimo no cartão" e "saque do limite" na home, em `/como-funciona` e na FAQ; JS com `?v=` agora tem cache imutável.
+## Estado (20/11/2026)
+- Nome corrigido e template novo aplicados no PR da branch `renomeia-emprestimo-cartao-template-novo` (aguarda merge). Antes: PRs 10 a 24 mesclados.
+- Google/Bing (17/11): home e `/custo-cet-iof` rastreadas, NÃO indexadas no Google; Bing só a home. Reinspecionar depois do deploy; a URL `/emprestimo-com-cartao-ou-outro-credito` é nova (pedir indexação uma vez; a antiga redireciona).
+- NÃO verificado: iPhone físico; passos 2–6 do checkout do parceiro; Umami só do empréstimo (ID compartilhado); robô semanal rodando com o código novo; o porquê da diferença de 0,4 ponto entre a taxa tabelada e a calculada; "pagar a mais"/antecipar parcelas (não há regra conhecida do parceiro/emissor, não foi construído).
+- `src/estilo.css` é a cópia do template comum (Home Equity) recolorida em roxo e traz regras que este site não usa (comparativos, amortização); não afetam nada.
 
 ## Próximos Passos
-1. Em ~3–7 dias reinspecionar Google (GSC: caixa "Inspecionar" do topo, propriedade de domínio `sc-domain:datalabglobal.com`) e Bing (`bing.com/webmasters/urlinspection?siteUrl=https%3A%2F%2Fwww.datalabglobal.com%2F&urlToInspect=<URL com :// e / codificados duas vezes>`) via Claude in Chrome (dono logado). Ver quais das 13 entraram; não repetir pedido de URL já rastreada.
-2. Segunda 24/11 (após 08:00 UTC): conferir o robô semanal; `lastmod` das páginas sem mudança deve ficar em 2026-11-17 (só taxas e home podem avançar) e `dados/datas_paginas.json` commitado pelo robô.
-3. Hugging Face: viewer das tabelas não montou; dono deve reenviar o `README.md` de `publicacao/huggingface/*/` (com `configs`).
+1. Depois do merge e do deploy: rodar `python indexnow.py`; conferir `/pix-no-cartao-ou-outro-credito` → 301; reinspecionar Google/Bing em 3–7 dias.
+2. Renomear (só o dono) o dataset no Kaggle e no Hugging Face; reenviar o `README.md` do HF (`publicacao/huggingface/*/`, com `configs`).
+3. Segunda 24/11 (após 08:00 UTC): conferir o robô semanal; `lastmod` das páginas sem mudança deve ficar na data do merge (só taxas e home podem avançar).
 4. Umami: se o dono criar o site "Empréstimo", trocar o Website ID (layout/gerador, CLAUDE.md, testes).
-5. Gyroo: 0 propostas até o fim do cadastro; medir interesse por `cta-pix` e `copiou-link` (filtro Hostname no Umami).
-6. Fora de escopo, avisar o dono: `taxas-financiamento-veiculos-outubro-2024.html` é arquivo órfão ainda no ar em veiculos; `build_static.py` do harness ainda cita `/pix-no-cartao/` na linha do `llms.txt` (arquivo com alterações pendentes do dono); repos irmãos não têm CI de PR.
+5. Parceiro: 0 propostas até o fim do cadastro; medir `abriu-confirmacao` → `cta-parceiro` e `copiou-link` (filtro Hostname no Umami).
+6. Sessão principal: PRs de rodapé/hub nos irmãos com o nome novo (lista em `REFERENCIAS-EXTERNAS.md`).

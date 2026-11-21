@@ -153,21 +153,21 @@ def test_pagina_de_taxas_tem_numero_data_e_link_de_cada_serie(site):
         assert tr.url_json(s["codigo"]) in html and tr.url_catalogo(s["codigo"]) in html
     assert "ODbL" in t and "percentual ao ano" in t.lower()
     assert "É juros, não é CET" in t
-    assert t.count("Pix no cartão") >= 3
+    assert t.count("empréstimo com crédito do cartão") >= 3
 
 
-def test_pagina_de_taxas_compara_com_o_pix_e_diz_quando_ha_opcao_mais_barata(site):
+def test_pagina_de_taxas_compara_com_o_emprestimo_e_diz_quando_ha_opcao_mais_barata(site):
     t = texto((site / "taxas-de-referencia.html").read_text(encoding="utf-8"))
-    pix12 = tr.ano_equivalente(calculo.simular("valor", 1000, 0, 12)["jurosMes"])
-    assert conteudo.pct(pix12) in t
+    j12 = tr.ano_equivalente(calculo.simular("valor", 1000, 0, 12)["jurosMes"])
+    assert conteudo.pct(j12) in t
     ultimas = {s["chave"]: tr.ultima(s["codigo"])["taxa_aa"] for s in tr.SERIES}
-    if ultimas["pessoal-nao-consignado"] < pix12 * 0.97:
-        assert "tem juros menores que o Pix no cartão em 12x" in t
+    if ultimas["pessoal-nao-consignado"] < j12 * 0.97:
+        assert "tem juros menores que este empréstimo em 12x" in t
     assert "não garante que você consiga essa taxa" in t or "nenhuma das três" in t
 
 
 def test_outras_paginas_usam_os_mesmos_numeros(site):
-    comparar = texto((site / "pix-no-cartao-ou-outro-credito.html").read_text(encoding="utf-8"))
+    comparar = texto((site / "emprestimo-com-cartao-ou-outro-credito.html").read_text(encoding="utf-8"))
     home = texto((site / "index.html").read_text(encoding="utf-8"))
     pessoal = tr.ultima(20742)
     assert conteudo.pct(pessoal["taxa_aa"]) in comparar and conteudo.pct(pessoal["taxa_aa"]) in home

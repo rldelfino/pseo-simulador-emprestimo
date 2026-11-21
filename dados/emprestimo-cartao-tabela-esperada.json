@@ -1,7 +1,7 @@
 {
  "table_uuid": "0IHX41YEUXXD",
  "table_name": "TABELA 10",
- "pix_max": 5000,
+ "valor_max": 5000,
  "fator_base": 0.5479,
  "fator_por_parcela": 0.003,
  "iof_fixo": 0.0038,

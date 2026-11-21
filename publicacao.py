@@ -22,9 +22,10 @@ PASTA_SAIDA = os.path.join(AQUI, "publicacao")
 USUARIO_KAGGLE = "rodolfodelfino"  # usuário público do Kaggle (aparece na URL dos datasets); o token NÃO fica aqui
 
 KAGGLE = {
-    da.PIX["nome"]: dict(
-        slug="pix-no-carto-parcela-iof-e-cet-tabela-10", titulo="Pix no cartão: parcela, IOF e CET (Tabela 10)",
-        subtitulo="Custo do Pix no cartão de 2x a 12x para cada R$ 1.000, conferido toda semana",
+    da.EMPRESTIMO["nome"]: dict(
+        # slug: o dataset foi criado no Kaggle com o nome antigo; o endereço (id) continua o mesmo, só o título muda
+        slug="pix-no-carto-parcela-iof-e-cet-tabela-10", titulo="Empréstimo com crédito do cartão (Tabela 10)",
+        subtitulo="Custo de 2x a 12x para cada R$ 1.000 recebidos, conferido toda semana",
         keywords=["finance", "brazil", "credit card", "interest rates", "installments"], licenca="CC-BY-4.0", hf_licenca="cc-by-4.0"),
     da.BCB["nome"]: dict(
         slug="taxas-mdias-de-crdito-pf-do-banco-central", titulo="Taxas médias de crédito PF do Banco Central",
