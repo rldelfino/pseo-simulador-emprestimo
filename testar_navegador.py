@@ -298,6 +298,14 @@ def rodar(nav, nome_nav, largura):
     pg.wait_for_selector("#msg-copiado:not(:empty)")
     confere(tag + "copiar o link responde", "Link copiado" in pg.inner_text("#msg-copiado") or "Não deu para copiar" in pg.inner_text("#msg-copiado"), pg.inner_text("#msg-copiado"))
 
+    # cabeçalho: a marca leva ao site principal e o rótulo leva à home do simulador (visível também no celular)
+    pg.goto(BASE + "/como-funciona")
+    confere(tag + "marca leva ao site principal", pg.get_attribute("header a.brand", "href") == "https://www.datalabglobal.com/")
+    confere(tag + "rótulo do produto visível e leva à home do simulador", pg.is_visible("header a.prod") and pg.get_attribute("header a.prod", "href") == "/", pg.inner_text("header a.prod"))
+    pg.click("header a.prod")
+    pg.wait_for_url(BASE + "/")
+    confere(tag + "clicar no rótulo volta à home do simulador", pg.url == BASE + "/", pg.url)
+
     # voltar à simulação a partir de uma página interna
     pg.goto(BASE + "/?modo=valor&valor=1800&parcelas=7")
     pg.wait_for_selector("#barras .pz")

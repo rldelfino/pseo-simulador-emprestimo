@@ -5,8 +5,8 @@ Mesmo template dos simuladores irmãos (Home Equity, Auto Equity, Condomínio): 
 Sem atributo style nem script inline (a CSP não permite). Os desenhos de barras são SVG com atributos; a lógica fica em src/simulador.js.
 """
 
-# Logo desenhado à mão em SVG: um cartão inclinado (faixa e chip) e uma moeda que sai dele. É o dinheiro saindo do limite do cartão.
-LOGO = """<span class="tile"><svg viewBox="0 0 44 44" width="32" height="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g transform="rotate(-11 20 25)"><rect x="4" y="15" width="29" height="19.5" rx="4.2" stroke-width="2"/><path d="M4.4 21.2h28.2" stroke-width="2.6" opacity=".55"/><rect x="8.3" y="25.2" width="6.4" height="4.7" rx="1.3" stroke-width="1.5"/><path d="M20 28.2h3.4M25.5 28.2h2.2" stroke-width="1.7" opacity=".7"/></g><circle cx="33.4" cy="12.2" r="7.6" stroke-width="2" fill="#0b1020"/><path d="M33.4 7.6v1.2M33.4 15.6v1.2M35.7 10.3c-.4-.9-1.3-1.4-2.4-1.4-1.3 0-2.3.7-2.3 1.8 0 2.4 4.9 1.2 4.9 3.8 0 1.1-1.1 1.9-2.5 1.9-1.2 0-2.1-.5-2.6-1.4" stroke-width="1.5"/></svg></span>"""
+# Marca da Datalab Global padronizada com os simuladores irmãos (a mesma do Home Equity): frasco com órbita e barras. Cor pelo --ac (roxo neste site).
+LOGO = """<span class="tile"><svg viewBox="0 0 44 44" width="32" height="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="22" cy="29" rx="19" ry="6.2" transform="rotate(-22 22 29)" stroke-width="1.3" opacity=".6"/><path d="M17.5 11.5h9M18.8 11.5V22L9.7 37.6a2.3 2.3 0 0 0 2 3.4h20.6a2.3 2.3 0 0 0 2-3.4L25.2 22V11.5" stroke-width="2"/><g fill="currentColor" stroke="none"><rect x="16" y="34" width="2.2" height="4.6" rx=".6"/><rect x="19.6" y="31" width="2.2" height="7.6" rx=".6"/><rect x="23.2" y="33" width="2.2" height="5.6" rx=".6"/><rect x="26.8" y="29.5" width="2.2" height="9.1" rx=".6"/><rect x="19.4" y="6.6" width="1.7" height="3.4" rx=".5"/><rect x="22.4" y="5" width="1.7" height="5" rx=".5"/><rect x="25.4" y="3.6" width="1.7" height="6.4" rx=".5"/><circle cx="31" cy="9.5" r="1.3"/><circle cx="35.5" cy="5.6" r="1.3"/></g><path d="M31 9.5l4.5-3.9" stroke-width="1.3"/></svg></span>"""
 
 LAYOUT = """<!doctype html>
 <html lang="pt-BR">
@@ -42,7 +42,7 @@ LAYOUT = """<!doctype html>
 <a href="#conteudo" class="skip">Ir para o conteúdo</a>
 <header class="top">
   <div class="wrap">
-    <a href="/" class="brand" aria-label="Datalab Global — Empréstimo pessoal com crédito do cartão, página inicial">@@LOGO@@<span class="wm"><b>Datalab</b><i>GLOBAL</i></span><span class="prod">Empréstimo com crédito do cartão</span></a>
+    <span class="bk"><a href="https://www.datalabglobal.com/" class="brand" aria-label="Datalab Global, site principal">@@LOGO@@<span class="wm"><b>Datalab</b><i>GLOBAL</i></span></a><a href="/" class="prod" aria-label="Empréstimo pessoal com crédito do cartão, página inicial do simulador"><span class="pl">Empréstimo com crédito do cartão</span><span class="pc">Empréstimo com cartão</span></a></span>
     <nav class="m" aria-label="Principal">@@NAV@@</nav>
     <div class="free"><span class="dot"></span>Simulação gratuita</div>
     <details class="menu">
@@ -60,7 +60,7 @@ LAYOUT = """<!doctype html>
   <div class="wrap">
     <div class="cols">
       <div>
-        <a href="/" class="brand" aria-label="Datalab Global — Empréstimo pessoal com crédito do cartão">@@LOGO@@<span class="wm"><b>Datalab</b><i>GLOBAL</i></span></a>
+        <a href="https://www.datalabglobal.com/" class="brand" aria-label="Datalab Global, site principal">@@LOGO@@<span class="wm"><b>Datalab</b><i>GLOBAL</i></span></a>
         <p>Simulador do empréstimo pessoal com crédito do cartão. O custo aparece antes de qualquer botão.</p>
         <p>A Datalab Global pode receber comissão do parceiro pelas contratações feitas a partir deste site. Não somos banco e não concedemos crédito.</p>
       </div>
