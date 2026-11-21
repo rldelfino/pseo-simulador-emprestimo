@@ -74,6 +74,25 @@ def test_fontes_pre_carregadas_e_logo_svg_no_cabecalho(site):
         assert not os.path.exists(os.path.join(RAIZ, "paginas_seo", velho)), velho
 
 
+def test_marca_igual_a_do_006_leva_ao_site_principal_e_o_rotulo_leva_a_home_do_simulador(site):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("layout006", os.path.join(os.path.dirname(RAIZ), "006-pseo-simulador-homeequity", "layout.py"))
+    if os.path.exists(spec.origin):  # fora da máquina do dono o 006 não existe: o teste abaixo (assinatura do desenho) continua valendo
+        l6 = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(l6)
+        assert layout.LOGO == l6.LOGO
+    assert 'stroke-width="1.3" opacity=".6"' in layout.LOGO and "<ellipse" in layout.LOGO  # frasco com órbita e barras
+    for nome in paginas() + ["404.html"][:0]:
+        html = ler(site, nome)
+        cab = html[html.index("<header"):html.index("</header>")]
+        rod = html[html.index("<footer"):]
+        marca = '<a href="https://www.datalabglobal.com/" class="brand" aria-label="Datalab Global, site principal">'
+        assert marca in cab and marca in rod, nome
+        assert '<span class="wm"><b>Datalab</b><i>GLOBAL</i></span>' in cab and layout.LOGO in cab and layout.LOGO in rod, nome
+        assert '<a href="/" class="prod" aria-label="Empréstimo pessoal com crédito do cartão, página inicial do simulador">' in cab, nome
+        assert 'class="brand" href="/"' not in html and '<a href="/" class="brand"' not in html, nome
+
+
 def test_rodape_em_colunas_linka_todas_as_paginas_e_os_irmaos(site):
     for nome in paginas():
         html = ler(site, nome)
@@ -271,7 +290,7 @@ def test_arquivo_de_verificacao_do_yandex_no_site():
     caminho = os.path.join(RAIZ, "paginas_seo", "yandex_90c15c3be650b0ed.html")
     esperado = ('<html>\n<head>\n<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n</head>\n'
                 '<body>Verification: 90c15c3be650b0ed</body>\n</html>')
-    assert open(caminho, encoding="utf-8", newline="").read() == esperado
+    assert open(caminho, encoding="utf-8", newline="").read().replace(chr(13) + chr(10), chr(10)) == esperado  # o Windows pode converter o fim de linha no checkout; .gitattributes fixa LF
 
 
 def test_links_internos_existem(site):

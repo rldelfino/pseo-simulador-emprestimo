@@ -29,10 +29,13 @@ header.top .wrap{display:flex;align-items:center;justify-content:space-between;m
 .wm{display:flex;flex-direction:column;line-height:1}
 .wm b{font-size:18px;font-weight:700;letter-spacing:-.02em}
 .wm i{font-style:normal;font-size:8.5px;letter-spacing:.42em;color:var(--ac);margin-top:4px;font-weight:600}
-.prod{color:var(--tx2);font-size:14px;padding-left:12px;margin-left:2px;border-left:1px solid var(--ln)}
 nav.m{display:flex;gap:6px;font-size:14px}
 nav.m a{color:var(--tx2);text-decoration:none;padding:12px 10px;min-height:44px;display:inline-flex;align-items:center}
 nav.m a:hover,nav.m a[aria-current]{color:var(--tx)}
+.bk{display:flex;align-items:center;min-width:0}
+.prod{display:flex;align-items:center;min-height:44px;color:var(--tx2);font-size:14px;padding-left:12px;margin-left:12px;border-left:1px solid var(--ln);text-decoration:none;white-space:nowrap}
+.prod:hover{color:var(--ac)}
+.prod .pc{display:none}
 .free{font-size:13px;color:var(--tx2);display:flex;align-items:center;gap:8px}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--ac);display:inline-block;flex:none}
 details.menu{position:relative;display:none}
@@ -252,7 +255,6 @@ footer.rod .base a{color:var(--tx2)}
   details.menu{display:block}
   .cta{flex-direction:column;align-items:stretch;text-align:center}
   .hero{padding-top:30px}
-  .prod{display:none}
   .raio .hd{display:block}
   .mini-in{display:block}
   .mini-in .inp{margin-top:8px;min-width:0}
@@ -709,3 +711,10 @@ dialog .row .btn{white-space:normal;text-align:center}
 .rc-l .lg>span{white-space:normal}
 .rc-l .lg b{flex:none}
 .split-t .hint a,.pztx .hint a,.refp .hint a,.resp .dim a,.fecho a.btn{display:inline-flex;align-items:center;min-height:44px}
+/* v9: cabeçalho como nos irmãos: marca leva ao site principal, o rótulo leva à home do simulador (visível também no celular, com texto curto) */
+@media(max-width:560px){
+  .prod{font-size:12.5px;padding-left:9px;margin-left:9px}
+  .prod .pl{display:none}
+  .prod .pc{display:inline}
+}
+@media(max-width:380px){.bk .wm{display:none}.prod{margin-left:8px}}
