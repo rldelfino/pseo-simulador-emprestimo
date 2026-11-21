@@ -127,7 +127,7 @@ def test_blocos_de_confianca(site):
         html = ler(site, nome)
         assert "Atualizado em 14/11/2026" in html, nome
         assert g.CNPJ in html and g.RAZAO_SOCIAL in html, nome
-        assert "pode receber comissão" in texto(html), nome
+        assert "comissão" not in texto(html).lower() and "remuneração" not in texto(html).lower(), nome  # 21/11/2026: dono mandou tirar a divulgação de comissão; fica só o link do parceiro
         assert "análise de crédito" in texto(html) or "Crédito sujeito a análise" in texto(html), nome
     assert "não há garantia" in texto(ler(site, "index.html")).lower() or "sem garantia de aprovação" in texto(ler(site, "index.html")).lower()
     # a Resolução CMN 3.954/2011 foi revogada (Res. BCB 277/2022): não pode aparecer como norma vigente em nenhuma página do site

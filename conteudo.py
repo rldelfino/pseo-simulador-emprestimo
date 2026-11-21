@@ -113,8 +113,7 @@ FAQ = [
      "que segue as normas do Banco Central e do CMN. Segurança, porém, também depende de você: leia o guia "
      + a("/e-seguro-golpes", "É seguro? Como evitar golpes") + "."),
     ("A Datalab Global é o banco?",
-     "Não. Este site é um simulador. Quem faz a operação é um parceiro (correspondente bancário), e a Datalab Global pode receber comissão "
-     "pelas contratações feitas a partir daqui. Veja " + a("/sobre", "Sobre") + "."),
+     "Não. Este site é um simulador. Quem faz a operação é um parceiro (correspondente bancário). Veja " + a("/sobre", "Sobre") + "."),
 ]
 
 
@@ -449,9 +448,8 @@ def corpo_sobre(ctx):
         + h2("Quem realiza a operação")
         + p("A operação é de um parceiro, correspondente bancário. O ambiente de contratação é dele, e a análise e a aprovação de crédito também. "
             "A Datalab Global não concede crédito e não é banco.")
-        + h2("Como a Datalab Global ganha dinheiro")
-        + p("A Datalab Global pode receber comissão do parceiro pelas contratações feitas a partir deste site. Isso não muda o valor que você paga, e o simulador mostra o custo antes do botão, "
-            "inclusive quando a melhor decisão é não contratar.")
+        + p("O botão \"Continuar para o parceiro\" só aparece depois da tela de confirmação, com o total em reais. Ele leva ao ambiente do parceiro, em outro site, "
+            "onde ficam os passos da contratação, inclusive o pedido de CPF e de documento original. Antes de concluir, confira lá o valor, as parcelas e o CET.")
         + h2("Por que este simulador existe")
         + p("Esse tipo de empréstimo costuma ser anunciado pela facilidade: o dinheiro cai rápido e a parcela cabe na fatura. O que quase nunca aparece é o total. "
             "Montamos este simulador para inverter a ordem: primeiro o custo em reais e o CET, depois o botão. Quando uma alternativa mais barata existe, "
@@ -577,15 +575,13 @@ def corpo_termos(ctx):
             ("2. A simulação não é proposta de crédito",
              ["Os números seguem a Tabela 10 do parceiro, conferida toda semana, mas são informativos. Não são oferta, promessa de crédito nem recomendação financeira. "
               "A aprovação, o valor e as condições finais dependem da análise de crédito do parceiro."]),
-            ("3. Remuneração",
-             ["A Datalab Global pode receber comissão do parceiro pelas contratações feitas a partir deste site."]),
-            ("4. Uso permitido",
+            ("3. Uso permitido",
              ["Você pode usar o site para fins lícitos. É proibido tentar acessar áreas restritas, sobrecarregar a infraestrutura ou extrair dados em massa de forma automatizada sem autorização."]),
-            ("5. Propriedade intelectual",
+            ("4. Propriedade intelectual",
              ["Marca, layout e textos pertencem aos seus titulares. Os dados abertos, quando publicados, terão a licença indicada na própria página."]),
-            ("6. Limitação de responsabilidade",
+            ("5. Limitação de responsabilidade",
              ["O site é oferecido no estado em que se encontra. Fazemos esforços razoáveis para mantê-lo correto e disponível, mas não garantimos ausência de falhas. A relação de crédito é entre você e o parceiro."]),
-            ("7. Alterações e contato",
+            ("6. Alterações e contato",
              ["Podemos atualizar estes Termos; vale a versão publicada nesta página. Dúvidas: " + ctx["email"] + "."]),
         ])
     )
@@ -628,7 +624,7 @@ PAGINAS = [
          corpo=corpo_metodologia),
     dict(slug="sobre", menu="Sobre", title="Sobre a Datalab Global e este simulador",
          h1="Sobre a Datalab Global e este simulador",
-         desc="Quem mantém o simulador, quem realiza a operação (correspondente bancário), como a Datalab Global ganha com comissão e como falar com a gente.",
+         desc="Quem mantém o simulador, quem realiza a operação (correspondente bancário), o que fazemos e o que não fazemos, e como falar com a gente.",
          corpo=corpo_sobre),
     dict(slug="dados-abertos", menu=None, title="Dados abertos: empréstimo com cartão e taxas do BC",
          h1="Dados abertos: empréstimo com crédito do cartão e taxas do Banco Central",
@@ -642,6 +638,6 @@ PAGINAS = [
          desc="Como este site trata dados: nenhum dado pessoal pedido, medição sem cookies e o que o parceiro faz com seus dados na contratação.",
          corpo=corpo_privacidade, guia=False),
     dict(slug="termos", menu=None, title="Termos de Uso", h1="Termos de Uso",
-         desc="Regras de uso do simulador do empréstimo com crédito do cartão: a simulação não é proposta de crédito, remuneração por comissão e limites de responsabilidade.",
+         desc="Regras de uso do simulador do empréstimo com crédito do cartão: a simulação não é proposta de crédito, uso permitido e limites de responsabilidade.",
          corpo=corpo_termos, guia=False),
 ]

@@ -167,7 +167,7 @@ LLMS = """# Empréstimo pessoal com crédito do cartão (Datalab Global)
 - Atualizado em @@ATUALIZADO@@
 - Fonte dos números: Tabela 10 do parceiro (correspondente bancário), conferida toda semana pela API do próprio parceiro.
 - Conta: fator = 0,5479 + 0,003 x parcelas; parcela = valor x (1 + fator) / parcelas; IOF = valor x (0,0038 + 0,00246 x parcelas).
-- A aprovação depende de análise de crédito. A simulação não é proposta de crédito. A Datalab Global pode receber comissão do parceiro.
+- A aprovação depende de análise de crédito. A simulação não é proposta de crédito.
 - Dados abertos (CSV e JSON): @@DOMINIO@@/dados-abertos. Tabela 10 em CC BY 4.0; séries do Banco Central em ODbL 1.0.
 - Feed Atom: @@DOMINIO@@/feed.xml
 

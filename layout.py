@@ -62,7 +62,7 @@ LAYOUT = """<!doctype html>
       <div>
         <a href="https://www.datalabglobal.com/" class="brand" aria-label="Datalab Global, site principal">@@LOGO@@<span class="wm"><b>Datalab</b><i>GLOBAL</i></span></a>
         <p>Simulador do empréstimo pessoal com crédito do cartão. O custo aparece antes de qualquer botão.</p>
-        <p>A Datalab Global pode receber comissão do parceiro pelas contratações feitas a partir deste site. Não somos banco e não concedemos crédito.</p>
+        <p>Não somos banco e não concedemos crédito.</p>
       </div>
       <nav aria-label="Entenda"><h2>Entenda</h2><ul>@@FOOT_ENTENDA@@</ul></nav>
       <nav aria-label="Transparência"><h2>Transparência</h2><ul>@@FOOT_TRANSP@@</ul></nav>
@@ -227,7 +227,7 @@ HOME_MAIN = """  <section class="hero">
     <div class="card"><h4>Quanto custa, de verdade</h4>
       <p>@@CUSTO_HOME@@ Se você consegue outra forma de crédito mais barata, ela costuma valer mais a pena. <a href="/custo-cet-iof">Veja a tabela completa</a>.</p></div>
     <div class="card"><h4>Quem oferece</h4>
-      <p>A oferta é de um correspondente bancário parceiro. O contrato é uma Cédula de Crédito Bancário (CCB), e a aprovação depende de análise de crédito: não há garantia de aprovação nem de valor. A Datalab Global pode receber comissão do parceiro. <a href="/sobre">Saiba mais</a>.</p></div>
+      <p>A oferta é de um correspondente bancário parceiro. O contrato é uma Cédula de Crédito Bancário (CCB), e a aprovação depende de análise de crédito: não há garantia de aprovação nem de valor. <a href="/sobre">Saiba mais</a>.</p></div>
   </section>
 
   <section class="blk" aria-labelledby="t-guias">
