@@ -26,7 +26,7 @@ Depois de trocar, regerar `paginas_seo/` de cada irmão (os testes de rodapé de
 
 ## Dados abertos e diretórios (só o dono pode alterar)
 - Kaggle: dataset `rodolfodelfino/pix-no-carto-parcela-iof-e-cet-tabela-10` (o endereço guarda o nome antigo; o título passa a ser "Empréstimo com crédito do cartão (Tabela 10)" na próxima versão publicada pelo robô, se o Kaggle aceitar a mudança de título pela API: NÃO verificado).
-- Hugging Face: `datalabglobal/pix-no-cartao-tabela-10` (renomear em Settings > Rename; reenviar o `README.md` de `publicacao/huggingface/emprestimo-cartao-tabela-10/`).
+- Hugging Face: FEITO em 21/11/2026 (`datalabglobal/emprestimo-cartao-tabela-10`, README e CSV reenviados, CSV antigo removido). Kaggle: título, subtítulo e descrição trocados na tela em 21/11/2026.
 - dados.gov.br: usar `publicacao/dados-gov-br/cadastro.md` (já com o nome e os endereços novos dos arquivos; os endereços antigos redirecionam).
 - `origem-hub/` (cópia local ignorada pelo git) e o harness (`Documents/Datalab/harness/projects/datalab-global-hub`): nomes antigos só como histórico; `build_static.py` do harness ainda cita `/pix-no-cartao/` no `llms.txt` (pendência antiga).
 
