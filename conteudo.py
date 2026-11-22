@@ -511,6 +511,8 @@ def corpo_dados_abertos(ctx):
             [a(c["kaggle"], "Kaggle"), "Cópia no Kaggle (mesma licença)"],
             [a(c["huggingface"], "Hugging Face"), "Cópia no Hugging Face (mesma licença)"],
         ]
+        if c.get("zenodo"):
+            arquivos.append([a(c["zenodo"], "Zenodo (DOI)"), "Cópia no Zenodo com DOI, para citar (mesma licença)"])
         saida += (
             h2(c["titulo"])
             + p(c["descricao"])
