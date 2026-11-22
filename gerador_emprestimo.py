@@ -326,7 +326,7 @@ def _ctx(hoje):
 
 def _organizacao():
     return {"@type": "Organization", "@id": DOMINIO + "/#organizacao", "name": "Datalab Global", "legalName": RAZAO_SOCIAL,
-            "taxID": CNPJ, "url": HUB + "/", "email": EMAIL, "logo": {"@type": "ImageObject", "url": DOMINIO + "/apple-touch-icon.png", "width": 180, "height": 180}}
+            "taxID": CNPJ, "url": HUB + "/", "email": EMAIL, "sameAs": ["https://huggingface.co/datalabglobal"], "founder": {"@type": "Person", "name": "Rodolfo Delfino", "sameAs": ["https://github.com/rldelfino", "https://www.kaggle.com/rodolfodelfino", "https://www.linkedin.com/in/rodolfo-leal-delfino"]}, "logo": {"@type": "ImageObject", "url": DOMINIO + "/apple-touch-icon.png", "width": 180, "height": 180}}
 
 
 def _breadcrumb(pg, canonical):
