@@ -56,7 +56,7 @@ Idioma: português do Brasil. Estilo: curto, sem jargão, números reais, dizer 
 ## Próximos Passos
 1. Depois do merge e do deploy: rodar `python indexnow.py`; conferir `/pix-no-cartao-ou-outro-credito` → 301; reinspecionar Google/Bing em 3–7 dias.
 2. (feito em 21/11/2026) Kaggle: título/descrição trocados (slug fica); Hugging Face: renomeado e README/CSV reenviados. O robô semanal sobe a versão nova do Kaggle (arquivo `emprestimo-cartao-tabela-10.csv`).
-3. Segunda 24/11 (após 08:00 UTC): conferir o robô semanal; `lastmod` das páginas sem mudança deve ficar na data do merge (só taxas e home podem avançar).
+3. Segunda 23/11 (após 08:00 UTC): conferir o robô semanal; `lastmod` das páginas sem mudança deve ficar na data do merge (só taxas e home podem avançar).
 4. Umami: o plano grátis só permite 1 site ("Website limit reached", testado em 21/11/2026); por isso o ID é compartilhado. Só muda com plano pago (dono decide).
 5. Parceiro: 0 propostas até o fim do cadastro; medir `abriu-confirmacao` → `cta-parceiro` e `copiou-link` (filtro Hostname no Umami).
 6. Sessão principal: PRs de rodapé/hub nos irmãos com o nome novo (lista em `REFERENCIAS-EXTERNAS.md`).
