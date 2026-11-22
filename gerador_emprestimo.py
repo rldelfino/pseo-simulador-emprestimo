@@ -344,7 +344,7 @@ def _datasets(hoje):
              "url": DOMINIO + "/dados-abertos", "inLanguage": "pt-BR", "isAccessibleForFree": True, "license": c["licenca"]["url"],
              "creator": {"@type": "Organization", "name": "Datalab Global", "url": HUB + "/"}, "publisher": {"@id": DOMINIO + "/#organizacao"},
              "dateModified": hoje.isoformat(), "keywords": ["crédito", "juros", "Brasil", "empréstimo com crédito do cartão" if c is dados_abertos.EMPRESTIMO else "Banco Central"],
-             "sameAs": [c["kaggle"], c["huggingface"]], "isBasedOn": c["fonte"]["path"],
+             "sameAs": [c["kaggle"], c["huggingface"]] + ([c["zenodo"]] if c.get("zenodo") else []), "isBasedOn": c["fonte"]["path"],
              "variableMeasured": [{"@type": "PropertyValue", "name": n, "description": desc} for n, _t, desc in c["colunas"]],
              "distribution": [{"@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": DOMINIO + "/dados/" + c["nome"] + ".csv"},
                               {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": DOMINIO + "/dados/" + c["nome"] + ".json"}]}

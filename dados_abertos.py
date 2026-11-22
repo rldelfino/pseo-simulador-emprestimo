@@ -24,6 +24,7 @@ EMPRESTIMO = dict(
     nome="emprestimo-cartao-tabela-10",
     kaggle="https://www.kaggle.com/datasets/rodolfodelfino/pix-no-carto-parcela-iof-e-cet-tabela-10",
     huggingface="https://huggingface.co/datasets/datalabglobal/emprestimo-cartao-tabela-10",
+    zenodo="https://doi.org/10.5281/zenodo.24432588",   # DOI do conceito (resolve sempre para a versão mais recente); publicado em 22/11/2026
     titulo="Empréstimo pessoal com crédito do cartão: Tabela 10 do parceiro (parcela, IOF, juros e CET)",
     descricao=("Condições do empréstimo pessoal com crédito do cartão (o limite do cartão de crédito é a fonte do dinheiro, entregue por Pix) segundo a Tabela 10 do parceiro (correspondente bancário), de 2 a 12 parcelas, para cada R$ 1.000 recebidos: "
                "fator total, parcela, total na fatura, IOF, juros ao mês, juros equivalentes ao ano e CET ao ano. Valor recebido de R$ 300 a R$ 5.000. "
