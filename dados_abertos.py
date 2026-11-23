@@ -47,6 +47,7 @@ BCB = dict(
     nome="taxas-referencia-bcb",
     kaggle="https://www.kaggle.com/datasets/rodolfodelfino/taxas-mdias-de-crdito-pf-do-banco-central",
     huggingface="https://huggingface.co/datasets/datalabglobal/taxas-referencia-bcb",
+    zenodo="https://doi.org/10.5281/zenodo.24475267",   # DOI do conceito; publicado em 23/11/2026
     titulo="Taxas médias de juros do Banco Central: cheque especial, crédito pessoal não consignado e cartão rotativo",
     descricao=("Taxa média de juros das novas operações de crédito com recursos livres, pessoas físicas, ponderada pelo valor das concessões, em % ao ano, série mensal, "
                "para cheque especial (SGS 20741), crédito pessoal não consignado (SGS 20742) e cartão de crédito rotativo (SGS 22022). "
