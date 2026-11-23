@@ -48,7 +48,9 @@ HOME_DESC = ("Simule o empréstimo pessoal com crédito do cartão: receba R$ 30
              "Veja parcela, IOF e CET.")
 
 # Páginas indexáveis (entram no sitemap): home + as de conteudo.PAGINAS.
-PAGINAS_INDEXAVEIS = ["/"] + ["/" + pg["slug"] for pg in conteudo.PAGINAS]
+# Privacidade e termos são texto padrão, quase igual nos simuladores da Datalab: ficam acessíveis (rodapé) mas fora do índice e do sitemap, como em 006/007/008.
+SEM_INDICE = ("privacidade", "termos")
+PAGINAS_INDEXAVEIS = ["/"] + ["/" + pg["slug"] for pg in conteudo.PAGINAS if pg["slug"] not in SEM_INDICE]
 
 CSP = (
     "default-src 'self'; "
@@ -412,7 +414,7 @@ def _pagina_guia(pg, valores, hoje, ctx):
     ld = (_ld(artigo) if guia else "") + _ld(_breadcrumb(pg, canonical))
     if pg["slug"] == "dados-abertos":
         ld += "".join(_ld(d) for d in _datasets(hoje))
-    return _preencher(layout.LAYOUT, dict(valores, TITLE=pg["title"], DESC=pg["desc"], CANONICAL=canonical, ROBOTS="index,follow,max-image-preview:large",
+    return _preencher(layout.LAYOUT, dict(valores, TITLE=pg["title"], DESC=pg["desc"], CANONICAL=canonical, ROBOTS=("noindex,follow" if pg["slug"] in SEM_INDICE else "index,follow,max-image-preview:large"),
                                           OGTYPE="article" if guia else "website", JSONLD=ld, MAIN=main, SCRIPTS=menu_script()))
 
 
