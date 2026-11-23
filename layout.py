@@ -179,9 +179,9 @@ HOME_MAIN = """  <section class="hero">
         <p class="hint"><a href="/como-funciona">Veja o passo a passo completo</a></p>
       </div>
       <div class="lista3">
-        <div class="li3"><span class="n" aria-hidden="true">1</span><div><h4>Você pede um valor</h4><ul><li>De R$ 300 a R$ 5.000, por Pix, em uma chave em seu nome</li><li>O Pix é só o jeito de o dinheiro chegar à sua conta</li></ul></div></div>
-        <div class="li3"><span class="n" aria-hidden="true">2</span><div><h4>O total vai para o limite do cartão</h4><ul><li>Valor, juros e IOF ficam comprometidos no limite</li><li>É por isso que existe o modo “Usar meu limite”</li></ul></div></div>
-        <div class="li3"><span class="n" aria-hidden="true">3</span><div><h4>Você paga na fatura</h4><ul><li>De 2 a 12 parcelas, junto com o resto da fatura</li><li>Como o limite é liberado conforme você paga é regra do emissor do cartão</li></ul></div></div>
+        <div class="li3"><span class="n" aria-hidden="true">1</span><div><h3>Você pede um valor</h3><ul><li>De R$ 300 a R$ 5.000, por Pix, em uma chave em seu nome</li><li>O Pix é só o jeito de o dinheiro chegar à sua conta</li></ul></div></div>
+        <div class="li3"><span class="n" aria-hidden="true">2</span><div><h3>O total vai para o limite do cartão</h3><ul><li>Valor, juros e IOF ficam comprometidos no limite</li><li>É por isso que existe o modo “Usar meu limite”</li></ul></div></div>
+        <div class="li3"><span class="n" aria-hidden="true">3</span><div><h3>Você paga na fatura</h3><ul><li>De 2 a 12 parcelas, junto com o resto da fatura</li><li>Como o limite é liberado conforme você paga é regra do emissor do cartão</li></ul></div></div>
       </div>
     </div>
   </section>
@@ -224,9 +224,9 @@ HOME_MAIN = """  <section class="hero">
   </section>
 
   <section class="blk dois" aria-label="Custo e quem oferece">
-    <div class="card"><h4>Quanto custa, de verdade</h4>
+    <div class="card"><h3>Quanto custa, de verdade</h3>
       <p>@@CUSTO_HOME@@ Se você consegue outra forma de crédito mais barata, ela costuma valer mais a pena. <a href="/custo-cet-iof">Veja a tabela completa</a>.</p></div>
-    <div class="card"><h4>Quem oferece</h4>
+    <div class="card"><h3>Quem oferece</h3>
       <p>A oferta é de um correspondente bancário parceiro. O contrato é uma Cédula de Crédito Bancário (CCB), e a aprovação depende de análise de crédito: não há garantia de aprovação nem de valor. <a href="/sobre">Saiba mais</a>.</p></div>
   </section>
 

@@ -313,7 +313,7 @@ def _cartoes_html():
     for pg in conteudo.PAGINAS:
         if not pg.get("menu"):
             continue
-        saida += '<a class="card" href="/' + pg["slug"] + '"><h4>' + pg["menu"] + "</h4>" + pg["desc"] + '<span class="go">Ler →</span></a>'
+        saida += '<a class="card" href="/' + pg["slug"] + '"><h3>' + pg["menu"] + "</h3>" + pg["desc"] + '<span class="go">Ler →</span></a>'
     return saida
 
 
@@ -534,7 +534,10 @@ def gerar_site(saida=SAIDA_PADRAO, hoje=None, manifesto=None):
         linhas.append("  <url><loc>" + DOMINIO + caminho + "</loc><lastmod>" + datas["index" if caminho == "/" else caminho[1:]].isoformat() + "</lastmod></url>")
     linhas.append("</urlset>")
     escrever("sitemap.xml", "\n".join(linhas) + "\n")
-    lista = "\n".join("- " + DOMINIO + c for c in PAGINAS_INDEXAVEIS)
+    # llms.txt: links em Markdown ([título](url)), o formato que o Lighthouse e os leitores de LLM esperam.
+    titulos = {"/" + pg["slug"]: pg.get("cartao") or pg["h1"] for pg in conteudo.PAGINAS}
+    titulos["/"] = "Início: o simulador"
+    lista = "\n".join("- [" + titulos.get(c, c) + "](" + DOMINIO + c + ")" for c in PAGINAS_INDEXAVEIS)
     escrever("llms.txt", _preencher(LLMS, dict(valores, LISTA=lista)))
     return saida
 

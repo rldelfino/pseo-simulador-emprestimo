@@ -11,16 +11,16 @@
 - Feed Atom: https://emprestimo.datalabglobal.com/feed.xml
 
 ## Páginas
-- https://emprestimo.datalabglobal.com/
-- https://emprestimo.datalabglobal.com/como-funciona
-- https://emprestimo.datalabglobal.com/e-seguro-golpes
-- https://emprestimo.datalabglobal.com/custo-cet-iof
-- https://emprestimo.datalabglobal.com/emprestimo-com-cartao-ou-outro-credito
-- https://emprestimo.datalabglobal.com/taxas-de-referencia
-- https://emprestimo.datalabglobal.com/quando-nao-vale-a-pena
-- https://emprestimo.datalabglobal.com/metodologia
-- https://emprestimo.datalabglobal.com/sobre
-- https://emprestimo.datalabglobal.com/dados-abertos
-- https://emprestimo.datalabglobal.com/atualizacoes
-- https://emprestimo.datalabglobal.com/privacidade
-- https://emprestimo.datalabglobal.com/termos
+- [Início: o simulador](https://emprestimo.datalabglobal.com/)
+- [Como funciona o empréstimo pessoal com crédito do cartão](https://emprestimo.datalabglobal.com/como-funciona)
+- [Empréstimo pessoal com crédito do cartão é seguro? Como evitar golpes](https://emprestimo.datalabglobal.com/e-seguro-golpes)
+- [CET e IOF do empréstimo com crédito do cartão: quanto custa de verdade](https://emprestimo.datalabglobal.com/custo-cet-iof)
+- [Empréstimo com crédito do cartão, pessoal, cheque especial ou rotativo: como comparar](https://emprestimo.datalabglobal.com/emprestimo-com-cartao-ou-outro-credito)
+- [Taxas médias do Banco Central: cheque especial, crédito pessoal e rotativo](https://emprestimo.datalabglobal.com/taxas-de-referencia)
+- [Quando o empréstimo com crédito do cartão não vale a pena (e quando pode valer)](https://emprestimo.datalabglobal.com/quando-nao-vale-a-pena)
+- [Metodologia: como calculamos o empréstimo pessoal com crédito do cartão](https://emprestimo.datalabglobal.com/metodologia)
+- [Sobre a Datalab Global e este simulador](https://emprestimo.datalabglobal.com/sobre)
+- [Dados abertos: empréstimo com crédito do cartão e taxas do Banco Central](https://emprestimo.datalabglobal.com/dados-abertos)
+- [Atualizações do simulador de empréstimo pessoal com crédito do cartão](https://emprestimo.datalabglobal.com/atualizacoes)
+- [Política de Privacidade](https://emprestimo.datalabglobal.com/privacidade)
+- [Termos de Uso](https://emprestimo.datalabglobal.com/termos)
