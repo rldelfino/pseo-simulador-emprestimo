@@ -35,7 +35,7 @@ def texto(html):
 
 
 def arquivos_indexaveis():
-    return ["index.html"] + [pg["slug"] + ".html" for pg in conteudo.PAGINAS]
+    return ["index.html"] + [pg["slug"] + ".html" for pg in conteudo.PAGINAS if pg["slug"] not in g.SEM_INDICE]
 
 
 def test_poucas_paginas_e_todas_geradas(site):
@@ -98,8 +98,10 @@ def test_links_internos_resolvem(site):
 
 def test_sitemap_igual_as_paginas_geradas(site):
     urls = set(re.findall(r"<loc>([^<]+)</loc>", ler(site, "sitemap.xml")))
-    esperado = {g.DOMINIO + "/"} | {g.DOMINIO + "/" + pg["slug"] for pg in conteudo.PAGINAS}
+    esperado = {g.DOMINIO + "/"} | {g.DOMINIO + "/" + pg["slug"] for pg in conteudo.PAGINAS if pg["slug"] not in g.SEM_INDICE}
     assert urls == esperado
+    for slug in g.SEM_INDICE:  # texto padrão: acessível, mas fora do índice
+        assert 'content="noindex' in ler(site, slug + ".html"), slug
     llms = ler(site, "llms.txt")
     assert all(u in llms for u in esperado)
 
