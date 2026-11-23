@@ -227,8 +227,8 @@ def versao_calculo_js():
 def home_scripts():
     """Os scripts também têm a versão no endereço: o Cloudflare guarda .js na borda por horas e ignora o max-age do _headers; com ?v=<resumo>
     o endereço muda junto com o conteúdo e ninguém recebe HTML novo com JS velho."""
-    return ('<script src="/calculo.js?v=' + versao_calculo_js() + '"></script>\n'
-            '<script src="/simulador.js?v=' + versao_simulador_js() + '"></script>\n' + menu_script())
+    return ('<script defer src="/calculo.js?v=' + versao_calculo_js() + '"></script>\n'
+            '<script defer src="/simulador.js?v=' + versao_simulador_js() + '"></script>\n' + menu_script())
 
 
 def versao_css():
