@@ -10,6 +10,7 @@ import calculo
 import conteudo
 import gerador_emprestimo as g
 
+PAGINA_DE_BANCOS = "taxas-por-banco.html"
 BANCOS = ["Itaú", "Itau", "Bradesco", "Nubank", "Santander", "Banco do Brasil", "Caixa Econômica", "Banco Inter", "C6", "PicPay", "Mercado Pago", "BTG"]
 
 
@@ -109,9 +110,30 @@ def test_sitemap_igual_as_paginas_geradas(site):
 def test_nenhum_banco_citado_e_nada_de_ranking(site):
     for nome in arquivos_indexaveis():
         t = texto(ler(site, nome))
-        for b in BANCOS:
-            assert b not in t, (nome, b)
+        if nome != PAGINA_DE_BANCOS:     # exceção liberada pelo dono em 25/11/2026: só esta página cita instituições (dado público do BCB)
+            for b in BANCOS:
+                assert b not in t, (nome, b)
         assert "melhor banco" not in t.lower() and "ranking" not in t.lower().replace("não fazemos ranking", "")
+
+
+def test_pagina_taxas_por_banco_vem_do_csv_e_nao_ordena_por_taxa(site):
+    import taxas_bancos as tb
+    por_mod = tb.ler()
+    assert set(por_mod) == {m["chave"] for m in tb.MODALIDADES}
+    html = ler(site, PAGINA_DE_BANCOS)
+    t = texto(html)
+    for chave, linhas in por_mod.items():
+        assert len(linhas) >= tb.MIN_INSTITUICOES
+        nomes = [r["instituicao"] for r in linhas]
+        assert nomes == sorted(nomes, key=str.lower)                     # ordem alfabética no CSV
+        for r in tb.grandes(linhas):
+            assert r["instituicao"] in t
+        assert ("Mostrar as " + str(len(linhas)) + " instituições") in t
+    assert "não é oferta" in t.lower() and "ordem não é de taxa" in t
+    assert 'href="/dados/taxas-por-banco.csv"' in html
+    assert "dados/taxas-por-banco.csv" in ler(site, "llms.txt")
+    # as outras páginas não citam instituições: conferido no teste acima; aqui só o link de navegação existe
+    assert 'href="/taxas-por-banco"' in ler(site, "index.html")
 
 
 def test_numeros_do_custo_vem_da_tabela(site):

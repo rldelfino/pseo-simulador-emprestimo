@@ -5,8 +5,15 @@
   <link href="https://emprestimo.datalabglobal.com/feed.xml" rel="self" type="application/atom+xml"/>
   <link href="https://emprestimo.datalabglobal.com/" rel="alternate" type="text/html"/>
   <id>tag:emprestimo.datalabglobal.com,2026:feed</id>
-  <updated>2026-11-20T00:00:00Z</updated>
+  <updated>2026-11-25T00:00:00Z</updated>
   <author><name>Datalab Global</name></author>
+  <entry>
+    <title>Atualização de 25/11/2026</title>
+    <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>
+    <id>tag:emprestimo.datalabglobal.com,2026:atualizacao-2026-11-25-14</id>
+    <updated>2026-11-25T00:00:00Z</updated>
+    <summary type="text">Nova página Taxas por banco: taxa média de crédito pessoal não consignado e de cartão parcelado de cada instituição (Banco Central) e a parcela de R$ 1.000 em 12x que cada taxa daria, com os dados em CSV. É dado público de mercado, não oferta nem ordem de preferência.</summary>
+  </entry>
   <entry>
     <title>Atualização de 20/11/2026</title>
     <link href="https://emprestimo.datalabglobal.com/atualizacoes"/>

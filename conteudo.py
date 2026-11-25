@@ -3,12 +3,13 @@
 Nome do produto: "Empréstimo pessoal com crédito do cartão". É um empréstimo pessoal em que o limite do cartão de crédito é a fonte do dinheiro, entregue por Pix.
 Nunca é "Pix no cartão", "Pix com cartão" nem "crédito por Pix": esses nomes induzem a erro e só aparecem (uma vez, na FAQ) para corrigir quem os procura.
 
-Regras: nenhum número que não venha da Tabela 10 (calculo.py) ou de uma fonte citada; nenhum banco nem o nome do parceiro citados, nem ranking;
+Regras: nenhum número que não venha da Tabela 10 (calculo.py) ou de uma fonte citada; nenhum banco nem o nome do parceiro citados (exceto na página taxas-por-banco, liberada pelo dono em 25/11/2026, só com dado público do BCB em ordem alfabética), nem ranking;
 sem prometer aprovação. Os números dos textos são calculados aqui a partir de calculo.simular, para não divergirem do simulador.
 Sem f-string aninhada (o CI roda Python 3.10).
 """
 import calculo
 import dados_abertos as da
+import taxas_bancos as tb
 import taxas_referencia as tr
 
 GITHUB = "https://github.com/rldelfino/pseo-simulador-emprestimo"
@@ -476,7 +477,82 @@ def corpo_atualizacoes(ctx):
     )
 
 
+def _data_br(iso):
+    ano, mes, dia = iso.split("-")
+    return dia + "/" + mes + "/" + ano
+
+
+def _pmt(principal, i, n):
+    return principal * i / (1 - (1 + i) ** -n)
+
+
+VALOR_BANCOS = 1000
+PARCELAS_BANCOS = 12
+
+
+def _linha_banco(r):
+    parcela = _pmt(VALOR_BANCOS, r["taxa_am"] / 100, PARCELAS_BANCOS)
+    return [r["instituicao"], '<span class="nw">' + pct(r["taxa_am"]) + " ao mês</span> <small>(" + pct(r["taxa_aa"]) + " ao ano)</small>", '<span class="nw">' + brl(parcela) + "</span>"]
+
+
+def _secao_modalidade(m, linhas, nosso):
+    rs = tb.resumo(linhas)
+    cinco = tb.grandes(linhas)
+    periodo = _data_br(rs["inicio"]) + " a " + _data_br(rs["fim"])
+    cab = ["Instituição", "Taxa média", "Parcela de " + brl0(VALOR_BANCOS) + " em " + str(PARCELAS_BANCOS) + "x"]
+    abaixo = len([r for r in linhas if r["taxa_am"] < nosso])
+    if abaixo:
+        comparacao = "<b>" + str(abaixo) + " das " + str(rs["n"]) + " instituições</b> têm taxa média menor que essa."
+    else:
+        comparacao = "nenhuma das instituições tem taxa média menor que essa."
+    return (h2(m["nome"] + ": " + str(rs["n"]) + " instituições")
+            + p("Entre " + str(rs["n"]) + " instituições, de " + periodo + ", a taxa média vai de <b>" + pct(rs["menor"]) + "</b> a <b>" + pct(rs["maior"]) + " ao mês</b>, e a <b>mediana é "
+                + pct(rs["mediana"]) + " ao mês</b>. Para comparar, os juros do empréstimo com crédito do cartão em " + str(PARCELAS_BANCOS) + "x são de <b>" + pct(nosso) + " ao mês</b>: "
+                + comparacao + " Taxa de banco e a do empréstimo com cartão não são a mesma coisa (veja o aviso no início da página).")
+            + h3("Os cinco maiores bancos de varejo")
+            + p("Em ordem alfabética (a ordem não é de taxa).")
+            + tabela(cab, [_linha_banco(r) for r in sorted(cinco, key=lambda x: x["instituicao"].lower())],
+                     m["nome"] + ", prefixado, pessoa física. Banco Central do Brasil, " + periodo + ". Média simples, sem peso por volume.")
+            + '<details class="mais"><summary>Mostrar as ' + str(rs["n"]) + " instituições</summary>"
+            + tabela(cab, [_linha_banco(r) for r in linhas], "Todas as instituições que operaram a modalidade em pelo menos " + str(tb.MIN_JANELAS) + " dos cerca de 20 dias úteis do período, em ordem alfabética.")
+            + "</details>")
+
+
+def corpo_taxas_por_banco(ctx):
+    por_mod = tb.ler()
+    if not por_mod or any(m["chave"] not in por_mod for m in tb.MODALIDADES):
+        raise SystemExit("dados/taxas_por_banco.csv ausente ou incompleto: rode python etl_taxas_referencia.py")
+    nosso = _r(PARCELAS_BANCOS)["jurosMes"]
+    todas = [r for m in tb.MODALIDADES for r in por_mod[m["chave"]]]
+    ini = _data_br(min(r["periodo_inicio"] for r in todas))
+    fim = _data_br(max(r["periodo_fim"] for r in todas))
+    return (
+        p("Quanto cada banco cobra, em média, de pessoa física nos dois créditos mais parecidos com o empréstimo com crédito do cartão: o <b>crédito pessoal não consignado</b> e o <b>cartão de crédito parcelado</b>? "
+          "Esta página mostra a taxa média de cada instituição, de " + ini + " a " + fim + ", segundo o Banco Central do Brasil, e a parcela que cada taxa daria em R$ 1.000 em " + str(PARCELAS_BANCOS) + " vezes.")
+        + aviso("<b>Não é oferta nem a taxa que você receberia.</b> São médias das operações que cada instituição fez no período, para quem foi aprovado; a sua taxa depende de análise, e algumas instituições só atendem clientes ou segmentos específicos. "
+                "Aparecer aqui não quer dizer que a instituição aprovaria o seu pedido. A taxa do Banco Central é só juros: não inclui IOF nem tarifas, e o CET é maior.")
+        + h2("Como ler")
+        + ul([
+            "<b>Compare juros com juros e CET com CET.</b> A taxa dos bancos aqui é juros ao mês; o empréstimo com crédito do cartão tem juros de " + pct(nosso) + " ao mês em " + str(PARCELAS_BANCOS) + "x, mais IOF (veja " + a("/custo-cet-iof", "CET e IOF") + ").",
+            "<b>A diferença entre as instituições é enorme.</b> Quem tem relacionamento, garantia ou renda comprovada costuma pagar bem menos; instituições de crédito rápido cobram mais. Por isso peça proposta a pelo menos três, anote taxa, prazo e CET de cada uma e compare pelo total pago (veja " + a("/" + SLUG_COMPARAR, "como comparar créditos") + ").",
+            "<b>Pouca operação, média instável.</b> Algumas instituições fazem poucos contratos numa modalidade, e um contrato fora da curva puxa a média. Por isso mostramos só quem operou na maior parte dos dias do período.",
+        ])
+        + _secao_modalidade(tb.MODALIDADES[0], por_mod["pessoal"], nosso)
+        + _secao_modalidade(tb.MODALIDADES[1], por_mod["cartao-parcelado"], nosso)
+        + h2("Como lemos os dados do Banco Central")
+        + ul([
+            "<b>Fonte:</b> Banco Central do Brasil, " + a(tb.URL_FONTE, "taxas de juros por instituição financeira") + " (dados abertos, licença ODbL 1.0).",
+            "<b>Modalidades:</b> crédito pessoal não consignado e cartão de crédito parcelado, pessoa física, taxa prefixada.",
+            "<b>Janelas:</b> o Banco Central publica a média de cada instituição em janelas móveis de 5 dias úteis. Juntamos as janelas dos últimos 30 dias, a partir da mais recente (" + ini + " a " + fim + "), em uma média simples por instituição.",
+            "<b>Sem peso por volume:</b> o Banco Central não publica, nesse conjunto, quanto cada instituição emprestou. Os nomes aparecem de forma resumida.",
+            "<b>Parcela:</b> parcela fixa (sistema Price) sobre " + brl0(VALOR_BANCOS) + " em " + str(PARCELAS_BANCOS) + " meses, sem IOF, tarifas nem seguros.",
+            "<b>Atualização:</b> toda semana. Os dados em CSV estão em " + a("/dados/taxas-por-banco.csv", "/dados/taxas-por-banco.csv") + ". As médias gerais do mercado estão em " + a("/taxas-de-referencia", "Taxas do Banco Central") + ".",
+        ])
+    )
+
+
 ATUALIZACOES = [
+    ("25/11/2026", "Nova página Taxas por banco: taxa média de crédito pessoal não consignado e de cartão parcelado de cada instituição (Banco Central) e a parcela de R$ 1.000 em 12x que cada taxa daria, com os dados em CSV. É dado público de mercado, não oferta nem ordem de preferência."),
     ("20/11/2026", "Correção do nome: o produto passou a se chamar Empréstimo pessoal com crédito do cartão, porque é um empréstimo pessoal em que o limite do cartão é a fonte do dinheiro, entregue por Pix. O nome antigo induzia a erro. A página de comparação mudou de endereço (o antigo continua funcionando e leva ao novo) e os arquivos de dados abertos também (os endereços antigos redirecionam). Os eventos de medição foram renomeados. A conta e os números não mudaram."),
     ("20/11/2026", "Novo visual do simulador, igual ao dos outros simuladores da Datalab Global: cartões por campo, painel de resultado, faixa com três números, campo para comparar a taxa de uma proposta que você já tem, tela de confirmação antes de abrir o parceiro, logo redesenhado e rodapé com os demais simuladores."),
     ("17/11/2026", "Os dois conjuntos de dados abertos também estão no Hugging Face, com a mesma licença (link na página Dados abertos)."),
@@ -616,6 +692,10 @@ PAGINAS = [
          h1="Taxas médias do Banco Central: cheque especial, crédito pessoal e rotativo",
          desc="Taxas médias de juros de três créditos para pessoa física, com mês de referência e link de cada série, comparadas ao empréstimo com crédito do cartão.",
          corpo=corpo_taxas),
+    dict(slug="taxas-por-banco", menu="Taxas por banco", title="Taxas de juros por banco: pessoal e cartão parcelado",
+         h1="Taxas de juros por banco: crédito pessoal e cartão parcelado",
+         desc="Taxa média de cada instituição (Banco Central) em crédito pessoal não consignado e cartão parcelado, com a parcela de R$ 1.000 em 12x e os dados em CSV.",
+         corpo=corpo_taxas_por_banco),
     dict(slug="quando-nao-vale-a-pena", menu="Quando não vale", title="Quando o empréstimo com crédito do cartão não vale a pena",
          h1="Quando o empréstimo com crédito do cartão não vale a pena (e quando pode valer)",
          desc="Sete situações em que este crédito caro costuma ser má ideia, as poucas em que pode fazer sentido e perguntas para decidir.",

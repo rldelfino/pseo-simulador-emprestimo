@@ -13,6 +13,7 @@ import sys
 
 import requests
 
+import taxas_bancos as tb
 import taxas_referencia as tr
 
 MESES_HISTORICO = 24
@@ -70,12 +71,44 @@ def atualizar(caminho=tr.CAMINHO_CSV, hoje=None, get=requests.get):
     return atualizadas
 
 
+def buscar_bancos(modalidade_bcb, get=requests.get):
+    """Registros da API de taxas por instituição de UMA modalidade do BCB, mais recentes primeiro. Levanta ValueError se o formato mudou."""
+    url = (tb.URL_API + "?$format=json&$top=10000&$orderby=InicioPeriodo%20desc&$filter=Modalidade%20eq%20'"
+           + modalidade_bcb.replace(" ", "%20") + "'")
+    resp = get(url, headers=HEADERS, timeout=90)
+    resp.raise_for_status()
+    dados = resp.json()
+    if not isinstance(dados, dict) or not isinstance(dados.get("value"), list):
+        raise ValueError("resposta do BCB (taxas por instituição) mudou de formato")
+    return dados["value"]
+
+
+def atualizar_bancos(caminho=tb.CAMINHO_CSV, get=requests.get):
+    """Atualiza dados/taxas_por_banco.csv. Devolve {chave: (instituições, período_fim)} ou None se manteve o arquivo (falha ou dado pouco confiável)."""
+    por_mod = {}
+    for m in tb.MODALIDADES:
+        try:
+            linhas = tb.agregar(buscar_bancos(m["bcb"], get=get))
+        except (requests.RequestException, ValueError, KeyError) as e:
+            print("AVISO taxas por banco: %s não atualizada (%s); mantendo o arquivo que já existe" % (m["nome"], e))
+            return None
+        if len(linhas) < tb.MIN_INSTITUICOES:
+            print("AVISO taxas por banco: %s com só %d instituições (mínimo %d); mantendo o arquivo que já existe" % (m["nome"], len(linhas), tb.MIN_INSTITUICOES))
+            return None
+        por_mod[m["chave"]] = linhas
+    tb.salvar(por_mod, caminho)
+    return {k: (len(v), tb.resumo(v)["fim"]) for k, v in por_mod.items()}
+
+
 if __name__ == "__main__":
     try:
         resultado = atualizar()
+        bancos = atualizar_bancos()
     except OSError as e:
         print("AVISO taxas BCB: não consegui gravar o CSV (%s)" % e)
         sys.exit(0)
+    for chave, (n, fim) in sorted((bancos or {}).items()):
+        print("OK taxas por banco: %s com %d instituições, período até %s" % (chave, n, fim))
     for codigo, (n, ultimo) in sorted(resultado.items()):
         print("OK taxas BCB: série %d com %d meses, último %s" % (codigo, n, ultimo))
     if not resultado:
