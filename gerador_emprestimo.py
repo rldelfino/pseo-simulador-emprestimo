@@ -155,6 +155,7 @@ NOT_FOUND = """<!doctype html>
   <h1>Página não encontrada</h1>
   <p>O endereço não existe mais ou foi digitado errado.</p>
   <p class="fine"><a class="btn" href="/">Voltar ao simulador do empréstimo com crédito do cartão</a></p>
+  <p class="fine">Um simulador da <a href="https://www.datalabglobal.com/">Datalab Global</a>: veja todos os produtos.</p>
 </section>
 </main>
 </body>
