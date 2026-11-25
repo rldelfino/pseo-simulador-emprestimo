@@ -3,11 +3,12 @@
 > Simulador gratuito do empréstimo pessoal com crédito do cartão: o limite do cartão de crédito é a fonte do dinheiro, que você recebe por Pix (de R$ 300 a R$ 5.000) e paga em 2x a 12x na fatura. Mostra parcela, total na fatura, IOF e CET antes de qualquer contratação. É crédito caro.
 
 - Responsável: Satori Soluções Comerciais LTDA, CNPJ 63.998.502/0001-73
-- Atualizado em 23/11/2026
+- Atualizado em 25/11/2026
 - Fonte dos números: Tabela 10 do parceiro (correspondente bancário), conferida toda semana pela API do próprio parceiro.
 - Conta: fator = 0,5479 + 0,003 x parcelas; parcela = valor x (1 + fator) / parcelas; IOF = valor x (0,0038 + 0,00246 x parcelas).
 - A aprovação depende de análise de crédito. A simulação não é proposta de crédito.
 - Dados abertos (CSV e JSON): https://emprestimo.datalabglobal.com/dados-abertos. Tabela 10 em CC BY 4.0; séries do Banco Central em ODbL 1.0.
+- Taxas por banco (CSV): https://emprestimo.datalabglobal.com/dados/taxas-por-banco.csv (crédito pessoal e cartão parcelado por instituição, Banco Central, ODbL 1.0)
 - Feed Atom: https://emprestimo.datalabglobal.com/feed.xml
 
 ## Páginas
@@ -17,6 +18,7 @@
 - [CET e IOF do empréstimo com crédito do cartão: quanto custa de verdade](https://emprestimo.datalabglobal.com/custo-cet-iof)
 - [Empréstimo com crédito do cartão, pessoal, cheque especial ou rotativo: como comparar](https://emprestimo.datalabglobal.com/emprestimo-com-cartao-ou-outro-credito)
 - [Taxas médias do Banco Central: cheque especial, crédito pessoal e rotativo](https://emprestimo.datalabglobal.com/taxas-de-referencia)
+- [Taxas de juros por banco: crédito pessoal e cartão parcelado](https://emprestimo.datalabglobal.com/taxas-por-banco)
 - [Quando o empréstimo com crédito do cartão não vale a pena (e quando pode valer)](https://emprestimo.datalabglobal.com/quando-nao-vale-a-pena)
 - [Metodologia: como calculamos o empréstimo pessoal com crédito do cartão](https://emprestimo.datalabglobal.com/metodologia)
 - [Sobre a Datalab Global e este simulador](https://emprestimo.datalabglobal.com/sobre)

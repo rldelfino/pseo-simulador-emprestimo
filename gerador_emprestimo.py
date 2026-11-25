@@ -23,6 +23,7 @@ import dados_abertos
 import feed_atom
 import indexnow
 import layout
+import taxas_bancos
 import taxas_referencia
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -172,6 +173,7 @@ LLMS = """# Empréstimo pessoal com crédito do cartão (Datalab Global)
 - Conta: fator = 0,5479 + 0,003 x parcelas; parcela = valor x (1 + fator) / parcelas; IOF = valor x (0,0038 + 0,00246 x parcelas).
 - A aprovação depende de análise de crédito. A simulação não é proposta de crédito.
 - Dados abertos (CSV e JSON): @@DOMINIO@@/dados-abertos. Tabela 10 em CC BY 4.0; séries do Banco Central em ODbL 1.0.
+- Taxas por banco (CSV): @@DOMINIO@@/dados/taxas-por-banco.csv (crédito pessoal e cartão parcelado por instituição, Banco Central, ODbL 1.0)
 - Feed Atom: @@DOMINIO@@/feed.xml
 
 ## Páginas
@@ -263,11 +265,11 @@ def _ld(dados):
 
 # Navegação: poucos links no cabeçalho, tudo no menu do celular e no rodapé (em colunas).
 DESTAQUES = ["como-funciona", "custo-cet-iof", "taxas-de-referencia"]
-ENTENDA = ["como-funciona", "e-seguro-golpes", "custo-cet-iof", conteudo.SLUG_COMPARAR, "quando-nao-vale-a-pena"]
+ENTENDA = ["como-funciona", "e-seguro-golpes", "custo-cet-iof", conteudo.SLUG_COMPARAR, "taxas-por-banco", "quando-nao-vale-a-pena"]
 TRANSPARENCIA = ["taxas-de-referencia", "metodologia", "dados-abertos", "atualizacoes", "sobre"]
 LEGAL = ["privacidade", "termos"]
 ROTULOS = {"atualizacoes": "Atualizações", "dados-abertos": "Dados abertos", "privacidade": "Privacidade", "termos": "Termos de uso",
-           conteudo.SLUG_COMPARAR: "Comparar com outros créditos", "taxas-de-referencia": "Taxas do Banco Central",
+           conteudo.SLUG_COMPARAR: "Comparar com outros créditos", "taxas-de-referencia": "Taxas do Banco Central", "taxas-por-banco": "Taxas por banco",
            "custo-cet-iof": "CET e IOF", "e-seguro-golpes": "É seguro? Golpes", "quando-nao-vale-a-pena": "Quando não vale a pena"}
 
 
@@ -523,6 +525,7 @@ def gerar_site(saida=SAIDA_PADRAO, hoje=None, manifesto=None):
     escrever(indexnow.CHAVE + ".txt", indexnow.CHAVE + "\n")
     escrever("feed.xml", feed_atom.gerar(hoje))
     dados_abertos.gerar(os.path.join(saida, "dados"))
+    shutil.copyfile(taxas_bancos.CAMINHO_CSV, os.path.join(saida, "dados", "taxas-por-banco.csv"))
     escrever("calculo.js", gerar_calculo_js())
     shutil.copyfile(os.path.join(AQUI, "src", "simulador.js"), os.path.join(saida, "simulador.js"))
     shutil.copyfile(os.path.join(AQUI, "src", "menu.js"), os.path.join(saida, "menu.js"))

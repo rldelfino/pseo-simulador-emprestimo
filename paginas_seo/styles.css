@@ -718,3 +718,10 @@ dialog .row .btn{white-space:normal;text-align:center}
   .prod .pc{display:inline}
 }
 @media(max-width:380px){.bk .wm{display:none}.prod{margin-left:8px}}
+.prose td[data-l="Banco"],.prose td[data-l="Instituição"]{min-width:150px;font-weight:600}
+.prose td small{color:var(--tx3);font-size:12px;margin-left:4px;white-space:nowrap}
+.prose .nw{white-space:nowrap}
+@media(min-width:700px){.prose td small{display:block;margin-left:0}}
+.prose details.mais{margin-top:16px;border:1px solid var(--ln);border-radius:14px;padding:0 16px}
+.prose details.mais summary{cursor:pointer;min-height:48px;display:flex;align-items:center;color:var(--aclt);font-weight:600;font-size:14px}
+.prose details.mais .tw{margin-top:0;padding-bottom:16px}

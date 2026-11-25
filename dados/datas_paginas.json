@@ -1,54 +1,58 @@
 {
   "atualizacoes": {
-    "data": "2026-11-21",
-    "hash": "7910389c6a"
+    "data": "2026-11-25",
+    "hash": "9570cc8b49"
   },
   "como-funciona": {
-    "data": "2026-11-21",
-    "hash": "75ed2e6368"
+    "data": "2026-11-25",
+    "hash": "15bb02d7f4"
   },
   "custo-cet-iof": {
-    "data": "2026-11-21",
-    "hash": "0b09b6f440"
+    "data": "2026-11-25",
+    "hash": "00d07475e2"
   },
   "dados-abertos": {
-    "data": "2026-11-23",
-    "hash": "80b687b9cf"
+    "data": "2026-11-25",
+    "hash": "b49f7e6df7"
   },
   "e-seguro-golpes": {
-    "data": "2026-11-21",
-    "hash": "1e8276200d"
+    "data": "2026-11-25",
+    "hash": "6fb695e68f"
   },
   "emprestimo-com-cartao-ou-outro-credito": {
-    "data": "2026-11-21",
-    "hash": "0f9dbfd2c6"
+    "data": "2026-11-25",
+    "hash": "46042ee7e7"
   },
   "index": {
-    "data": "2026-11-23",
-    "hash": "75fec62773"
+    "data": "2026-11-25",
+    "hash": "4a5d20bab4"
   },
   "metodologia": {
-    "data": "2026-11-21",
-    "hash": "9a79b6069d"
+    "data": "2026-11-25",
+    "hash": "70150aa2a2"
   },
   "privacidade": {
-    "data": "2026-11-23",
-    "hash": "96b14000af"
+    "data": "2026-11-25",
+    "hash": "dc787a6fb6"
   },
   "quando-nao-vale-a-pena": {
-    "data": "2026-11-21",
-    "hash": "8f50edd4d0"
+    "data": "2026-11-25",
+    "hash": "bf51967e38"
   },
   "sobre": {
-    "data": "2026-11-21",
-    "hash": "5d01733f18"
+    "data": "2026-11-25",
+    "hash": "0d6ad1f117"
   },
   "taxas-de-referencia": {
-    "data": "2026-11-21",
-    "hash": "a97a45d8e2"
+    "data": "2026-11-25",
+    "hash": "6d79811c0a"
+  },
+  "taxas-por-banco": {
+    "data": "2026-11-25",
+    "hash": "68776afc06"
   },
   "termos": {
-    "data": "2026-11-23",
-    "hash": "ddd44f597a"
+    "data": "2026-11-25",
+    "hash": "e2ee455b61"
   }
 }
